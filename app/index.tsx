@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 45,
     paddingBottom: 20,
+    paddingTop: 20,
     fontSize: 24,
   }
 
