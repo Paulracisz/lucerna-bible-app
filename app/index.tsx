@@ -55,9 +55,13 @@ export default function Index() {
           setCurrentChapterText(chapterTextArray.join(" ")); // join together the text and verse numbers
 
           if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
+          else if (!chapterObj?.book?.name)
+            return console.error("Book name does not exist.");
 
           if (chapterObj?.chapter?.number)
             setCurrentChapterNumber(chapterObj.chapter.number);
+          else if (!chapterObj?.chapter?.number)
+            return console.error("Chapter number does not exist.");
         }
       })
       .catch((error) => {
