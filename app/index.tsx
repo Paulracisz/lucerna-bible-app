@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
 
 export default function Index() {
   const [currentChapterObj, setCurrentChapterObj] = useState("");
@@ -27,17 +27,29 @@ export default function Index() {
       .catch((error) => {
         console.error("Error fetching chapter text:", error);
       });
-  }, []);
+  }, [currentChapterText]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+    <ScrollView
+      style={styles.viewBox}
     >
-      <Text>{ currentChapterText || "Chapter text loading..."} </Text>
-    </View>
+      <Text style={styles.chapterText}>{ currentChapterText || "Chapter text loading..."} </Text>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+
+  viewBox: {
+    display: "flex",
+    paddingLeft: '20%',
+    paddingRight: '20%'
+  },
+
+  chapterText: {
+    textAlign: "center",
+    lineHeight: 45,
+    fontSize: 24,
+  }
+
+})
