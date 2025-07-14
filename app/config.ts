@@ -1,0 +1,1 @@
+export const devMode = true; // false for production mode

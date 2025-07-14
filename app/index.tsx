@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
+import { devMode } from "./config";
 
 export default function Index() {
   // current state tracked for rendering text on the page
@@ -28,14 +29,14 @@ export default function Index() {
     chapter: string
   ) => {
     if (!(translation && book && chapter))
-      return console.error("Invalid params for API call");
+      return console.error("Invalid params for API call.");
 
     fetch(
       `https://bible.helloao.org/api/${translation}/${book}/${chapter}.json`
     )
       .then((request) => request.json())
       .then((chapterObj) => {
-        console.log(chapterObj);
+        if (devMode) console.log(chapterObj);
 
         setCurrentChapterObj(chapterObj);
 
@@ -56,15 +57,19 @@ export default function Index() {
 
           if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
           else if (!chapterObj?.book?.name)
-            return console.error("Book name does not exist.");
+            console.error("Book name does not exist.");
 
           if (chapterObj?.chapter?.number)
             setCurrentChapterNumber(chapterObj.chapter.number);
           else if (!chapterObj?.chapter?.number)
-            return console.error("Chapter number does not exist.");
+            console.error("Chapter number does not exist.");
         }
       })
       .catch((error) => {
+        if (!devMode)
+          window.alert(
+            "Something seems to have went wrong loading the Bible. Please file an error report in the settings."
+          );
         console.error("Error fetching chapter text:", error);
       });
   };
