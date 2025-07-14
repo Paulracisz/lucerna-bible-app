@@ -4,6 +4,8 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 export default function Index() {
   const [currentChapterObj, setCurrentChapterObj] = useState("");
   const [currentChapterText, setCurrentChapterText] = useState("");
+  const [currentBookTitle, setCurrentBookTitle] = useState("");
+  const [currentChapterNumber, setCurrentChapterNumber] = useState("");
 
   useEffect(() => {
     fetch(`https://bible.helloao.org/api/eng_kjv/GEN/1.json`)
@@ -21,6 +23,8 @@ export default function Index() {
           }
 
           setCurrentChapterText(chapterTextArray.join(" "))
+          if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name)
+          if (chapterObj?.chapter?.number) setCurrentChapterNumber(chapterObj.chapter.number)
           console.log(chapterContent)
         }
       })
@@ -33,7 +37,9 @@ export default function Index() {
     <ScrollView
       style={styles.viewBox}
     >
-      <Text style={styles.chapterText}>{ currentChapterText || "Chapter text loading..."} </Text>
+      <Text style={styles.bookTitle}>{ currentBookTitle || "loading..."} </Text>
+      <Text style={styles.chapterNumber}>{ currentChapterNumber || "loading..."} </Text>
+      <Text style={styles.chapterText}>{ currentChapterText || "loading..."} </Text>
     </ScrollView>
   );
 }
@@ -52,6 +58,18 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingTop: 20,
     fontSize: 24,
+  },
+
+  bookTitle: {
+    textAlign: "center",
+    color: "grey",
+    marginTop: 30,
+    fontSize: 24,
+  },
+
+  chapterNumber: {
+    textAlign: "center",
+    fontSize: 64,
   }
 
 })
