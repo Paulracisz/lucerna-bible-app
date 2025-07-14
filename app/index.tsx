@@ -11,25 +11,33 @@ export default function Index() {
     fetch(`https://bible.helloao.org/api/eng_kjv/GEN/1.json`)
       .then((request) => request.json())
       .then((chapterObj) => {
+
         console.log(chapterObj);
+        
         setCurrentChapterObj(chapterObj);
 
+        // if api returns chapter content, lets serialize the data
         if (chapterObj?.chapter?.content) {
+
           const chapterContent = chapterObj.chapter.content;
-          // if api returns chapter content, lets serialize the data
+
           let chapterTextArray = []; // fill the array with each verse of text
+
           for (let i = 0; i < chapterContent.length; i++) {
+
             chapterTextArray.push(
               chapterContent[i].number,
               chapterContent[i].content[0]
             );
+
           }
 
-          setCurrentChapterText(chapterTextArray.join(" "));
+          setCurrentChapterText(chapterTextArray.join(" ")); // join together the text and verse numbers
+
           if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
-          if (chapterObj?.chapter?.number)
-            setCurrentChapterNumber(chapterObj.chapter.number);
-          console.log(chapterContent);
+
+          if (chapterObj?.chapter?.number) setCurrentChapterNumber(chapterObj.chapter.number);
+
         }
       })
       .catch((error) => {
