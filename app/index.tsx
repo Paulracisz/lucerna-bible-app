@@ -68,7 +68,7 @@ export default function Index() {
       .catch((error) => {
         if (!devMode)
           window.alert(
-            "Something seems to have went wrong when loading the Bible. Please file an error report in the settings."
+            "Something seems to have gone wrong when loading the Bible. Please file an error report in the settings:\n" + error
           );
         console.error("Error fetching chapter text:", error);
       });
