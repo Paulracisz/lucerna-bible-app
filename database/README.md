@@ -1,4 +1,6 @@
-Used with permission from publisher see MIT license below:
+API used with permission from publisher see MIT license below:
+
+https://bible.helloao.org/docs/
 
 MIT License
 
