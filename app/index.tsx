@@ -2,43 +2,46 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 
 export default function Index() {
-  
+  // current state tracked for rendering text on the page
   const [currentChapterObj, setCurrentChapterObj] = useState("");
   const [currentChapterText, setCurrentChapterText] = useState("");
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
 
+  // selected by user and used for API call
+  const selectedCurrentTranslation = "eng_kjv";
+  const selectedCurrentBook = "GEN";
+  const selectedChapterNumber = "1";
+
   useEffect(() => {
-    fetch(`https://bible.helloao.org/api/eng_kjv/GEN/1.json`)
+    fetch(
+      `https://bible.helloao.org/api/${selectedCurrentTranslation}/${selectedCurrentBook}/${selectedChapterNumber}.json`
+    )
       .then((request) => request.json())
       .then((chapterObj) => {
-
         console.log(chapterObj);
 
         setCurrentChapterObj(chapterObj);
 
         // if api returns chapter content, lets serialize the data
         if (chapterObj?.chapter?.content) {
-
           const chapterContent = chapterObj.chapter.content;
 
           let chapterTextArray = []; // fill the array with each verse of text
 
           for (let i = 0; i < chapterContent.length; i++) {
-
             chapterTextArray.push(
               chapterContent[i].number,
               chapterContent[i].content[0]
             );
-
           }
 
           setCurrentChapterText(chapterTextArray.join(" ")); // join together the text and verse numbers
 
           if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
 
-          if (chapterObj?.chapter?.number) setCurrentChapterNumber(chapterObj.chapter.number);
-
+          if (chapterObj?.chapter?.number)
+            setCurrentChapterNumber(chapterObj.chapter.number);
         }
       })
       .catch((error) => {
