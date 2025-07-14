@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   chapterText: {
     textAlign: "center",
     lineHeight: 45,
+    paddingBottom: 20,
     fontSize: 24,
   }
 
