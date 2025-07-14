@@ -17,11 +17,11 @@ export default function Index() {
           // if api returns chapter content, lets serialize the data
           let chapterTextArray = [] // fill the array with each verse of text
           for (let i=0; i < chapterContent.length; i++) {
-            chapterTextArray.push(chapterContent[i].content[0]);
+            chapterTextArray.push(chapterContent[i].number, chapterContent[i].content[0]);
           }
 
           setCurrentChapterText(chapterTextArray.join(" "))
-          console.log(currentChapterText, "array of chapter text")
+          console.log(chapterContent)
         }
       })
       .catch((error) => {
@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
 
   viewBox: {
     display: "flex",
-    paddingLeft: '20%',
-    paddingRight: '20%'
+    paddingLeft: '10%',
+    paddingRight: '10%'
   },
 
   chapterText: {
