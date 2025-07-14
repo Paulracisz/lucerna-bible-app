@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 
 export default function Index() {
+  
   const [currentChapterObj, setCurrentChapterObj] = useState("");
   const [currentChapterText, setCurrentChapterText] = useState("");
   const [currentBookTitle, setCurrentBookTitle] = useState("");
@@ -13,7 +14,7 @@ export default function Index() {
       .then((chapterObj) => {
 
         console.log(chapterObj);
-        
+
         setCurrentChapterObj(chapterObj);
 
         // if api returns chapter content, lets serialize the data
