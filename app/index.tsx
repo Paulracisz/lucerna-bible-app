@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { devMode } from "./config";
+import { Verse } from "./types";
 
 export default function Index() {
   // current state tracked for rendering text on the page
   const [currentChapterObj, setCurrentChapterObj] = useState("");
-  const [currentChapterText, setCurrentChapterText] = useState("");
+  const [currentChapterTextArray, setCurrentChapterTextArray] = useState<Verse[]>([]);
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
 
@@ -47,13 +48,13 @@ export default function Index() {
           let chapterTextArray = []; // fill the array with each verse of text
 
           for (let i = 0; i < chapterContent.length; i++) {
-            chapterTextArray.push(
-              chapterContent[i].number,
-              chapterContent[i].content[0]
-            );
+            chapterTextArray.push({
+              number: chapterContent[i].number,
+              text: chapterContent[i].content[0].replace("¶", "\n \t")
+          });
           }
 
-          setCurrentChapterText(chapterTextArray.join(" ")); // join together the text and verse numbers
+          if (chapterTextArray) setCurrentChapterTextArray(chapterTextArray);
 
           if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
           else if (!chapterObj?.book?.name)
@@ -68,7 +69,8 @@ export default function Index() {
       .catch((error) => {
         if (!devMode)
           window.alert(
-            "Something seems to have gone wrong when loading the Bible. Please file an error report in the settings:\n" + error
+            "Something seems to have gone wrong when loading the Bible. Please file an error report in the settings:\n" +
+              error
           );
         console.error("Error fetching chapter text:", error);
       });
@@ -84,13 +86,18 @@ export default function Index() {
 
   return (
     <ScrollView style={styles.viewBox}>
-      <Text style={styles.bookTitle}>{currentBookTitle || "loading..."} </Text>
-      <Text style={styles.chapterNumber}>
-        {currentChapterNumber || "loading..."}{" "}
-      </Text>
-      <Text style={styles.chapterText}>
-        {currentChapterText || "loading..."}{" "}
-      </Text>
+      <Text style={styles.bookTitle}> { currentBookTitle } </Text>
+      <Text style={styles.chapterNumber}> { currentChapterNumber } </Text>
+      {currentChapterTextArray.length > 0 ? (
+        currentChapterTextArray.map((verse, index) => (
+          <Text key={index} style={styles.verseLine}>
+            <Text style={styles.verseNumber}>{verse.number + " "}</Text>
+            <Text style={styles.verseText}>{verse.text}</Text>
+          </Text>
+        ))
+      ) : (
+        <Text style={styles.chapterText}>loading...</Text>
+      )}
     </ScrollView>
   );
 }
@@ -103,11 +110,25 @@ const styles = StyleSheet.create({
   },
 
   chapterText: {
-    textAlign: "center",
+    textAlign: "left",
     lineHeight: 45,
     paddingBottom: 20,
     paddingTop: 20,
     fontSize: 24,
+  },
+
+  verseLine: {
+    textAlign: "left",
+    lineHeight: 45,
+    fontSize: 24,
+  },
+
+  verseNumber: {
+    color: "grey",
+    fontSize: 15
+  },
+
+  verseText: {
   },
 
   bookTitle: {
@@ -119,6 +140,7 @@ const styles = StyleSheet.create({
 
   chapterNumber: {
     textAlign: "center",
+    marginBottom: 10,
     fontSize: 64,
   },
 });
