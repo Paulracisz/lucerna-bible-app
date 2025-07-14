@@ -6,7 +6,9 @@ import { Verse } from "./types";
 export default function Index() {
   // current state tracked for rendering text on the page
   const [currentChapterObj, setCurrentChapterObj] = useState("");
-  const [currentChapterTextArray, setCurrentChapterTextArray] = useState<Verse[]>([]);
+  const [currentChapterTextArray, setCurrentChapterTextArray] = useState<
+    Verse[]
+  >([]);
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
 
@@ -50,8 +52,8 @@ export default function Index() {
           for (let i = 0; i < chapterContent.length; i++) {
             chapterTextArray.push({
               number: chapterContent[i].number,
-              text: chapterContent[i].content[0].replace("¶", "\n \t")
-          });
+              text: chapterContent[i].content[0].replace("¶", "\n \t"),
+            });
           }
 
           if (chapterTextArray) setCurrentChapterTextArray(chapterTextArray);
@@ -86,8 +88,8 @@ export default function Index() {
 
   return (
     <ScrollView style={styles.viewBox}>
-      <Text style={styles.bookTitle}> { currentBookTitle } </Text>
-      <Text style={styles.chapterNumber}> { currentChapterNumber } </Text>
+      <Text style={styles.bookTitle}> {currentBookTitle} </Text>
+      <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
       {currentChapterTextArray.length > 0 ? (
         currentChapterTextArray.map((verse, index) => (
           <Text key={index} style={styles.verseLine}>
@@ -125,10 +127,15 @@ const styles = StyleSheet.create({
 
   verseNumber: {
     color: "grey",
-    fontSize: 15
+    fontSize: 15,
   },
 
   verseText: {
+    textAlign: "left",
+    lineHeight: 45,
+    paddingBottom: 20,
+    paddingTop: 20,
+    fontSize: 24,
   },
 
   bookTitle: {
