@@ -9,13 +9,29 @@ export default function Index() {
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
 
   // selected by user and used for API call
-  const selectedCurrentTranslation = "eng_kjv";
-  const selectedCurrentBook = "GEN";
-  const selectedChapterNumber = "1";
+  const [selectedTranslation, setSelectedTranslation] = useState("eng_kjv");
+  const [selectedCurrentBook, setSelectedCurrentBook] = useState("GEN");
+  const [selectedChapterNumber, setSelectedChapterNumber] = useState("1");
 
-  useEffect(() => {
+  /**
+   * Constructs an API call to the Bible API based on parameters that are tracked with useState
+   *
+   * @async
+   * @param {string} translation currently selected bible translation (ex: eng_kjv)
+   * @param {string} book currently selected book of the bible (ex: GEN for Genesis)
+   * @param {string} chapter current selected chapter of the book (ex: 1 for chapter 1)
+   * @returns {console.error} will return a console error if parameters are not passed in correctly
+   */
+  const fetchChapterData = async (
+    translation: string,
+    book: string,
+    chapter: string
+  ) => {
+    if (!(translation && book && chapter))
+      return console.error("Invalid params for API call");
+
     fetch(
-      `https://bible.helloao.org/api/${selectedCurrentTranslation}/${selectedCurrentBook}/${selectedChapterNumber}.json`
+      `https://bible.helloao.org/api/${translation}/${book}/${chapter}.json`
     )
       .then((request) => request.json())
       .then((chapterObj) => {
@@ -47,7 +63,15 @@ export default function Index() {
       .catch((error) => {
         console.error("Error fetching chapter text:", error);
       });
-  }, [currentChapterText]);
+  };
+
+  useEffect(() => {
+    fetchChapterData(
+      selectedTranslation,
+      selectedCurrentBook,
+      selectedChapterNumber
+    );
+  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
 
   return (
     <ScrollView style={styles.viewBox}>
