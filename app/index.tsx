@@ -17,15 +17,19 @@ export default function Index() {
         if (chapterObj?.chapter?.content) {
           const chapterContent = chapterObj.chapter.content;
           // if api returns chapter content, lets serialize the data
-          let chapterTextArray = [] // fill the array with each verse of text
-          for (let i=0; i < chapterContent.length; i++) {
-            chapterTextArray.push(chapterContent[i].number, chapterContent[i].content[0]);
+          let chapterTextArray = []; // fill the array with each verse of text
+          for (let i = 0; i < chapterContent.length; i++) {
+            chapterTextArray.push(
+              chapterContent[i].number,
+              chapterContent[i].content[0]
+            );
           }
 
-          setCurrentChapterText(chapterTextArray.join(" "))
-          if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name)
-          if (chapterObj?.chapter?.number) setCurrentChapterNumber(chapterObj.chapter.number)
-          console.log(chapterContent)
+          setCurrentChapterText(chapterTextArray.join(" "));
+          if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
+          if (chapterObj?.chapter?.number)
+            setCurrentChapterNumber(chapterObj.chapter.number);
+          console.log(chapterContent);
         }
       })
       .catch((error) => {
@@ -34,22 +38,23 @@ export default function Index() {
   }, [currentChapterText]);
 
   return (
-    <ScrollView
-      style={styles.viewBox}
-    >
-      <Text style={styles.bookTitle}>{ currentBookTitle || "loading..."} </Text>
-      <Text style={styles.chapterNumber}>{ currentChapterNumber || "loading..."} </Text>
-      <Text style={styles.chapterText}>{ currentChapterText || "loading..."} </Text>
+    <ScrollView style={styles.viewBox}>
+      <Text style={styles.bookTitle}>{currentBookTitle || "loading..."} </Text>
+      <Text style={styles.chapterNumber}>
+        {currentChapterNumber || "loading..."}{" "}
+      </Text>
+      <Text style={styles.chapterText}>
+        {currentChapterText || "loading..."}{" "}
+      </Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-
   viewBox: {
     display: "flex",
-    paddingLeft: '10%',
-    paddingRight: '10%'
+    paddingLeft: "10%",
+    paddingRight: "10%",
   },
 
   chapterText: {
@@ -70,6 +75,5 @@ const styles = StyleSheet.create({
   chapterNumber: {
     textAlign: "center",
     fontSize: 64,
-  }
-
-})
+  },
+});
