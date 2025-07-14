@@ -36,7 +36,7 @@ export default function Index() {
     )
       .then((request) => request.json())
       .then((chapterObj) => {
-        if (devMode) console.log(chapterObj);
+        if (devMode) console.log("dev mode active:", chapterObj);
 
         setCurrentChapterObj(chapterObj);
 
