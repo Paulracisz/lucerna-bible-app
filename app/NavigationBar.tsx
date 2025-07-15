@@ -1,5 +1,9 @@
-import { Ionicons } from "@expo/vector-icons";
+
+// Components
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+// Misc
+import { Ionicons } from "@expo/vector-icons";
 
 type NavigationBarProps = {
   currentBookName: string;
