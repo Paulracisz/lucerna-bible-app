@@ -86,6 +86,10 @@ export default function Index() {
   };
 
   const handleChapterChange = (direction: "previous" | "next") => {
+    // TODO: handle moving to the next book if going next on the last chapter
+    // scroll to the top every time a new chapter is loaded
+
+
     if (direction !== "previous" && direction !== "next") {
       console.error("Invalid direction:", direction);
       return;
