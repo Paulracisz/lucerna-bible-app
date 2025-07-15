@@ -1,5 +1,10 @@
+
+// Components
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
+import NavigationBar from "./NavigationBar";
+
+// Misc
 import { devMode } from "./config";
 import { Verse } from "./types";
 
@@ -87,6 +92,7 @@ export default function Index() {
   }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
 
   return (
+    <>
     <ScrollView style={styles.viewBox}>
       <Text style={styles.bookTitle}> {currentBookTitle} </Text>
       <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
@@ -101,6 +107,8 @@ export default function Index() {
           : "loading..."}
       </Text>
     </ScrollView>
+    <NavigationBar currentBookName={currentBookTitle} currentChapter={currentChapterNumber} />
+    </>
   );
 }
 
