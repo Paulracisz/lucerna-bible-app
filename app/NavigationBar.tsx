@@ -1,19 +1,43 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type NavigationBarProps = {
   currentBookName: string;
   currentChapter: string;
+  onChapterChange: (direction: "previous" | "next") => void;
 };
 
 export default function NavigationBar({
   currentBookName,
   currentChapter,
+  onChapterChange,
 }: NavigationBarProps) {
+
+  
+  /**
+   * On press function for the two arrows on the bottom navigation bar for the bible reader page.
+   *
+   * @param {string} direction whether or not we are going forward or backwards a chapter. ex: ("previous" or "next")
+   */
+  const handleChapterArrowPress = (direction: "previous" | "next") => {
+    onChapterChange(direction)
+  };
+
   return (
     <View style={styles.navigationBox}>
-      <Text style={styles.currentBookNameStyle}>
-        {currentBookName} {currentChapter}
-      </Text>
+      <View style={styles.chapterNavigationBox}>
+        <TouchableOpacity onPress={() => handleChapterArrowPress("previous")}>
+          <Ionicons name="chevron-back" size={32} color="black" />
+        </TouchableOpacity>
+
+        <Text style={styles.currentBookNameStyle}>
+          {currentBookName} {currentChapter}
+        </Text>
+
+        <TouchableOpacity onPress={() => handleChapterArrowPress("next")}>
+          <Ionicons name="chevron-forward" size={32} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -32,13 +56,27 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 
-  currentBookNameStyle: {
+  chapterNavigationBox: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#F2F2F2",
+    textAlign: "center",
     padding: 10,
     color: "black",
     borderWidth: 1,
     borderColor: "grey",
     borderRadius: 500,
+  },
+
+  currentBookNameStyle: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F2F2F2",
+    textAlign: "center",
+    color: "black",
     fontSize: 25,
   },
 });

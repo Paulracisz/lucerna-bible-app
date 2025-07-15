@@ -5,11 +5,14 @@ import NavigationBar from "./NavigationBar";
 
 // Misc
 import { devMode } from "./config";
-import { Verse } from "./types";
+
+// Types
+import { ChapterObject, Verse } from "./types";
 
 export default function Index() {
   // current state tracked for rendering text on the page
-  const [currentChapterObj, setCurrentChapterObj] = useState("");
+  const [currentChapterObj, setCurrentChapterObj] =
+    useState<ChapterObject | null>(null);
   const [currentChapterTextArray, setCurrentChapterTextArray] = useState<
     Verse[]
   >([]);
@@ -82,6 +85,53 @@ export default function Index() {
       });
   };
 
+  const handleChapterChange = (direction: "previous" | "next") => {
+    if (direction !== "previous" && direction !== "next")
+      return console.error(
+        "invalid params for handleChapterArrowPress func call: ",
+        direction
+      );
+
+    let parsedCurrentChapterNumber = parseInt(currentChapterNumber);
+
+    if (direction === "previous") {
+      // check if we are not on the first chapter
+      if (parsedCurrentChapterNumber && parsedCurrentChapterNumber > 1) {
+      } else if (
+        parsedCurrentChapterNumber &&
+        parsedCurrentChapterNumber === 1
+      ) {
+        // go back to the previous book
+        if (selectedCurrentBook && selectedCurrentBook === "GEN") return; // if we're on the first book of the bible do nothing
+      }
+      console.log("going back");
+    } else if (direction === "next") {
+      // we need to determine the amount of chapters in the book
+      if (currentChapterObj?.book?.numberOfChapters) {
+        let numberofChaptersInCurrentBook =
+          currentChapterObj.book.numberOfChapters;
+
+        // if we are on the last chapter go to the next book
+        if (parsedCurrentChapterNumber === numberofChaptersInCurrentBook) {
+          if (selectedCurrentBook && selectedCurrentBook === "REV") return; // if we're on the last book of the bible do nothing
+        } else {
+          // if we are not on the last chapter of the book, increment the chapter by 1
+
+          let incrementedChapterNumber = parsedCurrentChapterNumber + 1;
+          if (incrementedChapterNumber) {
+            setSelectedChapterNumber(incrementedChapterNumber.toString());
+          }
+        }
+      } else if (!currentChapterObj?.book?.numberOfChapters)
+        return console.error(
+          "Unable to determine the amount of chapters in the current book",
+          currentChapterObj?.book?.numberOfChapters
+        );
+
+      console.log("going forward");
+    }
+  };
+
   useEffect(() => {
     fetchChapterData(
       selectedTranslation,
@@ -109,6 +159,7 @@ export default function Index() {
       <NavigationBar
         currentBookName={currentBookTitle}
         currentChapter={currentChapterNumber}
+        onChapterChange={handleChapterChange}
       />
     </>
   );
@@ -154,7 +205,7 @@ const styles = StyleSheet.create({
 
   chapterNumber: {
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 5,
     fontSize: 64,
   },
 });
