@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     lineHeight: 45,
     paddingBottom: 20,
-    paddingTop: 20,
+    paddingTop: 5,
     fontSize: 24,
   },
 
@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
 
   chapterNumber: {
     textAlign: "center",
-    marginBottom: 5,
     fontSize: 64,
   },
 });
