@@ -86,50 +86,41 @@ export default function Index() {
   };
 
   const handleChapterChange = (direction: "previous" | "next") => {
-    if (direction !== "previous" && direction !== "next")
-      return console.error(
-        "invalid params for handleChapterArrowPress func call: ",
-        direction
-      );
-
-    let parsedCurrentChapterNumber = parseInt(currentChapterNumber);
-
-    if (direction === "previous") {
-      // check if we are not on the first chapter
-      if (parsedCurrentChapterNumber && parsedCurrentChapterNumber > 1) {
-      } else if (
-        parsedCurrentChapterNumber &&
-        parsedCurrentChapterNumber === 1
-      ) {
-        // go back to the previous book
-        if (selectedCurrentBook && selectedCurrentBook === "GEN") return; // if we're on the first book of the bible do nothing
-      }
-      console.log("going back");
-    } else if (direction === "next") {
-      // we need to determine the amount of chapters in the book
-      if (currentChapterObj?.book?.numberOfChapters) {
-        let numberofChaptersInCurrentBook =
-          currentChapterObj.book.numberOfChapters;
-
-        // if we are on the last chapter go to the next book
-        if (parsedCurrentChapterNumber === numberofChaptersInCurrentBook) {
-          if (selectedCurrentBook && selectedCurrentBook === "REV") return; // if we're on the last book of the bible do nothing
-        } else {
-          // if we are not on the last chapter of the book, increment the chapter by 1
-
-          let incrementedChapterNumber = parsedCurrentChapterNumber + 1;
-          if (incrementedChapterNumber) {
-            setSelectedChapterNumber(incrementedChapterNumber.toString());
-          }
-        }
-      } else if (!currentChapterObj?.book?.numberOfChapters)
-        return console.error(
-          "Unable to determine the amount of chapters in the current book",
-          currentChapterObj?.book?.numberOfChapters
-        );
-
-      console.log("going forward");
+    if (direction !== "previous" && direction !== "next") {
+      console.error("Invalid direction:", direction);
+      return;
     }
+
+    const parsedChapter = parseInt(currentChapterNumber);
+    const totalChapters = currentChapterObj?.book?.numberOfChapters;
+
+    if (!parsedChapter || !totalChapters) {
+      console.error("Invalid current chapter or total chapters");
+    }
+
+    // Check for invalid chapter jumps
+    const isFirstBookAndChapter =
+      selectedCurrentBook === "GEN" && parsedChapter === 1;
+    const isLastBookAndChapter =
+      selectedCurrentBook === "REV" && parsedChapter === totalChapters;
+
+    if (
+      (direction === "previous" && isFirstBookAndChapter) ||
+      (direction === "next" && isLastBookAndChapter)
+    ) {
+      if (devMode) console.log("Reached the end, not changing chapter.");
+    }
+
+    let newChapter = parsedChapter;
+
+    if (direction === "previous" && parsedChapter > 1) {
+      newChapter--;
+    } else if (direction === "next" && totalChapters && (parsedChapter < totalChapters)) {
+      newChapter++;
+    }
+
+    // convert back to string for state
+    setSelectedChapterNumber(newChapter.toString());
   };
 
   useEffect(() => {
