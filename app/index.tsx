@@ -1,4 +1,3 @@
-
 // Components
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
@@ -93,21 +92,24 @@ export default function Index() {
 
   return (
     <>
-    <ScrollView style={styles.viewBox}>
-      <Text style={styles.bookTitle}> {currentBookTitle} </Text>
-      <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
-      <Text style={styles.chapterText}>
-        {currentChapterTextArray.length > 0
-          ? currentChapterTextArray.map((verse, index) => (
-              <Text key={index}>
-                <Text style={styles.verseNumber}>{verse.number} </Text>
-                <Text style={styles.verseText}>{verse.text + " "}</Text>
-              </Text>
-            ))
-          : "loading..."}
-      </Text>
-    </ScrollView>
-    <NavigationBar currentBookName={currentBookTitle} currentChapter={currentChapterNumber} />
+      <ScrollView style={styles.viewBox}>
+        <Text style={styles.bookTitle}> {currentBookTitle} </Text>
+        <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
+        <Text style={styles.chapterText}>
+          {currentChapterTextArray.length > 0
+            ? currentChapterTextArray.map((verse, index) => (
+                <Text key={index}>
+                  <Text style={styles.verseNumber}>{verse.number} </Text>
+                  <Text style={styles.verseText}>{verse.text + " "}</Text>
+                </Text>
+              ))
+            : "loading..."}
+        </Text>
+      </ScrollView>
+      <NavigationBar
+        currentBookName={currentBookTitle}
+        currentChapter={currentChapterNumber}
+      />
     </>
   );
 }

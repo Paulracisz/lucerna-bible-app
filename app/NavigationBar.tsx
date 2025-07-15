@@ -1,22 +1,24 @@
-
 import { StyleSheet, Text, View } from "react-native";
 
 type NavigationBarProps = {
   currentBookName: string;
-  currentChapter: number;
-}
+  currentChapter: string;
+};
 
-
-export default function NavigationBar({currentBookName, currentChapter }: NavigationBarProps) {
- return (
+export default function NavigationBar({
+  currentBookName,
+  currentChapter,
+}: NavigationBarProps) {
+  return (
     <View style={styles.navigationBox}>
-      <Text style={styles.currentBookNameStyle}>{currentBookName} {currentChapter}</Text>
+      <Text style={styles.currentBookNameStyle}>
+        {currentBookName} {currentChapter}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  
   navigationBox: {
     display: "flex",
     alignItems: "center",
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     backgroundColor: "white",
     position: "sticky",
-    bottom: 0
+    bottom: 0,
   },
 
   currentBookNameStyle: {
@@ -38,6 +40,5 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     borderRadius: 500,
     fontSize: 25,
-  }
-
+  },
 });
