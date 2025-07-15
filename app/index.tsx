@@ -90,16 +90,16 @@ export default function Index() {
     <ScrollView style={styles.viewBox}>
       <Text style={styles.bookTitle}> {currentBookTitle} </Text>
       <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
-      {currentChapterTextArray.length > 0 ? (
-        currentChapterTextArray.map((verse, index) => (
-          <Text key={index} style={styles.verseLine}>
-            <Text style={styles.verseNumber}>{verse.number + " "}</Text>
-            <Text style={styles.verseText}>{verse.text}</Text>
-          </Text>
-        ))
-      ) : (
-        <Text style={styles.chapterText}>loading...</Text>
-      )}
+      <Text style={styles.chapterText}>
+        {currentChapterTextArray.length > 0
+          ? currentChapterTextArray.map((verse, index) => (
+              <Text key={index}>
+                <Text style={styles.verseNumber}>{verse.number} </Text>
+                <Text style={styles.verseText}>{verse.text + " "}</Text>
+              </Text>
+            ))
+          : "loading..."}
+      </Text>
     </ScrollView>
   );
 }
@@ -132,9 +132,6 @@ const styles = StyleSheet.create({
 
   verseText: {
     textAlign: "left",
-    lineHeight: 45,
-    paddingBottom: 20,
-    paddingTop: 20,
     fontSize: 24,
   },
 
