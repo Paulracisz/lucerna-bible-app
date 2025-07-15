@@ -89,7 +89,6 @@ export default function Index() {
     // TODO: handle moving to the next book if going next on the last chapter
     // scroll to the top every time a new chapter is loaded
 
-
     if (direction !== "previous" && direction !== "next") {
       console.error("Invalid direction:", direction);
       return;
@@ -119,7 +118,11 @@ export default function Index() {
 
     if (direction === "previous" && parsedChapter > 1) {
       newChapter--;
-    } else if (direction === "next" && totalChapters && (parsedChapter < totalChapters)) {
+    } else if (
+      direction === "next" &&
+      totalChapters &&
+      parsedChapter < totalChapters
+    ) {
       newChapter++;
     }
 
