@@ -163,6 +163,7 @@ export default function Index() {
           (book: any) => ({
             name: book.commonName,
             abbreviation: book.id,
+            numberOfChapters: book.numberOfChapters
           })
         );
         console.log("booksObj", booksObj);
