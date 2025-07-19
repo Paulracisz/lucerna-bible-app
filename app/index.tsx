@@ -1,5 +1,5 @@
 // Components
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import NavigationBar from "./NavigationBar";
 
@@ -18,6 +18,12 @@ export default function Index() {
   >([]);
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // used to scroll to the top every time a chapter is changed.
+  const scrollToTop = () => {
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true});
+  }
 
   // selected by user and used for API call
   const [selectedTranslation, setSelectedTranslation] = useState("eng_kjv");
@@ -49,6 +55,7 @@ export default function Index() {
         if (devMode) console.log("dev mode active:", chapterObj);
 
         setCurrentChapterObj(chapterObj);
+        scrollToTop()
 
         // if api returns chapter content, lets serialize the data
         if (chapterObj?.chapter?.content) {
@@ -140,7 +147,7 @@ export default function Index() {
 
   return (
     <>
-      <ScrollView style={styles.viewBox}>
+      <ScrollView ref={scrollViewRef} style={styles.viewBox}>
         <Text style={styles.bookTitle}> {currentBookTitle} </Text>
         <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
         <Text style={styles.chapterText}>
