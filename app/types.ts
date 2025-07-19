@@ -16,3 +16,8 @@ export type ChapterObject = {
     }[];
   };
 };
+
+export type BookListItem = {
+  name: string;
+  abbreviation: string;
+}

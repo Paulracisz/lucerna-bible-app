@@ -1,13 +1,13 @@
 // Components
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
 import NavigationBar from "./NavigationBar";
 
 // Misc
 import { devMode } from "./config";
 
 // Types
-import { ChapterObject, Verse } from "./types";
+import { BookListItem, ChapterObject, Verse } from "./types";
 
 export default function Index() {
   // current state tracked for rendering text on the page
@@ -19,11 +19,13 @@ export default function Index() {
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
+  const [bookMenuVisible, setBookMenuVisible] = useState(false);
+  const [bookList, setBookList] = useState<BookListItem[]>([]);
 
   // used to scroll to the top every time a chapter is changed.
   const scrollToTop = () => {
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true});
-  }
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+  };
 
   // selected by user and used for API call
   const [selectedTranslation, setSelectedTranslation] = useState("eng_kjv");
@@ -55,7 +57,7 @@ export default function Index() {
         if (devMode) console.log("dev mode active:", chapterObj);
 
         setCurrentChapterObj(chapterObj);
-        scrollToTop()
+        scrollToTop();
 
         // if api returns chapter content, lets serialize the data
         if (chapterObj?.chapter?.content) {
@@ -94,7 +96,6 @@ export default function Index() {
 
   const handleChapterChange = (direction: "previous" | "next") => {
     // TODO: handle moving to the next book if going next on the last chapter
-    // scroll to the top every time a new chapter is loaded
 
     if (direction !== "previous" && direction !== "next") {
       console.error("Invalid direction:", direction);
@@ -137,6 +138,40 @@ export default function Index() {
     setSelectedChapterNumber(newChapter.toString());
   };
 
+  /**
+   * Handles opening of the book menu to select a new book or chapter of the bible.
+   *
+   * @param {none} none has no parameters
+   * @returns {none} returns no value.
+   */
+  const handleBookMenu = () => {
+    setBookMenuVisible(true);
+    getCurrentBookList();
+  };
+
+  /**
+   * Calls the API to get the current list of Bible books for displaying in the book selection menu.
+   *
+   * @param {none} none has no parameters
+   * @returns {} returns an array to be mapped over containing the list of books.
+   */
+  const getCurrentBookList = () => {
+    fetch(`https://bible.helloao.org/api/${selectedTranslation}/books.json`)
+      .then((response) => response.json())
+      .then((booksObj) => {
+        const booksArray: BookListItem[] = Object.values(booksObj.books).map(
+          (book: any) => ({
+            name: book.commonName,
+            abbreviation: book.id,
+          })
+        );
+        console.log("booksObj", booksObj);
+        console.log("booksArray", booksArray);
+        setBookList(booksArray);
+      })
+      .catch((error) => console.error("Failed to fetch book list:", error));
+  };
+
   useEffect(() => {
     fetchChapterData(
       selectedTranslation,
@@ -165,7 +200,34 @@ export default function Index() {
         currentBookName={currentBookTitle}
         currentChapter={currentChapterNumber}
         onChapterChange={handleChapterChange}
+        openBookMenu={handleBookMenu}
       />
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={bookMenuVisible}
+        onRequestClose={() => setBookMenuVisible(false)}
+      >
+        <View style={{ flex: 1, padding: 20 }}>
+          <Text style={{ fontSize: 20, marginBottom: 10 }}>Select Book</Text>
+          <ScrollView>
+            {bookList.map((book, index) => (
+              <Text
+                key={index}
+                style={{ padding: 10, fontSize: 20 }}
+                onPress={() => {
+                  setSelectedCurrentBook(book.abbreviation);
+                  setSelectedChapterNumber("1");
+                  setBookMenuVisible(false);
+                  scrollToTop();
+                }}
+              >
+                {book.name}
+              </Text>
+            ))}
+          </ScrollView>
+        </View>
+      </Modal>
     </>
   );
 }

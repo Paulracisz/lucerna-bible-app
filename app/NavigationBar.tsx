@@ -9,12 +9,14 @@ type NavigationBarProps = {
   currentBookName: string;
   currentChapter: string;
   onChapterChange: (direction: "previous" | "next") => void;
+  openBookMenu: () => void;
 };
 
 export default function NavigationBar({
   currentBookName,
   currentChapter,
   onChapterChange,
+  openBookMenu
 }: NavigationBarProps) {
 
   
@@ -34,7 +36,7 @@ export default function NavigationBar({
           <Ionicons name="chevron-back" size={32} color="black" />
         </TouchableOpacity>
 
-        <Text style={styles.currentBookNameStyle}>
+        <Text style={styles.currentBookNameStyle} onPress={() => openBookMenu()}>
           {currentBookName} {currentChapter}
         </Text>
 
