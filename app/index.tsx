@@ -141,57 +141,56 @@ export default function Index() {
       });
   };
 
- const handleChapterChange = (direction: "previous" | "next") => {
-  const parsedChapter = parseInt(currentChapterNumber);
-  const totalChapters = currentChapterObj?.book?.numberOfChapters;
+  const handleChapterChange = (direction: "previous" | "next") => {
+    const parsedChapter = parseInt(currentChapterNumber);
+    const totalChapters = currentChapterObj?.book?.numberOfChapters;
 
-  if (!parsedChapter || !totalChapters) {
-    console.error("Invalid chapter data");
-    return;
-  }
-
-  const currentBookIndex = bookList.findIndex(
-    (book) => book.abbreviation === selectedCurrentBook
-  );
-
-  if (currentBookIndex === -1) {
-    console.error("Current book not found in list");
-    return;
-  }
-
-  if (direction === "previous") {
-    if (parsedChapter > 1) {
-      // Just go back one chapter
-      setSelectedChapterNumber((parsedChapter - 1).toString());
-    } else if (currentBookIndex > 0) {
-      // Go to last chapter of previous book
-      const previousBook = bookList[currentBookIndex - 1];
-      setSelectedCurrentBook(previousBook.abbreviation);
-      setSelectedChapterNumber(previousBook.numberOfChapters.toString());
-    } else {
-      // Already at Genesis 1, do nothing
+    if (!parsedChapter || !totalChapters) {
+      console.error("Invalid chapter data");
       return;
     }
-  }
 
-  if (direction === "next") {
-    if (parsedChapter < totalChapters) {
-      // Go to next chapter
-      setSelectedChapterNumber((parsedChapter + 1).toString());
-    } else if (currentBookIndex < bookList.length - 1) {
-      // Go to next book, chapter 1
-      const nextBook = bookList[currentBookIndex + 1];
-      setSelectedCurrentBook(nextBook.abbreviation);
-      setSelectedChapterNumber("1");
-    } else {
-      // Already at last book/chapter (Revelation 22), do nothing
+    const currentBookIndex = bookList.findIndex(
+      (book) => book.abbreviation === selectedCurrentBook
+    );
+
+    if (currentBookIndex === -1) {
+      console.error("Current book not found in list");
       return;
     }
-  }
 
-  scrollToTop();
-};
+    if (direction === "previous") {
+      if (parsedChapter > 1) {
+        // Just go back one chapter
+        setSelectedChapterNumber((parsedChapter - 1).toString());
+      } else if (currentBookIndex > 0) {
+        // Go to last chapter of previous book
+        const previousBook = bookList[currentBookIndex - 1];
+        setSelectedCurrentBook(previousBook.abbreviation);
+        setSelectedChapterNumber(previousBook.numberOfChapters.toString());
+      } else {
+        // Already at Genesis 1, do nothing
+        return;
+      }
+    }
 
+    if (direction === "next") {
+      if (parsedChapter < totalChapters) {
+        // Go to next chapter
+        setSelectedChapterNumber((parsedChapter + 1).toString());
+      } else if (currentBookIndex < bookList.length - 1) {
+        // Go to next book, chapter 1
+        const nextBook = bookList[currentBookIndex + 1];
+        setSelectedCurrentBook(nextBook.abbreviation);
+        setSelectedChapterNumber("1");
+      } else {
+        // Already at last book/chapter (Revelation 22), do nothing
+        return;
+      }
+    }
+
+    scrollToTop();
+  };
 
   /**
    * Handles opening of the book menu to select a new book or chapter of the bible.
