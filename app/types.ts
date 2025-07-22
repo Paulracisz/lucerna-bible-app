@@ -1,6 +1,6 @@
 export type Verse = {
   number: string;
-  text: string;
+  parts: VerseContentPart[];
 };
 
 export type ChapterObject = {
@@ -12,7 +12,10 @@ export type ChapterObject = {
     number: string;
     content: {
       number: number;
-      content: string[];
+      content: (string | {
+        text: string;
+        wordsOfJesus?: boolean;
+      })[];
     }[];
   };
 };
@@ -20,4 +23,9 @@ export type ChapterObject = {
 export type BookListItem = {
   name: string;
   abbreviation: string;
+}
+
+export type VerseContentPart = {
+  text: string;
+  isJesusWord: boolean;
 }

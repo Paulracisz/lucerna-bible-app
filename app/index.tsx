@@ -58,7 +58,6 @@ export default function Index() {
         if (devMode) console.log("dev mode active:", chapterObj);
 
         setCurrentChapterObj(chapterObj);
-        scrollToTop();
 
         // if api returns chapter content, lets serialize the data
         if (chapterObj?.chapter?.content) {
@@ -67,9 +66,28 @@ export default function Index() {
           let chapterTextArray = []; // fill the array with each verse of text
 
           for (let i = 0; i < chapterContent.length; i++) {
+            const verse = chapterContent[i];
+            const verseParts = verse.content;
+
+            // sometimes the response obj can have an array of both strings and
+            // objects, usually when the data structure has wordsOfChrist: true, so we
+            // seperate the strings from the booleans and put them back together
+            const parts = verseParts.map((part: any) => {
+              if (typeof part === "string") {
+                return { text: part.replace(/¶/g, "\n\t"), isJesusWord: false};
+              } else if (typeof part === "object" && part?.text) {
+                return {
+                  text: part.text.replace(/¶/g, "\n\t"),
+                  isJesusWord: part.wordsOfJesus === true,
+                };
+              } else {
+                return { text: "", isJesusWord: false };
+              }
+            })
+
             chapterTextArray.push({
-              number: chapterContent[i].number,
-              text: chapterContent[i].content[0].replace("¶", "\n \t"),
+              number: verse.number,
+              parts: parts,
             });
           }
 
@@ -137,6 +155,7 @@ export default function Index() {
 
     // convert back to string for state
     setSelectedChapterNumber(newChapter.toString());
+    scrollToTop()
   };
 
   /**
@@ -183,19 +202,30 @@ export default function Index() {
   return (
     <>
       <ScrollView ref={scrollViewRef} style={styles.viewBox}>
-        <Text style={styles.bookTitle}> {currentBookTitle} </Text>
-        <Text style={styles.chapterNumber}> {currentChapterNumber} </Text>
+        <Text style={styles.bookTitle}>{currentBookTitle}</Text>
+        <Text style={styles.chapterNumber}>{currentChapterNumber}</Text>
         <Text style={styles.chapterText}>
           {currentChapterTextArray.length > 0
             ? currentChapterTextArray.map((verse, index) => (
                 <Text key={index}>
                   <Text style={styles.verseNumber}>{verse.number} </Text>
-                  <Text style={styles.verseText}>{verse.text + " "}</Text>
+                  {verse.parts.map((part, idx) => (
+                    <Text
+                      key={idx}
+                      style={[
+                        styles.verseText,
+                        part.isJesusWord && { color: "#8F3638" },
+                      ]}
+                    >
+                      {part.text + " "}
+                    </Text>
+                  ))}
                 </Text>
               ))
             : "loading..."}
         </Text>
       </ScrollView>
+
       <NavigationBar
         currentBookName={currentBookTitle}
         currentChapter={currentChapterNumber}
