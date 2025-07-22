@@ -167,8 +167,6 @@ export default function Index() {
             numberOfChapters: book.numberOfChapters,
           })
         );
-        console.log("booksObj", booksObj);
-        console.log("booksArray", booksArray);
         setBookList(booksArray);
       })
       .catch((error) => console.error("Failed to fetch book list:", error));
