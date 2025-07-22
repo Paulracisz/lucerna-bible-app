@@ -9,6 +9,8 @@ type NavigationBarProps = {
   currentChapter: string;
   onChapterChange: (direction: "previous" | "next") => void;
   openBookMenu: () => void;
+  isAtStart: boolean;
+  isAtEnd: boolean;
 };
 
 export default function NavigationBar({
@@ -16,6 +18,8 @@ export default function NavigationBar({
   currentChapter,
   onChapterChange,
   openBookMenu,
+  isAtStart,
+  isAtEnd,
 }: NavigationBarProps) {
   /**
    * On press function for the two arrows on the bottom navigation bar for the bible reader page.
@@ -29,8 +33,11 @@ export default function NavigationBar({
   return (
     <View style={styles.navigationBox}>
       <View style={styles.chapterNavigationBox}>
-        <TouchableOpacity onPress={() => handleChapterArrowPress("previous")}>
-          <Ionicons name="chevron-back" size={32} color="black" />
+        <TouchableOpacity
+          onPress={() => !isAtStart && handleChapterArrowPress("previous")}
+          disabled={isAtStart}
+        >
+          <Ionicons name="chevron-back" size={32} color={isAtStart ? "gray" : "black"} />
         </TouchableOpacity>
 
         <Text
@@ -40,8 +47,11 @@ export default function NavigationBar({
           {currentBookName} {currentChapter}
         </Text>
 
-        <TouchableOpacity onPress={() => handleChapterArrowPress("next")}>
-          <Ionicons name="chevron-forward" size={32} color="black" />
+        <TouchableOpacity
+          onPress={() => !isAtEnd && handleChapterArrowPress("next")}
+          disabled={isAtEnd}
+        >
+          <Ionicons name="chevron-forward" size={32} color={isAtEnd ? "gray" : "black"} />
         </TouchableOpacity>
       </View>
     </View>

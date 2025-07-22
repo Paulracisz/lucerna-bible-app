@@ -48,6 +48,19 @@ export default function Index() {
   const [selectedCurrentBook, setSelectedCurrentBook] = useState("GEN");
   const [selectedChapterNumber, setSelectedChapterNumber] = useState("1");
 
+  const currentBookIndex = bookList.findIndex(
+    (book) => book.abbreviation === selectedCurrentBook
+  );
+
+  const isAtStart = currentBookIndex === 0 && selectedChapterNumber === "1";
+  const lastBookIndex = bookList.length - 1;
+  const lastChapterOfCurrentBook =
+    bookList[currentBookIndex]?.numberOfChapters?.toString();
+
+  const isAtEnd =
+    currentBookIndex === lastBookIndex &&
+    selectedChapterNumber === lastChapterOfCurrentBook;
+
   /**
    * Constructs an API call to the Bible API based on parameters that are tracked with useState
    *
@@ -128,50 +141,57 @@ export default function Index() {
       });
   };
 
-  const handleChapterChange = (direction: "previous" | "next") => {
-    // TODO: handle moving to the next book if going next on the last chapter
+ const handleChapterChange = (direction: "previous" | "next") => {
+  const parsedChapter = parseInt(currentChapterNumber);
+  const totalChapters = currentChapterObj?.book?.numberOfChapters;
 
-    if (direction !== "previous" && direction !== "next") {
-      console.error("Invalid direction:", direction);
+  if (!parsedChapter || !totalChapters) {
+    console.error("Invalid chapter data");
+    return;
+  }
+
+  const currentBookIndex = bookList.findIndex(
+    (book) => book.abbreviation === selectedCurrentBook
+  );
+
+  if (currentBookIndex === -1) {
+    console.error("Current book not found in list");
+    return;
+  }
+
+  if (direction === "previous") {
+    if (parsedChapter > 1) {
+      // Just go back one chapter
+      setSelectedChapterNumber((parsedChapter - 1).toString());
+    } else if (currentBookIndex > 0) {
+      // Go to last chapter of previous book
+      const previousBook = bookList[currentBookIndex - 1];
+      setSelectedCurrentBook(previousBook.abbreviation);
+      setSelectedChapterNumber(previousBook.numberOfChapters.toString());
+    } else {
+      // Already at Genesis 1, do nothing
       return;
     }
+  }
 
-    const parsedChapter = parseInt(currentChapterNumber);
-    const totalChapters = currentChapterObj?.book?.numberOfChapters;
-
-    if (!parsedChapter || !totalChapters) {
-      console.error("Invalid current chapter or total chapters");
+  if (direction === "next") {
+    if (parsedChapter < totalChapters) {
+      // Go to next chapter
+      setSelectedChapterNumber((parsedChapter + 1).toString());
+    } else if (currentBookIndex < bookList.length - 1) {
+      // Go to next book, chapter 1
+      const nextBook = bookList[currentBookIndex + 1];
+      setSelectedCurrentBook(nextBook.abbreviation);
+      setSelectedChapterNumber("1");
+    } else {
+      // Already at last book/chapter (Revelation 22), do nothing
+      return;
     }
+  }
 
-    // Check for invalid chapter jumps
-    const isFirstBookAndChapter =
-      selectedCurrentBook === "GEN" && parsedChapter === 1;
-    const isLastBookAndChapter =
-      selectedCurrentBook === "REV" && parsedChapter === totalChapters;
+  scrollToTop();
+};
 
-    if (
-      (direction === "previous" && isFirstBookAndChapter) ||
-      (direction === "next" && isLastBookAndChapter)
-    ) {
-      if (devMode) console.log("Reached the end, not changing chapter.");
-    }
-
-    let newChapter = parsedChapter;
-
-    if (direction === "previous" && parsedChapter > 1) {
-      newChapter--;
-    } else if (
-      direction === "next" &&
-      totalChapters &&
-      parsedChapter < totalChapters
-    ) {
-      newChapter++;
-    }
-
-    // convert back to string for state
-    setSelectedChapterNumber(newChapter.toString());
-    scrollToTop();
-  };
 
   /**
    * Handles opening of the book menu to select a new book or chapter of the bible.
@@ -251,6 +271,8 @@ export default function Index() {
         currentChapter={currentChapterNumber}
         onChapterChange={handleChapterChange}
         openBookMenu={handleBookMenu}
+        isAtStart={isAtStart}
+        isAtEnd={isAtEnd}
       />
       <Modal
         animationType="slide"
