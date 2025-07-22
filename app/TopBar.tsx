@@ -5,17 +5,45 @@ import { StyleSheet, Text, View } from "react-native";
 
 type TopBarProps = {
   currentTranslation: string;
+  currentPage: "home" | "book" | "search" | "bookmark" | "settings";
 };
 
-export default function TopBar({ currentTranslation }: TopBarProps) {
+export default function TopBar({
+  currentTranslation,
+  currentPage,
+}: TopBarProps) {
   return (
     <>
       <View style={styles.topBarBox}>
-        <Ionicons name="home" style={styles.homeIcon}></Ionicons>
-        <Ionicons style={styles.homeIcon} name="book"></Ionicons>
-        <Ionicons style={styles.homeIcon} name="search"></Ionicons>
-        <Ionicons style={styles.homeIcon} name="bookmark"></Ionicons>
-        <Ionicons style={styles.homeIcon} name="settings"></Ionicons>
+        <Ionicons
+          name="home"
+          style={[styles.homeIcon, currentPage === "home" && styles.activeIcon]}
+        ></Ionicons>
+        <Ionicons
+          style={[styles.homeIcon, currentPage === "book" && styles.activeIcon]}
+          name="book"
+        ></Ionicons>
+        <Ionicons
+          style={[
+            styles.homeIcon,
+            currentPage === "search" && styles.activeIcon,
+          ]}
+          name="search"
+        ></Ionicons>
+        <Ionicons
+          style={[
+            styles.homeIcon,
+            currentPage === "bookmark" && styles.activeIcon,
+          ]}
+          name="bookmark"
+        ></Ionicons>
+        <Ionicons
+          style={[
+            styles.homeIcon,
+            currentPage === "settings" && styles.activeIcon,
+          ]}
+          name="settings"
+        ></Ionicons>
         <View style={styles.translationBox}>
           <Text style={styles.translationText}> {currentTranslation} </Text>
         </View>
@@ -53,6 +81,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
+  activeIcon: {
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    padding: 5,
+  },
+
   translationText: {
     textAlign: "center",
     fontSize: 16,
@@ -61,6 +95,5 @@ const styles = StyleSheet.create({
   homeIcon: {
     fontSize: 30,
     margin: 5,
-  }
-
+  },
 });

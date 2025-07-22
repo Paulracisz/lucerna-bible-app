@@ -6,12 +6,26 @@ import TopBar from "./TopBar";
 
 // Misc
 import { Ionicons } from "@expo/vector-icons";
+import { usePathname } from "expo-router";
 import { devMode } from "./config";
 
 // Types
 import { BookListItem, ChapterObject, Verse } from "./types";
 
 export default function Index() {
+
+  const pathname = usePathname();
+
+  console.log(pathname)
+  let currentPage: "home" | "book" | "search" | "bookmark" | "settings" = "home";
+
+  if (pathname.includes("search")) currentPage = "search";
+  else if (pathname.includes("settings")) currentPage = "settings";
+  else if (pathname.includes("bookmark")) currentPage = "bookmark";
+  else if (pathname.includes("book") || pathname === "/") currentPage = "book"; // index is the book reader
+  
+
+
   // current state tracked for rendering text on the page
   const [currentChapterObj, setCurrentChapterObj] =
     useState<ChapterObject | null>(null);
@@ -205,6 +219,7 @@ export default function Index() {
     <>
     <TopBar
     currentTranslation={translationShortName}
+    currentPage={currentPage}
     />
 
       <ScrollView ref={scrollViewRef} style={styles.viewBox}>
