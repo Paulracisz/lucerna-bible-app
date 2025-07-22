@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 40,
     margin: 5,
-    borderColor: "#D9D9D9",
+    borderColor: "grey",
     borderRadius: 500,
     borderWidth: 1,
   },
