@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
 import NavigationBar from "./NavigationBar";
+import TopBar from "./TopBar";
 
 // Misc
 import { Ionicons } from "@expo/vector-icons";
@@ -30,6 +31,7 @@ export default function Index() {
 
   // selected by user and used for API call
   const [selectedTranslation, setSelectedTranslation] = useState("eng_kjv");
+  const [translationShortName, setTranslationShortName] = useState("KJAV");
   const [selectedCurrentBook, setSelectedCurrentBook] = useState("GEN");
   const [selectedChapterNumber, setSelectedChapterNumber] = useState("1");
 
@@ -201,6 +203,10 @@ export default function Index() {
 
   return (
     <>
+    <TopBar
+    currentTranslation={translationShortName}
+    />
+
       <ScrollView ref={scrollViewRef} style={styles.viewBox}>
         <Text style={styles.bookTitle}>{currentBookTitle}</Text>
         <Text style={styles.chapterNumber}>{currentChapterNumber}</Text>
