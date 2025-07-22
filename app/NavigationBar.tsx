@@ -1,4 +1,3 @@
-
 // Components
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -16,17 +15,15 @@ export default function NavigationBar({
   currentBookName,
   currentChapter,
   onChapterChange,
-  openBookMenu
+  openBookMenu,
 }: NavigationBarProps) {
-
-  
   /**
    * On press function for the two arrows on the bottom navigation bar for the bible reader page.
    *
    * @param {string} direction whether or not we are going forward or backwards a chapter. ex: ("previous" or "next")
    */
   const handleChapterArrowPress = (direction: "previous" | "next") => {
-    onChapterChange(direction)
+    onChapterChange(direction);
   };
 
   return (
@@ -36,7 +33,10 @@ export default function NavigationBar({
           <Ionicons name="chevron-back" size={32} color="black" />
         </TouchableOpacity>
 
-        <Text style={styles.currentBookNameStyle} onPress={() => openBookMenu()}>
+        <Text
+          style={styles.currentBookNameStyle}
+          onPress={() => openBookMenu()}
+        >
           {currentBookName} {currentChapter}
         </Text>
 
