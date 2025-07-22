@@ -35,6 +35,7 @@ export default function Index() {
   const scrollViewRef = useRef<ScrollView>(null);
   const [bookMenuVisible, setBookMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
+  const [expandedBook, setExpandedBook] = useState<string | null>(null);
 
   // used to scroll to the top every time a chapter is changed.
   const scrollToTop = () => {
@@ -276,18 +277,57 @@ export default function Index() {
           </View>
           <ScrollView>
             {bookList.map((book, index) => (
-              <Text
-                key={index}
-                style={{ padding: 10, fontSize: 20 }}
-                onPress={() => {
-                  setSelectedCurrentBook(book.abbreviation);
-                  setSelectedChapterNumber("1");
-                  setBookMenuVisible(false);
-                  scrollToTop();
-                }}
-              >
-                {book.name}
-              </Text>
+              <View key={index} style={{ marginBottom: 20 }}>
+                <Text
+                  onPress={() => {
+                    setExpandedBook((prev) =>
+                      prev === book.abbreviation ? null : book.abbreviation
+                    );
+                  }}
+                  style={{
+                    padding: 10,
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    backgroundColor: "#eee",
+                  }}
+                >
+                  {book.name}
+                </Text>
+                {expandedBook === book.abbreviation && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      paddingHorizontal: 10,
+                      marginTop: 5,
+                    }}
+                  >
+                    {Array.from({ length: book.numberOfChapters }, (_, i) => (
+                      <Text
+                        key={i}
+                        onPress={() => {
+                          setSelectedCurrentBook(book.abbreviation);
+                          setSelectedChapterNumber((i + 1).toString());
+                          setBookMenuVisible(false);
+                          scrollToTop();
+                        }}
+                        style={{
+                          width: 40,
+                          height: 40,
+                          textAlign: "center",
+                          textAlignVertical: "center",
+                          margin: 4,
+                          backgroundColor: "#ddd",
+                          borderRadius: 6,
+                          fontSize: 16,
+                        }}
+                      >
+                        {i + 1}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </View>
             ))}
           </ScrollView>
         </View>

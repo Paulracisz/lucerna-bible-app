@@ -23,6 +23,7 @@ export type ChapterObject = {
 export type BookListItem = {
   name: string;
   abbreviation: string;
+  numberOfChapters: number;
 }
 
 export type VerseContentPart = {
