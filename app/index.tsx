@@ -4,6 +4,7 @@ import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
 import NavigationBar from "./NavigationBar";
 
 // Misc
+import { Ionicons } from "@expo/vector-icons";
 import { devMode } from "./config";
 
 // Types
@@ -163,7 +164,7 @@ export default function Index() {
           (book: any) => ({
             name: book.commonName,
             abbreviation: book.id,
-            numberOfChapters: book.numberOfChapters
+            numberOfChapters: book.numberOfChapters,
           })
         );
         console.log("booksObj", booksObj);
@@ -210,7 +211,22 @@ export default function Index() {
         onRequestClose={() => setBookMenuVisible(false)}
       >
         <View style={{ flex: 1, padding: 20 }}>
-          <Text style={{ fontSize: 20, marginBottom: 10 }}>Select Book</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignContent: "space-around",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 20, marginBottom: 10 }}>Select Book</Text>
+            <Ionicons
+              name="close-outline"
+              onPress={() => setBookMenuVisible(false)}
+              size={32}
+              color="black"
+            />
+          </View>
           <ScrollView>
             {bookList.map((book, index) => (
               <Text
