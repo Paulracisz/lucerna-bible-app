@@ -16,7 +16,6 @@ import { BookListItem, ChapterObject, Verse } from "./types";
 // store current chapter and book in local storage so the bible reader opens up to the last chapter you were reading (and position on the page hopefully)
 // add modal for changing translations
 
-
 export default function Index() {
   const pathname = usePathname();
 
