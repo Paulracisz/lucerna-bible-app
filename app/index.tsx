@@ -13,18 +13,16 @@ import { devMode } from "./config";
 import { BookListItem, ChapterObject, Verse } from "./types";
 
 export default function Index() {
-
   const pathname = usePathname();
 
-  console.log(pathname)
-  let currentPage: "home" | "book" | "search" | "bookmark" | "settings" = "home";
+  console.log(pathname);
+  let currentPage: "home" | "book" | "search" | "bookmark" | "settings" =
+    "home";
 
   if (pathname.includes("search")) currentPage = "search";
   else if (pathname.includes("settings")) currentPage = "settings";
   else if (pathname.includes("bookmark")) currentPage = "bookmark";
   else if (pathname.includes("book") || pathname === "/") currentPage = "book"; // index is the book reader
-  
-
 
   // current state tracked for rendering text on the page
   const [currentChapterObj, setCurrentChapterObj] =
@@ -90,7 +88,7 @@ export default function Index() {
             // seperate the strings from the booleans and put them back together
             const parts = verseParts.map((part: any) => {
               if (typeof part === "string") {
-                return { text: part.replace(/¶/g, "\n\t"), isJesusWord: false};
+                return { text: part.replace(/¶/g, "\n\t"), isJesusWord: false };
               } else if (typeof part === "object" && part?.text) {
                 return {
                   text: part.text.replace(/¶/g, "\n\t"),
@@ -99,7 +97,7 @@ export default function Index() {
               } else {
                 return { text: "", isJesusWord: false };
               }
-            })
+            });
 
             chapterTextArray.push({
               number: verse.number,
@@ -171,7 +169,7 @@ export default function Index() {
 
     // convert back to string for state
     setSelectedChapterNumber(newChapter.toString());
-    scrollToTop()
+    scrollToTop();
   };
 
   /**
@@ -217,10 +215,10 @@ export default function Index() {
 
   return (
     <>
-    <TopBar
-    currentTranslation={translationShortName}
-    currentPage={currentPage}
-    />
+      <TopBar
+        currentTranslation={translationShortName}
+        currentPage={currentPage}
+      />
 
       <ScrollView ref={scrollViewRef} style={styles.viewBox}>
         <Text style={styles.bookTitle}>{currentBookTitle}</Text>
