@@ -257,7 +257,7 @@ export default function Index() {
                       key={idx}
                       style={[
                         styles.verseText,
-                        part.isJesusWord && { color: "#8F3638" },
+                        part.isJesusWord && { color: "#d9320e" },
                       ]}
                     >
                       {part.text + " "}
