@@ -344,6 +344,17 @@ export default function Index() {
   },[]);
 
   useEffect(() => {
+    getCurrentTranslationList();
+  }, []);
+
+  useEffect(() => {
+    const matched = allTranslations.find((t) => t.id === selectedTranslation);
+    if (matched) {
+      setTranslationShortName(matched.shortName || matched.name);
+    }
+  }, [selectedTranslation, allTranslations])
+
+  useEffect(() => {
     fetchChapterData(selectedTranslation, selectedCurrentBook, selectedChapterNumber);
   }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber])
 
