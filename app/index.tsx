@@ -343,10 +343,12 @@ export default function Index() {
     loadData();
   },[]);
 
+  // used for getting the translation list early to update the translation short name prop for top bar
   useEffect(() => {
     getCurrentTranslationList();
   }, []);
 
+  // update the stale translation short name for top bar
   useEffect(() => {
     const matched = allTranslations.find((t) => t.id === selectedTranslation);
     if (matched) {
