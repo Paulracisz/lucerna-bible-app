@@ -109,6 +109,7 @@ export default function Index() {
             const item = chapterContent[i]
 
             
+            // handle headings
             if (item?.type === 'heading') {
               chapterTextArray.push({
                 number: "",
@@ -117,12 +118,18 @@ export default function Index() {
               })
             }
 
+            // handle line_break array elements
+            if (item?.type === "line_break") {
+              chapterTextArray.push({
+                number: "",
+                heading: "",
+                parts: [{ text: "\n"}]
+              })
+            }
+
+            // handle verses where paragraph symbols are used as line breaks
             if (item.type !== "verse" || !item.content || !item.number) continue;
             const verseParts = item.content;
-
-            // sometimes the response obj can have an array of both strings and
-            // objects, usually when the data structure has wordsOfChrist: true, so we
-            // seperate the strings from the booleans and put them back together
             if (item.type === "verse") {
             const parts = verseParts.map((part: any) => {
               if (typeof part === "string") {
@@ -141,7 +148,7 @@ export default function Index() {
             chapterTextArray.push({
               number: item.number,
               heading: "",
-              parts: parts,
+              parts,
             });
           }
           }
@@ -305,7 +312,7 @@ export default function Index() {
             ? currentChapterTextArray.map((verse, index) => (
                 <Text key={index}>
                   <Text> {verse.heading ? (
-                    <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                    <Text style={{ fontWeight: "bold", fontSize: 26 }}>
                       {verse.heading + "\n"}</Text>
                   ): null } </Text>
                   <Text style={styles.verseNumber}>{verse.number} </Text>
