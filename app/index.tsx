@@ -1,6 +1,13 @@
 // Components
 import React, { useEffect, useRef, useState } from "react";
-import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import NavigationBar from "./NavigationBar";
 import TopBar from "./TopBar";
 
@@ -40,6 +47,7 @@ export default function Index() {
   const [translationMenuVisible, setTranslationMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // translations
   const [allTranslations, setAllTranslations] = useState<Translations[]>([]);
@@ -106,16 +114,15 @@ export default function Index() {
           let chapterTextArray = []; // fill the array with each verse of text
 
           for (let i = 0; i < chapterContent.length; i++) {
-            const item = chapterContent[i]
+            const item = chapterContent[i];
 
-            
             // handle headings
-            if (item?.type === 'heading') {
+            if (item?.type === "heading") {
               chapterTextArray.push({
                 number: "",
                 heading: "\n" + item.content[0],
                 parts: [],
-              })
+              });
             }
 
             // handle line_break array elements
@@ -123,34 +130,37 @@ export default function Index() {
               chapterTextArray.push({
                 number: "",
                 heading: "",
-                parts: [{ text: "\n"}]
-              })
+                parts: [{ text: "\n" }],
+              });
             }
 
             // handle verses where paragraph symbols are used as line breaks
-            if (item.type !== "verse" || !item.content || !item.number) continue;
+            if (item.type !== "verse" || !item.content || !item.number)
+              continue;
             const verseParts = item.content;
             if (item.type === "verse") {
-            const parts = verseParts.map((part: any) => {
-              if (typeof part === "string") {
-                return { text: part.replace(/¶/g, "\n\t"), isJesusWord: false };
-              } else if (typeof part === "object" && part?.text) {
-                return {
-                  text: part.text.replace(/¶/g, "\n\t"),
-                  isJesusWord: part.wordsOfJesus === true,
-                };
-              } else {
-                return { text: "", isJesusWord: false };
-              }
-            });
-            
+              const parts = verseParts.map((part: any) => {
+                if (typeof part === "string") {
+                  return {
+                    text: part.replace(/¶/g, "\n\t"),
+                    isJesusWord: false,
+                  };
+                } else if (typeof part === "object" && part?.text) {
+                  return {
+                    text: part.text.replace(/¶/g, "\n\t"),
+                    isJesusWord: part.wordsOfJesus === true,
+                  };
+                } else {
+                  return { text: "", isJesusWord: false };
+                }
+              });
 
-            chapterTextArray.push({
-              number: item.number,
-              heading: "",
-              parts,
-            });
-          }
+              chapterTextArray.push({
+                number: item.number,
+                heading: "",
+                parts,
+              });
+            }
           }
 
           if (chapterTextArray) setCurrentChapterTextArray(chapterTextArray);
@@ -311,10 +321,14 @@ export default function Index() {
           {currentChapterTextArray.length > 0
             ? currentChapterTextArray.map((verse, index) => (
                 <Text key={index}>
-                  <Text> {verse.heading ? (
-                    <Text style={{ fontWeight: "bold", fontSize: 26 }}>
-                      {verse.heading + "\n"}</Text>
-                  ): null } </Text>
+                  <Text>
+                    {" "}
+                    {verse.heading ? (
+                      <Text style={{ fontWeight: "bold", fontSize: 26 }}>
+                        {verse.heading + "\n"}
+                      </Text>
+                    ) : null}{" "}
+                  </Text>
                   <Text style={styles.verseNumber}>{verse.number} </Text>
                   {verse.parts.map((part, idx) => (
                     <Text
@@ -367,6 +381,20 @@ export default function Index() {
             />
           </View>
 
+          <TextInput
+            placeholder="Search translations..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={{
+              padding: 10,
+              fontSize: 16,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 6,
+              marginBottom: 15,
+            }}
+          />
+
           <ScrollView
             onScroll={({ nativeEvent }) => {
               const isBottom =
@@ -385,38 +413,66 @@ export default function Index() {
             }}
             scrollEventThrottle={16}
           >
-            {visibleLanguages.map((langName) => (
-              <View key={langName} style={{ marginBottom: 20 }}>
-                <Text
-                  style={{ fontSize: 18, fontWeight: "bold", marginBottom: 5 }}
-                >
-                  {langName}
-                </Text>
-                {groupedTranslations[langName].map((translation, index) => (
-                  <Text
-                    key={index}
-                    onPress={() => {
-                      setSelectedTranslation(translation.id);
-                      setTranslationShortName(
-                        translation.shortName || translation.name
-                      );
-                      setTranslationMenuVisible(false);
-                      scrollToTop();
-                    }}
-                    style={{
-                      padding: 10,
-                      fontSize: 16,
-                      backgroundColor: "#eee",
-                      marginBottom: 5,
-                      borderRadius: 6,
-                    }}
-                  >
-                    {" "}
-                    {translation.name} ({translation.shortName})
-                  </Text>
-                ))}
-              </View>
-            ))}
+            {visibleLanguages
+              .filter(
+                (langName) =>
+                  langName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  groupedTranslations[langName]?.some((translation) =>
+                    (translation.name + translation.shortName)
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  )
+              )
+              .map((langName) => {
+                const filteredTranslations = groupedTranslations[
+                  langName
+                ].filter(
+                  (translation) =>
+                    searchQuery === "" ||
+                    langName
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) || // search by language
+                    (translation.name + translation.shortName)
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) // search by translation
+                );
+
+                return (
+                  <View key={langName} style={{ marginBottom: 20 }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {langName}
+                    </Text>
+                    {filteredTranslations.map((translation, index) => (
+                      <Text
+                        key={index}
+                        onPress={() => {
+                          setSelectedTranslation(translation.id);
+                          setTranslationShortName(
+                            translation.shortName || translation.name
+                          );
+                          setTranslationMenuVisible(false);
+                          scrollToTop();
+                        }}
+                        style={{
+                          padding: 10,
+                          fontSize: 16,
+                          backgroundColor: "#eee",
+                          marginBottom: 5,
+                          borderRadius: 6,
+                        }}
+                      >
+                        {translation.name} ({translation.shortName})
+                      </Text>
+                    ))}
+                  </View>
+                );
+              })}
           </ScrollView>
         </View>
       </Modal>
