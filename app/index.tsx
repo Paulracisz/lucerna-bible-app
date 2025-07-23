@@ -48,14 +48,15 @@ export default function Index() {
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-
+  
   // translations
   const [allTranslations, setAllTranslations] = useState<Translations[]>([]);
   const [groupedTranslations, setGroupedTranslations] = useState<
-    Record<string, Translations[]>
+  Record<string, Translations[]>
   >({});
   const [visibleLanguages, setVisibleLanguages] = useState<string[]>([]);
   const batchSize = 5;
+  const bookScrollRef = useRef<ScrollView>(null);
 
   // used to scroll to the top every time a chapter is changed.
   const scrollToTop = () => {
@@ -245,6 +246,21 @@ export default function Index() {
   const handleBookMenu = () => {
     setBookMenuVisible(true);
     getCurrentBookList();
+
+    setTimeout(() => {
+      const bookIndex = bookList.findIndex(
+        (b) => b.abbreviation === selectedCurrentBook
+      );
+
+      if (bookIndex !== -1 && bookScrollRef.current) {
+        const itemHeight = 60; // the height of the book item
+        bookScrollRef.current.scrollTo({
+          y: itemHeight * bookIndex,
+          animated: true
+        });
+      }
+    }, 200) // delay so that the modal is visible before the scroll happens
+
   };
 
   const handleTranslationMenu = () => {
@@ -499,7 +515,7 @@ export default function Index() {
               color="black"
             />
           </View>
-          <ScrollView>
+          <ScrollView ref={bookScrollRef}>
             {bookList.map((book, index) => (
               <View key={index} style={{ marginBottom: 20 }}>
                 <Text
