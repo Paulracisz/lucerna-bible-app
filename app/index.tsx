@@ -13,6 +13,7 @@ import TopBar from "./TopBar";
 
 // Misc
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePathname } from "expo-router";
 import { devMode } from "./config";
 
@@ -107,6 +108,7 @@ export default function Index() {
         if (devMode) console.log("dev mode active:", chapterObj);
 
         setCurrentChapterObj(chapterObj);
+        getCurrentBookList();
 
         // if api returns chapter content, lets serialize the data
         if (chapterObj?.chapter?.content) {
@@ -314,12 +316,62 @@ export default function Index() {
   };
 
   useEffect(() => {
-    fetchChapterData(
-      selectedTranslation,
-      selectedCurrentBook,
-      selectedChapterNumber
-    );
-  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
+
+    const loadData = async () => {
+      try {
+        const savedData = await AsyncStorage.getItem("lastReadLocation");
+        const scrollData = await AsyncStorage.getItem("scrollPosition");
+        
+        if (savedData) {
+          const {book, chapter, translation } = JSON.parse(savedData);
+          setSelectedCurrentBook(book || "GEN");
+          setSelectedChapterNumber(chapter || "1");
+          setSelectedTranslation(translation || "eng_kjv");
+        }
+
+        if (scrollData) {
+          const { y } = JSON.parse(scrollData);
+          setTimeout(() => {
+            scrollViewRef.current?.scrollTo({ y, animated: false });
+          }, 500); // delay so content is loaded before scrollling
+        }
+      } catch (e) {
+        console.error("Failed to load data:", e)
+      }
+    };
+
+    loadData();
+  },[]);
+
+  useEffect(() => {
+    fetchChapterData(selectedTranslation, selectedCurrentBook, selectedChapterNumber);
+  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber])
+
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem(
+          "lastReadLocation",
+          JSON.stringify({
+            book: selectedCurrentBook,
+            chapter: selectedChapterNumber,
+            translation: selectedTranslation,
+          })
+        );
+      } catch (e) {
+        console.error("Failed to fetch save data:", e)
+      }
+    };
+    saveData();
+  },[selectedCurrentBook, selectedChapterNumber, selectedTranslation] );
+
+  const saveScrollPosition = async (y: number) => {
+    try {
+      await AsyncStorage.setItem("scrollPosition", JSON.stringify({ y }));
+    } catch (e) {
+      console.error("Failed to save scroll position:", e);
+    }
+  }
 
   return (
     <>
@@ -329,7 +381,14 @@ export default function Index() {
         openTranslationMenu={handleTranslationMenu}
       />
 
-      <ScrollView ref={scrollViewRef} style={styles.viewBox}>
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.viewBox}
+        onScroll={({ nativeEvent }) => {
+          saveScrollPosition(nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={100}
+      >
         <Text style={styles.bookTitle}>{currentBookTitle}</Text>
         <Text style={styles.chapterNumber}>{currentChapterNumber}</Text>
         <Text style={styles.chapterText}>
