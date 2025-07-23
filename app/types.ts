@@ -1,5 +1,6 @@
 export type Verse = {
   number: string;
+  heading: string;
   parts: VerseContentPart[];
 };
 
@@ -24,6 +25,20 @@ export type BookListItem = {
   name: string;
   abbreviation: string;
   numberOfChapters: number;
+}
+
+export type AvailableTranslationListItem = {
+  translations: Translations[];
+}
+
+export type Translations = {
+  name: string;
+  id: string;
+  shortName: string;
+  language: string;
+  languageEnglishName: string;
+  englishName: string;
+  [key: string]: any
 }
 
 export type VerseContentPart = {

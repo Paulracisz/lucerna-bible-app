@@ -10,7 +10,7 @@ import { usePathname } from "expo-router";
 import { devMode } from "./config";
 
 // Types
-import { BookListItem, ChapterObject, Verse } from "./types";
+import { BookListItem, ChapterObject, Translations, Verse } from "./types";
 
 // TODO
 // store current chapter and book in local storage so the bible reader opens up to the last chapter you were reading (and position on the page hopefully)
@@ -19,7 +19,6 @@ import { BookListItem, ChapterObject, Verse } from "./types";
 export default function Index() {
   const pathname = usePathname();
 
-  console.log(pathname);
   let currentPage: "home" | "book" | "search" | "bookmark" | "settings" =
     "home";
 
@@ -41,7 +40,14 @@ export default function Index() {
   const [translationMenuVisible, setTranslationMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
-  const [availableTranslations, setAvailableTranslations] = useState([]);
+
+  // translations
+  const [allTranslations, setAllTranslations] = useState<Translations[]>([]);
+  const [groupedTranslations, setGroupedTranslations] = useState<
+    Record<string, Translations[]>
+  >({});
+  const [visibleLanguages, setVisibleLanguages] = useState<string[]>([]);
+  const batchSize = 5;
 
   // used to scroll to the top every time a chapter is changed.
   const scrollToTop = () => {
@@ -100,12 +106,24 @@ export default function Index() {
           let chapterTextArray = []; // fill the array with each verse of text
 
           for (let i = 0; i < chapterContent.length; i++) {
-            const verse = chapterContent[i];
-            const verseParts = verse.content;
+            const item = chapterContent[i]
+
+            
+            if (item?.type === 'heading') {
+              chapterTextArray.push({
+                number: "",
+                heading: "\n" + item.content[0],
+                parts: [],
+              })
+            }
+
+            if (item.type !== "verse" || !item.content || !item.number) continue;
+            const verseParts = item.content;
 
             // sometimes the response obj can have an array of both strings and
             // objects, usually when the data structure has wordsOfChrist: true, so we
             // seperate the strings from the booleans and put them back together
+            if (item.type === "verse") {
             const parts = verseParts.map((part: any) => {
               if (typeof part === "string") {
                 return { text: part.replace(/¶/g, "\n\t"), isJesusWord: false };
@@ -118,11 +136,14 @@ export default function Index() {
                 return { text: "", isJesusWord: false };
               }
             });
+            
 
             chapterTextArray.push({
-              number: verse.number,
+              number: item.number,
+              heading: "",
               parts: parts,
             });
+          }
           }
 
           if (chapterTextArray) setCurrentChapterTextArray(chapterTextArray);
@@ -143,7 +164,7 @@ export default function Index() {
             "Something seems to have gone wrong when loading the Bible. Please file an error report in the settings:\n" +
               error
           );
-        console.error("Error fetching chapter text:", error);
+        return console.error("Error fetching chapter text:", error);
       });
   };
 
@@ -217,9 +238,21 @@ export default function Index() {
   const getCurrentTranslationList = () => {
     fetch(`https://bible.helloao.org/api/available_translations.json`)
       .then((response) => response.json())
-      .then((availableTranslations) => {
-        console.log(availableTranslations);
-        setAvailableTranslations(availableTranslations);
+      .then((data) => {
+        const translations: Translations[] = data.translations;
+
+        setAllTranslations(translations);
+
+        // Group translations by languageName
+        const grouped: Record<string, Translations[]> = {};
+        for (const t of translations) {
+          const lang = t.languageName || "Other";
+          if (!grouped[lang]) grouped[lang] = [];
+          grouped[lang].push(t);
+        }
+
+        setGroupedTranslations(grouped);
+        setVisibleLanguages(Object.keys(grouped).slice(0, batchSize)); // only show 5 at a time
       })
       .catch((error) =>
         console.error("Failed to get list of available translations", error)
@@ -271,6 +304,10 @@ export default function Index() {
           {currentChapterTextArray.length > 0
             ? currentChapterTextArray.map((verse, index) => (
                 <Text key={index}>
+                  <Text> {verse.heading ? (
+                    <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                      {verse.heading + "\n"}</Text>
+                  ): null } </Text>
                   <Text style={styles.verseNumber}>{verse.number} </Text>
                   {verse.parts.map((part, idx) => (
                     <Text
@@ -302,7 +339,80 @@ export default function Index() {
         transparent={false}
         visible={translationMenuVisible}
         onRequestClose={() => setTranslationMenuVisible(false)}
-      ></Modal>
+      >
+        <View style={{ flex: 1, padding: 20 }}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignContent: "space-around",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 20, marginBottom: 10 }}>
+              Select Translation
+            </Text>
+            <Ionicons
+              name="close-outline"
+              onPress={() => setTranslationMenuVisible(false)}
+              size={32}
+              color="black"
+            />
+          </View>
+
+          <ScrollView
+            onScroll={({ nativeEvent }) => {
+              const isBottom =
+                nativeEvent.layoutMeasurement.height +
+                  nativeEvent.contentOffset.y >=
+                nativeEvent.contentSize.height - 50;
+              if (isBottom) {
+                const nextLanguages = Object.keys(groupedTranslations).slice(
+                  0,
+                  visibleLanguages.length + batchSize
+                );
+                if (nextLanguages.length > visibleLanguages.length) {
+                  setVisibleLanguages(nextLanguages);
+                }
+              }
+            }}
+            scrollEventThrottle={16}
+          >
+            {visibleLanguages.map((langName) => (
+              <View key={langName} style={{ marginBottom: 20 }}>
+                <Text
+                  style={{ fontSize: 18, fontWeight: "bold", marginBottom: 5 }}
+                >
+                  {langName}
+                </Text>
+                {groupedTranslations[langName].map((translation, index) => (
+                  <Text
+                    key={index}
+                    onPress={() => {
+                      setSelectedTranslation(translation.id);
+                      setTranslationShortName(
+                        translation.shortName || translation.name
+                      );
+                      setTranslationMenuVisible(false);
+                      scrollToTop();
+                    }}
+                    style={{
+                      padding: 10,
+                      fontSize: 16,
+                      backgroundColor: "#eee",
+                      marginBottom: 5,
+                      borderRadius: 6,
+                    }}
+                  >
+                    {" "}
+                    {translation.name} ({translation.shortName})
+                  </Text>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </Modal>
       <Modal
         animationType="slide"
         transparent={false}
