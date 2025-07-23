@@ -48,11 +48,11 @@ export default function Index() {
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // translations
   const [allTranslations, setAllTranslations] = useState<Translations[]>([]);
   const [groupedTranslations, setGroupedTranslations] = useState<
-  Record<string, Translations[]>
+    Record<string, Translations[]>
   >({});
   const [visibleLanguages, setVisibleLanguages] = useState<string[]>([]);
   const batchSize = 5;
@@ -256,11 +256,10 @@ export default function Index() {
         const itemHeight = 60; // the height of the book item
         bookScrollRef.current.scrollTo({
           y: itemHeight * bookIndex,
-          animated: true
+          animated: true,
         });
       }
-    }, 200) // delay so that the modal is visible before the scroll happens
-
+    }, 200); // delay so that the modal is visible before the scroll happens
   };
 
   const handleTranslationMenu = () => {
