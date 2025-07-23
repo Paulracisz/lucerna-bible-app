@@ -316,14 +316,13 @@ export default function Index() {
   };
 
   useEffect(() => {
-
     const loadData = async () => {
       try {
         const savedData = await AsyncStorage.getItem("lastReadLocation");
         const scrollData = await AsyncStorage.getItem("scrollPosition");
-        
+
         if (savedData) {
-          const {book, chapter, translation } = JSON.parse(savedData);
+          const { book, chapter, translation } = JSON.parse(savedData);
           setSelectedCurrentBook(book || "GEN");
           setSelectedChapterNumber(chapter || "1");
           setSelectedTranslation(translation || "eng_kjv");
@@ -336,12 +335,12 @@ export default function Index() {
           }, 500); // delay so content is loaded before scrollling
         }
       } catch (e) {
-        console.error("Failed to load data:", e)
+        console.error("Failed to load data:", e);
       }
     };
 
     loadData();
-  },[]);
+  }, []);
 
   // used for getting the translation list early to update the translation short name prop for top bar
   useEffect(() => {
@@ -354,11 +353,15 @@ export default function Index() {
     if (matched) {
       setTranslationShortName(matched.shortName || matched.name);
     }
-  }, [selectedTranslation, allTranslations])
+  }, [selectedTranslation, allTranslations]);
 
   useEffect(() => {
-    fetchChapterData(selectedTranslation, selectedCurrentBook, selectedChapterNumber);
-  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber])
+    fetchChapterData(
+      selectedTranslation,
+      selectedCurrentBook,
+      selectedChapterNumber
+    );
+  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
 
   useEffect(() => {
     const saveData = async () => {
@@ -372,11 +375,11 @@ export default function Index() {
           })
         );
       } catch (e) {
-        console.error("Failed to fetch save data:", e)
+        console.error("Failed to fetch save data:", e);
       }
     };
     saveData();
-  },[selectedCurrentBook, selectedChapterNumber, selectedTranslation] );
+  }, [selectedCurrentBook, selectedChapterNumber, selectedTranslation]);
 
   const saveScrollPosition = async (y: number) => {
     try {
@@ -384,7 +387,7 @@ export default function Index() {
     } catch (e) {
       console.error("Failed to save scroll position:", e);
     }
-  }
+  };
 
   return (
     <>
