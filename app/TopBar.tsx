@@ -1,16 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // Misc
 
 type TopBarProps = {
   currentTranslation: string;
   currentPage: "home" | "book" | "search" | "bookmark" | "settings";
+  openTranslationMenu: () => void;
 };
 
 export default function TopBar({
   currentTranslation,
   currentPage,
+  openTranslationMenu,
 }: TopBarProps) {
   return (
     <>
@@ -44,9 +46,12 @@ export default function TopBar({
           ]}
           name="settings"
         ></Ionicons>
-        <View style={styles.translationBox}>
-          <Text style={styles.translationText}> {currentTranslation} </Text>
-        </View>
+        <TouchableOpacity
+          style={styles.translationBox}
+          onPress={() => openTranslationMenu()}
+        >
+          <Text>{currentTranslation}</Text>
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -71,11 +76,13 @@ const styles = StyleSheet.create({
 
   translationBox: {
     backgroundColor: "#F2F2F2",
-    width: 55,
     alignItems: "center",
     justifyContent: "center",
     height: 40,
+    textAlign: "center",
+    fontSize: 16,
     margin: 5,
+    padding: 8,
     borderColor: "grey",
     borderRadius: 500,
     borderWidth: 1,
@@ -85,11 +92,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#D9D9D9",
     borderRadius: 10,
     padding: 5,
-  },
-
-  translationText: {
-    textAlign: "center",
-    fontSize: 16,
   },
 
   homeIcon: {

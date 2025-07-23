@@ -38,8 +38,10 @@ export default function Index() {
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
   const [bookMenuVisible, setBookMenuVisible] = useState(false);
+  const [translationMenuVisible, setTranslationMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
+  const [availableTranslations, setAvailableTranslations] = useState([]);
 
   // used to scroll to the top every time a chapter is changed.
   const scrollToTop = () => {
@@ -207,6 +209,23 @@ export default function Index() {
     getCurrentBookList();
   };
 
+  const handleTranslationMenu = () => {
+    setTranslationMenuVisible(true);
+    getCurrentTranslationList();
+  };
+
+  const getCurrentTranslationList = () => {
+    fetch(`https://bible.helloao.org/api/available_translations.json`)
+      .then((response) => response.json())
+      .then((availableTranslations) => {
+        console.log(availableTranslations);
+        setAvailableTranslations(availableTranslations);
+      })
+      .catch((error) =>
+        console.error("Failed to get list of available translations", error)
+      );
+  };
+
   /**
    * Calls the API to get the current list of Bible books for displaying in the book selection menu.
    *
@@ -242,6 +261,7 @@ export default function Index() {
       <TopBar
         currentTranslation={translationShortName}
         currentPage={currentPage}
+        openTranslationMenu={handleTranslationMenu}
       />
 
       <ScrollView ref={scrollViewRef} style={styles.viewBox}>
@@ -277,6 +297,12 @@ export default function Index() {
         isAtStart={isAtStart}
         isAtEnd={isAtEnd}
       />
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={translationMenuVisible}
+        onRequestClose={() => setTranslationMenuVisible(false)}
+      ></Modal>
       <Modal
         animationType="slide"
         transparent={false}
