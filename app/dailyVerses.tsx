@@ -1,0 +1,28 @@
+export const dailyVerses = [
+  { reference: "John 3:16", text: "For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life." },
+  { reference: "Psalm 23:1", text: "The LORD is my shepherd; I shall not want. He makes me lie down in green pastures; He leads me beside quiet waters. He restores my soul; He guides me in the paths of righteousness for the sake of His name."},
+  { reference: "Proverbs 3:5", text: "Trust in the LORD with all your heart, and lean not on your own understanding;"},
+  { reference: "Romans 8:28", text: "And we know that God works together all things for good to those loving God, to those being called according to His purpose,"},
+  { reference: "Matthew 5:9", text: "Blessed are the peacemakers, for they will be called sons of God." },
+  { reference: "1 Thessalonians 4:3-5", text: "For it is God's will that you should be holy: You must abstain from sexual immorality; each of you must know how to control his own body. in holiness and honor, not in lustful passion like the Gentiles who do not know God;" },
+  { reference: "Philippians 4:7", text: "And the peace of God, which surpasses all understanding, will guard your hearts and your minds in Christ Jesus."
+ },
+ { reference: "1 Samuel 2:2", text: "There is no one holy like the LORD. Indeed, there is no one besides You! And there is no Rock like our God."},
+ { reference: "Ephesians 2:8-9", text: "For by grace you have been saved through faith; and this is not from yourselves, it is the gift of God; not from works, so that no one can boast."},
+  { reference: "Romans 10:9", text: "If you confess with your mouth that Jesus is Lord, and believe in your heart that God raised Him from the dead, you will be saved."},  
+  { reference: "John 14:6", text: "Jesus said to him, 'I am the way, the truth, and the life; no one comes to the Father except through Me.'"},  
+  { reference: "Jeremiah 29:11", text: "For I know the plans I have for you,” declares the LORD, “plans to prosper you and not to harm you, plans to give you hope and a future.'"},  
+  { reference: "Psalm 34:18", text: "The LORD is near to the broken-hearted; He saves those who are crushed in spirit."},  
+  { reference: "Isaiah 40:31", text: "But those who wait for the LORD will gain new strength; they will mount up with wings like eagles, they will run and not grow weary, they will walk and not faint."},  
+  { reference: "Isaiah 26:3", text: "You will keep him in perfect peace whose mind is steadfast, because he trusts in You."},  
+  { reference: "Matthew 11:28-30", text: "Come to Me, all who labor and are heavy-laden, and I will give you rest. Take My yoke upon you and learn from Me … for My yoke is easy and My burden is light."},  
+  { reference: "James 1:5", text: "If any of you lacks wisdom, let him ask God, who gives generously to all without reproach, and it will be given him."},  
+  { reference: "Psalm 119:105", text: "Your word is a lamp to my feet and a light to my path."},  
+  { reference: "Psalm 32:8", text: "I will instruct you and teach you the way you should go; I will counsel you with My loving eye on you."},  
+  { reference: "Philippians 4:13", text: "I can do all things through Him who strengthens me."},  
+  { reference: "Joshua 1:9", text: "Have I not commanded you? Be strong and courageous. Do not be frightened, and do not be dismayed, for the LORD your God is with you wherever you go."},  
+  { reference: "2 Timothy 1:7", text: "For God gave us a spirit not of fear, but of power and love and self-control."},  
+  { reference: "1 Corinthians 13:4-7", text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It is not rude, it is not self-seeking, it is not easily angered, it keeps no account of wrongs. Love takes no pleasure in evil, but rejoices in the truth. It bears all things, believes all things, hopes all things, endures all things."},  
+  { reference: "1 John 4:7-8", text: "Beloved, let us love one another, for love is from God, and whoever loves has been born of God and knows God. The one who does not love does not know God, for God is love."},  
+  { reference: "Ephesians 4:2", text: "Be completely humble and gentle; be patient, bearing with one another in love."}
+];

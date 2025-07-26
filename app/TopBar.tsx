@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // Misc
@@ -14,15 +15,20 @@ export default function TopBar({
   currentPage,
   openTranslationMenu,
 }: TopBarProps) {
+
+  const router = useRouter();
+
   return (
     <>
       <View style={styles.topBarBox}>
         <Ionicons
           name="home"
+          onPress={() => router.push("/home")}
           style={[styles.homeIcon, currentPage === "home" && styles.activeIcon]}
         ></Ionicons>
         <Ionicons
           style={[styles.homeIcon, currentPage === "book" && styles.activeIcon]}
+          onPress={() => router.push("/")}
           name="book"
         ></Ionicons>
         <Ionicons
@@ -46,12 +52,14 @@ export default function TopBar({
           ]}
           name="settings"
         ></Ionicons>
+        {currentPage === "book" && (
         <TouchableOpacity
           style={styles.translationBox}
           onPress={() => openTranslationMenu()}
         >
           <Text>{currentTranslation}</Text>
         </TouchableOpacity>
+        )}
       </View>
     </>
   );
