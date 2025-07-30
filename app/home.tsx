@@ -52,12 +52,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontStyle: "italic",
     marginBottom: 10,
-    color: "#333",
+    color: "black",
   },
   verseRef: {
     fontSize: 16,
     fontWeight: "600",
     textAlign: "right",
-    color: "#666",
+    color: "grey",
   },
 });
