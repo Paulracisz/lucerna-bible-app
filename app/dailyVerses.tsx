@@ -68,5 +68,16 @@ export const dailyVerses = [
   { reference: "1 Thessalonians 5:11", text: "Therefore encourage and build one another up, just as you are already doing."}, 
   { reference: "2 Chronicles 7:14", text: "and if My people who are called by My name humble themselves and pray and seek My face and turn from their wicked ways, then I will hear from heaven, forgive their sin, and heal their land."}, 
   { reference: "Galatians 3:26", text: "You are all sons of God through faith in Christ Jesus. For all of you who were baptized into Christ have clothed yourselves with Christ."}, 
-  { reference: "Proverbs 4:23", text: "Above all else, guard your heart, for everything you do flows from it."}
+  { reference: "Proverbs 4:23", text: "Above all else, guard your heart, for everything you do flows from it."}, 
+  { reference: "Psalm 42:11", text: "Why are you downcast, O my soul? Why the unease within me? Put your hope in God, for I will yet praise Him, my Savior and my God."}, 
+  { reference: "James 1:6", text: "But he must ask in faith, without doubting, because he who doubts is like a wave of the sea, blown and tossed by the wind."}, 
+  { reference: "Isaiah 41:13", text: "For I am the LORD your God, who takes hold of your right hand and tells you: Do not fear, I will help you."}, 
+  { reference: "Proverbs 27:19", text: "As water reflects the face, so the heart reflects the true man."}, 
+  { reference: "Jeremiah 33:3", text: "Call to Me, and I will answer and show you great and unsearchable things you do not know."}, 
+  { reference: "Matthew 11:28", text: "Come to Me, all you who are weary and burdened, and I will give you rest."}, 
+  { reference: "Psalm 133:1", text: "A song of ascents. Of David. Behold, how good and pleasant it is when brothers live together in harmony!"}, 
+  { reference: "Romans 12:2", text: "Do not be conformed to this world, but be transformed by the renewing of your mind. Then you will be able to test and approve what is the good, pleasing, and perfect will of God."}, 
+  { reference: "1 Corinthians 1:10", text: "I appeal to you, brothers, in the name of our Lord Jesus Christ, that all of you agree together, so that there may be no divisions among you and that you may be united in mind and conviction."}, 
+  { reference: "John 15:13", text: "Greater love has no one than this, that he lay down his life for his friends."}, 
+  { reference: "Luke 12:32", text: "Do not be afraid, little flock, for your Father is pleased to give you the kingdom."}
 ];
