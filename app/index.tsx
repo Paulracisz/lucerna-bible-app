@@ -332,7 +332,7 @@ export default function Index() {
         if (scrollData) {
           const { y } = JSON.parse(scrollData);
           setTimeout(() => {
-            scrollViewRef.current?.scrollTo({ y, animated: false });
+            scrollViewRef.current?.scrollTo({ y, animated: true });
           }, 500); // delay so content is loaded before scrollling
         }
       } catch (e) {
@@ -358,6 +358,7 @@ export default function Index() {
 
   useEffect(() => {
     fetchChapterData(selectedTranslation, selectedCurrentBook, selectedChapterNumber);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber])
 
   useEffect(() => {
