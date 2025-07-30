@@ -38,5 +38,15 @@ export const dailyVerses = [
   { reference: "Romans 15:13", text: "Now may the God of hope fill you with all joy and peace as you believe in Him, so that you may overflow with hope by the power of the Holy Spirit."},  
   { reference: "Deuteronomy 31:8", text: "The LORD Himself goes before you; He will be with you. He will never leave you nor forsake you. Do not be afraid or discouraged."},  
   { reference: "Psalm 121:7", text: "The LORD will guard you from all evil; He will preserve your soul. The LORD will watch over your coming and going, both now and forevermore."},  
-  { reference: "2 Corinthians 5:7", text: "For we walk by faith, not by sight."}
+  { reference: "2 Corinthians 5:7", text: "For we walk by faith, not by sight."},  
+  { reference: "Colossians 3:23", text: "Whatever you do, work at it with your whole being, for the Lord and not for men, because you know that you will receive an inheritance from the Lord as your reward. It is the Lord Christ you are serving."},  
+  { reference: "Acts 16:31", text: "They replied, “Believe in the Lord Jesus and you will be saved, you and your household.”"},  
+  { reference: "Acts 16:31", text: "Never let loving devotion or faithfulness leave you; bind them around your neck, write them on the tablet of your heart. Then you will find favor and high regard in the sight of God and man."},  
+  { reference: "Ephesians 4:1-2", text: "As a prisoner in the Lord, then, I urge you to walk in a manner worthy of the calling you have received: with all humility and gentleness, with patience, bearing with one another in love,"},  
+  { reference: "John 11:25-26", text: "Jesus said to her, “I am the resurrection and the life. Whoever believes in Me will live, even though he dies. And everyone who lives and believes in Me will never die. Do you believe this?”"},  
+  { reference: "1 Corinthians 13:13", text: "And now these three remain: faith, hope, and love; but the greatest of these is love."},  
+  { reference: "1 Corinthians 15:58", text: "Therefore, my beloved brothers, be steadfast and immovable. Always excel in the work of the Lord, because you know that your labor in the Lord is not in vain."},  
+  { reference: "Hebrews 11:1", text: "Now faith is the assurance of what we hope for and the certainty of what we do not see."},  
+  { reference: "Colossians 3:14", text: "And over all these virtues put on love, which is the bond of perfect unity."}, 
+  { reference: "1 John 5:14", text: "And this is the confidence that we have before Him: If we ask anything according to His will, He hears us."}
 ];
