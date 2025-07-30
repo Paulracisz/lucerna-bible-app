@@ -11,39 +11,40 @@ type TopBarProps = {
 };
 
 export default function BookScreen({
-    currentTranslation,
-    currentPage,
-    openTranslationMenu,
+  currentTranslation,
+  currentPage,
+  openTranslationMenu,
 }: TopBarProps) {
+  const today = new Date();
+  const dateSeed = `${today.getFullYear()}-${
+    today.getMonth() + 1
+  }-${today.getDate()}}`;
 
-    const today = new Date();
-    const dateSeed = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}}`;
+  // hashing function
+  const hashCode = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+  };
 
-    // hashing function
-    const hashCode = (str: string) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      return hash;
-    };
-
-    const seededIndex = Math.abs(hashCode(dateSeed)) % dailyVerses.length;
-    const verse = dailyVerses[seededIndex];
+  const seededIndex = Math.abs(hashCode(dateSeed)) % dailyVerses.length;
+  const verse = dailyVerses[seededIndex];
 
   return (
     <>
-<View style={{ flex: 1 }}>
-      <TopBar
-        currentTranslation="KJAV"
-        currentPage="home"
-        openTranslationMenu={() => {}}
-      />
-      <View style={styles.verseBox}>
-        <Text style={styles.verseText}>&quot;{verse.text}&quot;</Text>
-        <Text style={styles.verseRef}>— {verse.reference}</Text>
+      <View style={{ flex: 1 }}>
+        <TopBar
+          currentTranslation="KJAV"
+          currentPage="home"
+          openTranslationMenu={() => {}}
+        />
+        <View style={styles.verseBox}>
+          <Text style={styles.verseText}>&quot;{verse.text}&quot;</Text>
+          <Text style={styles.verseRef}>— {verse.reference}</Text>
+        </View>
       </View>
-    </View>
     </>
   );
 }
