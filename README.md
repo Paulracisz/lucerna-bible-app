@@ -101,6 +101,14 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+<p align="center">
+  <strong>“Your word is a lamp to my feet and a light to my path.”</strong><br>
+  <em>— Psalm 119:105</em><br><br>
+  <code>lucerna, lucernae</code> — <em>Latin</em> — <strong>Noun:</strong> an oil lamp
+</p>
+
+
+
 [![Product Name Screen Shot][product-screenshot]]()
 
 The Lucerna Bible Reader App includes many features such as a bible reader with over 1000 translations, offline translation support, daily verses, sharing verses, highlighting verses, bookmarks, search functionality, and settings for things like font size, words of Christ in red (when available) and much more!
