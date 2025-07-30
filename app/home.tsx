@@ -16,8 +16,20 @@ export default function BookScreen({
     openTranslationMenu,
 }: TopBarProps) {
 
-    const today = new Date().getDate();
-    const verse = dailyVerses[today % dailyVerses.length];
+    const today = new Date();
+    const dateSeed = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}}`;
+
+    // hashing function
+    const hashCode = (str: string) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return hash;
+    };
+
+    const seededIndex = Math.abs(hashCode(dateSeed)) % dailyVerses.length;
+    const verse = dailyVerses[seededIndex];
 
   return (
     <>

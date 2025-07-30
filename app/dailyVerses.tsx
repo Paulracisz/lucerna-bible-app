@@ -79,5 +79,14 @@ export const dailyVerses = [
   { reference: "Romans 12:2", text: "Do not be conformed to this world, but be transformed by the renewing of your mind. Then you will be able to test and approve what is the good, pleasing, and perfect will of God."}, 
   { reference: "1 Corinthians 1:10", text: "I appeal to you, brothers, in the name of our Lord Jesus Christ, that all of you agree together, so that there may be no divisions among you and that you may be united in mind and conviction."}, 
   { reference: "John 15:13", text: "Greater love has no one than this, that he lay down his life for his friends."}, 
-  { reference: "Luke 12:32", text: "Do not be afraid, little flock, for your Father is pleased to give you the kingdom."}
+  { reference: "Luke 12:32", text: "Do not be afraid, little flock, for your Father is pleased to give you the kingdom."}, 
+  { reference: "2 Corinthians 1:3-4", text: "Blessed be the God and Father of our Lord Jesus Christ, the Father of compassion and the God of all comfort, who comforts us in all our troubles, so that we can comfort those in any trouble with the comfort we ourselves have received from God."}, 
+  { reference: "Hebrews 4:16", text: "Let us then with confidence draw near to the throne of grace, that we may receive mercy and find grace to help in time of need."}, 
+  { reference: "Psalm 150:6", text: "Let everything that has breath praise the LORD! Hallelujah!"}, 
+  { reference: "Romans 14:11", text: "It is written: “As surely as I live, says the Lord, every knee will bow before Me; every tongue will confess to God.”"}, 
+  { reference: "1 John 4:19", text: "We love because He first loved us."}, 
+  { reference: "Proverbs 17:17", text: "A friend loves at all times, and a brother is born for adversity."}, 
+  { reference: "Psalm 73:26", text: "My flesh and my heart may fail, but God is the strength of my heart and my portion forever."}, 
+  { reference: "1 John 1:9", text: "If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness."}, 
+  { reference: "Matthew 19:14", text: "But Jesus said, “Let the little children come to Me, and do not hinder them! For the kingdom of heaven belongs to such as these.”"}
 ];
