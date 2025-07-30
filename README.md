@@ -256,7 +256,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the project_license. See `LICENSE.txt` for more information.
+Distributed under the MIT LICENSE. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -265,7 +265,7 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Paul Racisz - paulracisz@proton.me
 
 Project Link: [https://github.com/Paulracisz/lucerna-bible-app](https://github.com/Paulracisz/lucerna-bible-app)
 
