@@ -276,9 +276,7 @@ Project Link: [https://github.com/Paulracisz/lucerna-bible-app](https://github.c
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [Jesus Christ who is the son of God, who gives breath to our lungs every day!](https://youtu.be/XDVXnaeXj18)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
