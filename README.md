@@ -57,14 +57,14 @@
   <p align="center">
     An open source bible reader app with robust functionality. 
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Paulracisz/lucerna-bible-app"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/Paulracisz/lucerna-bible-app">View Demo</a>
     &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/Paulracisz/lucerna-bible-app/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/Paulracisz/lucerna-bible-app/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -101,7 +101,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]]()
 
 The Lucerna Bible Reader App includes many features such as a bible reader with over 1000 translations, offline translation support, daily verses, sharing verses, highlighting verses, bookmarks, search functionality, and settings for things like font size, words of Christ in red (when available) and much more!
 
@@ -122,12 +122,10 @@ The Lucerna Bible Reader App includes many features such as a bible reader with 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
 * npm
   ```sh
   npm install npm@latest -g
@@ -135,24 +133,22 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/Paulracisz/lucerna-bible-app.git
    ```
+   
 3. Install NPM packages
    ```sh
    npm install
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
+   
+4. Start the project
    ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
+   npx expo start
    ```
+   
+5. Press 'w' for web or 'a' for android if you have android studio installed, 'i' for ios if you're on Mac and have Xcode installed.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -161,9 +157,35 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Read the bible:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+[![Bible Reader Name Screen Shot][product-screenshot]]()
+
+Highlight Verses:
+
+[![Verses Screen Shot][product-screenshot2]]()
+
+Set and Search for Different Translations
+
+[![Translations][product-screenshot3]]()
+
+Read and Share Daily Verses
+
+[![Read and Share Verses][product-screenshot4]]()
+
+Search for Bible Verses
+
+[![Search][product-screenshot5]]()
+
+Set and Return to Bookmarks
+
+[![Bookmarks][product-screenshot6]]()
+
+Adjust Settings
+
+[![Settings][product-screenshot7]]()
+
+_For more examples, please refer to the [Documentation](https://lucernabible.com/docs/)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -177,7 +199,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Paulracisz/lucerna-bible-app/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -201,8 +223,8 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/github_username/repo_name/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
+<a href="https://github.com/paulRacisz/lucerna-bible-app/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Paulracisz/lucerna-bible-app" alt="contrib.rocks image" />
 </a>
 
 
@@ -221,7 +243,7 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 
 Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/Paulracisz/lucerna-bible-app](https://github.com/Paulracisz/lucerna-bible-app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
