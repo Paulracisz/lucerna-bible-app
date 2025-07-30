@@ -164,7 +164,7 @@ export const dailyVerses = [
     text: "They replied, “Believe in the Lord Jesus and you will be saved, you and your household.”",
   },
   {
-    reference: "Acts 16:31",
+    reference: "Proverbs 3:3",
     text: "Never let loving devotion or faithfulness leave you; bind them around your neck, write them on the tablet of your heart. Then you will find favor and high regard in the sight of God and man.",
   },
   {
