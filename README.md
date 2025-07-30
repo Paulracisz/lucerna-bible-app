@@ -48,7 +48,8 @@
 <br />
 <div align="center">
   <a href="https://github.com/Paulracisz/lucerna-bible-app">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+<img width="200" height="200" alt="logo" style="object-fit: cover; object-position: center; display: block;" src="logo-dark-mode.png" />
+
   </a>
 
 <h3 align="center">Lucerna Bible Reader</h3>
