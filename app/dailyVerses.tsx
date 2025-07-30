@@ -88,5 +88,15 @@ export const dailyVerses = [
   { reference: "Proverbs 17:17", text: "A friend loves at all times, and a brother is born for adversity."}, 
   { reference: "Psalm 73:26", text: "My flesh and my heart may fail, but God is the strength of my heart and my portion forever."}, 
   { reference: "1 John 1:9", text: "If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness."}, 
-  { reference: "Matthew 19:14", text: "But Jesus said, “Let the little children come to Me, and do not hinder them! For the kingdom of heaven belongs to such as these.”"}
+  { reference: "Matthew 19:14", text: "But Jesus said, “Let the little children come to Me, and do not hinder them! For the kingdom of heaven belongs to such as these.”"}, 
+  { reference: "Isaiah 40:29", text: "He gives power to the faint and increases the strength of the weak."}, 
+  { reference: "1 Corinthians 16:13", text: "Be on the alert. Stand firm in the faith. Be men of courage. Be strong."}, 
+  { reference: "Proverbs 22:6", text: "Train up a child in the way he should go, and when he is old he will not depart from it."}, 
+  { reference: "John 14:27", text: "Peace I leave with you; My peace I give to you. I do not give to you as the world gives. Do not let your hearts be troubled; do not be afraid."}, 
+  { reference: "1 Corinthians 6:19", text: "Do you not know that your body is a temple of the Holy Spirit who is in you, whom you have received from God? You are not your own; you were bought at a price. Therefore glorify God with your body."}, 
+  { reference: "Proverbs 11:25", text: "A generous soul will prosper, and he who refreshes others will himself be refreshed."}, 
+  { reference: "1 Chronicles 16:34", text: "Give thanks to the LORD, for He is good; His loving devotion endures forever."}, 
+  { reference: "Proverbs 2:6", text: "For the LORD gives wisdom; from His mouth come knowledge and understanding."}, 
+  { reference: "James 1:22", text: "Be doers of the word, and not hearers only. Otherwise, you are deceiving yourselves."}, 
+  { reference: "Romans 11:36", text: "For from Him and through Him and to Him are all things. To Him be the glory forever! Amen."}
 ];
