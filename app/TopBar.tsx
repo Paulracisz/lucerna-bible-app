@@ -15,7 +15,6 @@ export default function TopBar({
   currentPage,
   openTranslationMenu,
 }: TopBarProps) {
-
   const router = useRouter();
 
   return (
@@ -53,12 +52,12 @@ export default function TopBar({
           name="settings"
         ></Ionicons>
         {currentPage === "book" && (
-        <TouchableOpacity
-          style={styles.translationBox}
-          onPress={() => openTranslationMenu()}
-        >
-          <Text>{currentTranslation}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.translationBox}
+            onPress={() => openTranslationMenu()}
+          >
+            <Text>{currentTranslation}</Text>
+          </TouchableOpacity>
         )}
       </View>
     </>
