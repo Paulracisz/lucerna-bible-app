@@ -112,9 +112,8 @@ The Lucerna Bible Reader App includes many features such as a bible reader with 
 ### Built With
 
 * [![React Native][React Native]][React-native-url]
-* [![React][React.js]][React-url]
 * [![Expo Go][Expo Go]][expo-go-url]
-* [![TypeScript][TypeScript][typescript-url]
+* [![TypeScript][TypeScript]][typescript-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
