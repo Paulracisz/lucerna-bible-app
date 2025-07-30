@@ -35,5 +35,8 @@ export const dailyVerses = [
   { reference: "Proverbs 16:3", text: "Commit your works to the LORD and your plans will be achieved."},  
   { reference: "Ephesians 3:16-17", text: "I ask that out of the riches of His glory He may strengthen you with power through His Spirit in your inner being, so that Christ may dwell in your hearts through faith."},  
   { reference: "Psalm 143:8", text: "Let me hear Your loving devotion in the morning, for I have put my trust in You. Teach me the way I should walk,for to You I lift up my soul."},  
-  { reference: "Romans 15:13", text: "Now may the God of hope fill you with all joy and peace as you believe in Him, so that you may overflow with hope by the power of the Holy Spirit."}
+  { reference: "Romans 15:13", text: "Now may the God of hope fill you with all joy and peace as you believe in Him, so that you may overflow with hope by the power of the Holy Spirit."},  
+  { reference: "Deuteronomy 31:8", text: "The LORD Himself goes before you; He will be with you. He will never leave you nor forsake you. Do not be afraid or discouraged."},  
+  { reference: "Psalm 121:7", text: "The LORD will guard you from all evil; He will preserve your soul. The LORD will watch over your coming and going, both now and forevermore."},  
+  { reference: "2 Corinthians 5:7", text: "For we walk by faith, not by sight."}
 ];
