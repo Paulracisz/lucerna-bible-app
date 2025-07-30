@@ -103,7 +103,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`, `project_license`
+The Lucerna Bible Reader App includes many features such as a bible reader with over 1000 translations, offline translation support, daily verses, sharing verses, highlighting verses, bookmarks, search functionality, and settings for things like font size, words of Christ in red (when available) and much more!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -111,7 +111,10 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 ### Built With
 
+* [![React Native][React Native]][React-native-url]
 * [![React][React.js]][React-url]
+* [![Expo Go][Expo Go]][expo-go-url]
+* [![TypeScript][TypeScript][typescript-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -255,6 +258,12 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[React Native]: https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[react-native-url]: https://reactnative.dev/
+[Expo Go]: https://img.shields.io/badge/Expo_Go-000020?style=for-the-badge&logo=expo&logoColor=white
+[expo-go-url]: https://expo.dev/client
+[TypeScript]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+[typescript-url]: https://www.typescriptlang.org/
 [Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
 [Vue-url]: https://vuejs.org/
 [Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
