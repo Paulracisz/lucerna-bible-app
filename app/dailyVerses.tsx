@@ -24,5 +24,15 @@ export const dailyVerses = [
   { reference: "2 Timothy 1:7", text: "For God gave us a spirit not of fear, but of power and love and self-control."},  
   { reference: "1 Corinthians 13:4-7", text: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It is not rude, it is not self-seeking, it is not easily angered, it keeps no account of wrongs. Love takes no pleasure in evil, but rejoices in the truth. It bears all things, believes all things, hopes all things, endures all things."},  
   { reference: "1 John 4:7-8", text: "Beloved, let us love one another, for love is from God, and whoever loves has been born of God and knows God. The one who does not love does not know God, for God is love."},  
-  { reference: "Ephesians 4:2", text: "Be completely humble and gentle; be patient, bearing with one another in love."}
+  { reference: "Ephesians 4:2", text: "Be completely humble and gentle; be patient, bearing with one another in love."},  
+  { reference: "James 4:17", text: "Anyone, then, who knows the right thing to do, yet fails to do it, is guilty of sin."},  
+  { reference: "1 Thessalonians 5:16-18", text: "Rejoice at all times. Pray without ceasing. Give thanks in every circumstance, for this is God's will for you in Christ Jesus."},  
+  { reference: "1 Thessalonians 5:15", text: "Make sure that no one repays evil for evil. Always pursure what is good for one another and for all people."},  
+  { reference: "1 Corinthians 16:14", text: "Let all things of you be done in love."},  
+  { reference: "Deuteronomy 6:6-7", text: "These words I am commanding you today are to be upon your hearts. And you shall teach them diligently to your children and speak of them when you sit at home and when you walk along the road, when you lie down and when you get up."},  
+  { reference: "Jeremiah 17:7-8", text: "But blessed is the man who trusts in the LORD, whose confidence is in Him. He is like a tree planted by the watersthat sends out its roots toward the stream. It does not fear when the heat comes,and its leaves are always green. It does not worry in a year of drought,nor does it cease to produce fruit."},  
+  { reference: "Mark 11:24", text: "Therefore I tell you, whatever you ask for in prayer, believe that you have received it, and it will be yours."},  
+  { reference: "Proverbs 16:3", text: "Commit your works to the LORD and your plans will be achieved."},  
+  { reference: "Ephesians 3:16-17", text: "I ask that out of the riches of His glory He may strengthen you with power through His Spirit in your inner being, so that Christ may dwell in your hearts through faith."},  
+  { reference: "Psalm 143:8", text: "Let me hear Your loving devotion in the morning, for I have put my trust in You. Teach me the way I should walk,for to You I lift up my soul."}
 ];
