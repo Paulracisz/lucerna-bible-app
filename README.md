@@ -194,10 +194,34 @@ _For more examples, please refer to the [Documentation](https://lucernabible.com
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] commentaries
+
+- [ ] download translation for offline use
+
+- [ ] note taking function
+
+- [ ] push notifications for daily verse and reminder to read/pray
+
+- [ ] Implement footnotes
+
+- [ ] Settings page
+  - [ ] words of christ in red setting
+  - [ ] setting to adjust font size
+  - [ ] Bug report feature (settings page)
+  - [ ] footnote setting
+  - [ ] donation feature
+  - [ ] Dark Mode setting
+
+- [ ] Bookmark page
+  - [ ] Bookmarks
+
+- [ ] Search bible function
+
+- [ ] Homepage
+  - [ ] implement app streak on homepage
+  - [ ] Share functionality for daily verse
+
+- [ ] Highlighting Versus
 
 See the [open issues](https://github.com/Paulracisz/lucerna-bible-app/issues) for a full list of proposed features (and known issues).
 
