@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
   verseBox: {
     padding: 20,
     margin: 20,
-    backgroundColor: "#F0F4F8",
     borderRadius: 10,
     shadowColor: "#000",
+    backgroundColor: "white",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
