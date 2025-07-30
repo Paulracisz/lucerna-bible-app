@@ -358,6 +358,7 @@ export default function Index() {
 
   useEffect(() => {
     fetchChapterData(selectedTranslation, selectedCurrentBook, selectedChapterNumber);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber])
 
   useEffect(() => {
