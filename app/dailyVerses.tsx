@@ -164,7 +164,7 @@ export const dailyVerses = [
     text: "They replied, “Believe in the Lord Jesus and you will be saved, you and your household.”",
   },
   {
-    reference: "Acts 16:31",
+    reference: "Proverbs 3:3",
     text: "Never let loving devotion or faithfulness leave you; bind them around your neck, write them on the tablet of your heart. Then you will find favor and high regard in the sight of God and man.",
   },
   {
@@ -366,10 +366,6 @@ export const dailyVerses = [
     text: "Peace I leave with you; My peace I give to you. I do not give to you as the world gives. Do not let your hearts be troubled; do not be afraid.",
   },
   {
-    reference: "1 Corinthians 6:19",
-    text: "Do you not know that your body is a temple of the Holy Spirit who is in you, whom you have received from God? You are not your own; you were bought at a price. Therefore glorify God with your body.",
-  },
-  {
     reference: "Proverbs 11:25",
     text: "A generous soul will prosper, and he who refreshes others will himself be refreshed.",
   },
@@ -388,5 +384,9 @@ export const dailyVerses = [
   {
     reference: "Romans 11:36",
     text: "For from Him and through Him and to Him are all things. To Him be the glory forever! Amen.",
+  },
+  {
+    reference: "Isaiah 61:10",
+    text: "I will rejoice greatly in the LORD, my soul will exult in my God; for He has clothed me with garments of salvation and wrapped me in a robe of righteousness, as a bridegroom wears a priestly headdress, as a bride adorns herself with her jewels.",
   },
 ];
