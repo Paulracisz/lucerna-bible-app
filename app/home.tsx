@@ -18,7 +18,7 @@ export default function BookScreen({
   const today = new Date();
   const dateSeed = `${today.getFullYear()}-${
     today.getMonth() + 1
-  }-${today.getDate()}}`;
+  }-${today.getDate()}`;
 
   // hashing function
   const hashCode = (str: string) => {
