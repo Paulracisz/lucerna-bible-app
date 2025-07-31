@@ -175,7 +175,8 @@ Highlight Verses:
 
 Set and Search for Different Translations
 
-[![Translations][product-screenshot3]]()
+<img width="363" height="625" alt="image" src="https://github.com/user-attachments/assets/68dd5c2d-337a-4046-8c7d-dfa3856374c9" />
+
 
 Read and Share Daily Verses
 
