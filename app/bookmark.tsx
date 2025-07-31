@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     borderRadius: 8,
-    marginBottom: 10,
   },
 
   bookmarkVerse: {
