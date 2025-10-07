@@ -42,6 +42,7 @@ export default function TopBar({
             styles.homeIcon,
             currentPage === "bookmark" && styles.activeIcon,
           ]}
+          onPress={() => router.push("/bookmark")}
           name="bookmark"
         ></Ionicons>
         <Ionicons
