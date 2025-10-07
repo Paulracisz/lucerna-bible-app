@@ -18,13 +18,7 @@ import { usePathname } from "expo-router";
 import { devMode } from "./config";
 
 // Types
-import {
-  BookListItem,
-  Bookmark,
-  ChapterObject,
-  Translations,
-  Verse,
-} from "./types";
+import { BookListItem, ChapterObject, Translations, Verse } from "./types";
 
 // TODO
 // store current chapter and book in local storage so the bible reader opens up to the last chapter you were reading (and position on the page hopefully)
@@ -75,13 +69,6 @@ export default function Index() {
   const [translationShortName, setTranslationShortName] = useState("KJAV");
   const [selectedCurrentBook, setSelectedCurrentBook] = useState("GEN");
   const [selectedChapterNumber, setSelectedChapterNumber] = useState("1");
-
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const [bookmarkModalVisible, setBookmarkModalVisible] = useState(false);
-  const [selectedVerseToBookmark, setSelectedVerseToBookmark] = useState<{
-    verseNumber: string;
-  } | null>(null);
-  const [isAlreadyBookmarked, setIsAlreadyBookmarked] = useState(false);
 
   const currentBookIndex = bookList.findIndex(
     (book) => book.abbreviation === selectedCurrentBook
@@ -306,61 +293,10 @@ export default function Index() {
       );
   };
 
-  const saveBookmarks = async (updated: Bookmark[]) => {
-    try {
-      await AsyncStorage.setItem("bookmarks", JSON.stringify(updated));
-      setBookmarks(updated);
-    } catch (err) {
-      console.error("Failed to save bookmarks:", err);
-    }
-  };
-
-  const handleAddBookmark = async (color: string, verse: Verse) => {
-    const key = "bookmarks";
-    const verseKey = `${selectedCurrentBook}-${selectedChapterNumber}-${verse.number}`;
-
-    const existing = bookmarks.find(
-      (b) =>
-        b.book === selectedCurrentBook &&
-        b.chapter === selectedChapterNumber &&
-        b.verse === verse?.number
-    );
-    setIsAlreadyBookmarked(!!existing);
-
-    let updatedBookmarks;
-
-    if (existing) {
-      // removed bookmark if it already exists
-      updatedBookmarks = bookmarks.filter(
-        (b) =>
-          !(
-            b.book === selectedCurrentBook &&
-            b.chapter === selectedChapterNumber &&
-            b.verse === verse.number
-          )
-      );
-    } else {
-      // add new bookmark
-      const newBookmark: Bookmark = {
-        id: verseKey,
-        book: selectedCurrentBook!,
-        chapter: selectedChapterNumber!,
-        verse: verse.number,
-        color: color,
-      };
-      updatedBookmarks = [...bookmarks, newBookmark];
-    }
-
-    // save bookmark and update state
-    await AsyncStorage.setItem(key, JSON.stringify(updatedBookmarks));
-    saveBookmarks(updatedBookmarks);
-    setBookmarkModalVisible(false);
-  };
-
   /**
    * Calls the API to get the current list of Bible books for displaying in the book selection menu.
    *
-   * @param {none} none has no parameter
+   * @param {none} none has no parameters
    * @returns {} returns an array to be mapped over containing the list of books.
    */
   const getCurrentBookList = () => {
@@ -409,29 +345,6 @@ export default function Index() {
   // used for getting the translation list early to update the translation short name prop for top bar
   useEffect(() => {
     getCurrentTranslationList();
-  }, []);
-
-  useEffect(() => {
-    const loadBookmarks = async () => {
-      try {
-        const data = await AsyncStorage.getItem("bookmarks");
-        if (data) {
-          const parsed = JSON.parse(data);
-          if (Array.isArray(parsed)) {
-            setBookmarks(parsed);
-          } else {
-            setBookmarks([]);
-          }
-        } else {
-          setBookmarks([]); // explicitly set empty if nothing stored
-        }
-      } catch (err) {
-        console.error("Error loading bookmarks:", err);
-        setBookmarks([]);
-      }
-    };
-
-    loadBookmarks();
   }, []);
 
   // update the stale translation short name for top bar
@@ -507,38 +420,7 @@ export default function Index() {
                       </Text>
                     ) : null}{" "}
                   </Text>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text
-                      style={styles.verseNumber}
-                      onPress={() => {
-                        setSelectedVerseToBookmark({
-                          verseNumber: verse.number,
-                        });
-                        setBookmarkModalVisible(true);
-                      }}
-                    >
-                      {verse.number}{" "}
-                    </Text>
-                    {(() => {
-                      const bookmark = bookmarks.find(
-                        (b) =>
-                          b.book === selectedCurrentBook &&
-                          b.chapter === selectedChapterNumber &&
-                          b.verse === verse.number
-                      );
-                      if (bookmark) {
-                        return (
-                          <Ionicons
-                            name="bookmark"
-                            size={18}
-                            color={bookmark.color}
-                            style={{ marginLeft: 5 }}
-                          />
-                        );
-                      }
-                      return null;
-                    })()}
-                  </View>
+                  <Text style={styles.verseNumber}>{verse.number} </Text>
                   {verse.parts.map((part, idx) => (
                     <Text
                       key={idx}
@@ -683,69 +565,6 @@ export default function Index() {
                 );
               })}
           </ScrollView>
-        </View>
-      </Modal>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={bookmarkModalVisible}
-        onRequestClose={() => setBookmarkModalVisible(false)}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.5)",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 10,
-              width: "80%",
-            }}
-          >
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
-              Choose bookmark color
-            </Text>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              {["#ff0000", "#ffa500", "#008000", "#0000ff", "#800080"].map(
-                (color) => (
-                  <Ionicons
-                    key={color}
-                    name="bookmark"
-                    size={32}
-                    color={color}
-                    onPress={() => {
-                      if (selectedVerseToBookmark) {
-                        const verse = currentChapterTextArray.find(
-                          (v) =>
-                            v.number === selectedVerseToBookmark.verseNumber
-                        );
-                        if (verse) {
-                          handleAddBookmark(color, verse);
-                        }
-                      }
-                    }}
-                  />
-                )
-              )}
-            </View>
-            <Text
-              style={{
-                textAlign: "center",
-                marginTop: 15,
-                color: "grey",
-              }}
-              onPress={() => setBookmarkModalVisible(false)}
-            >
-              Cancel
-            </Text>
-          </View>
         </View>
       </Modal>
       <Modal

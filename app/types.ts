@@ -45,11 +45,3 @@ export type VerseContentPart = {
   text: string;
   isJesusWord: boolean;
 }
-
-export type Bookmark = {
-  id: string;
-  book: string;
-  chapter: string;
-  verse: string;
-  color: string;
-}
