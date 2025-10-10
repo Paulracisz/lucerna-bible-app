@@ -57,7 +57,7 @@
   <p align="center">
     An open source bible reader app with robust functionality. 
     <br />
-    <a href="https://lucernabible.com/docs/"><strong>Explore the docs »</strong></a>
+    <a href="https://lucerna-bible-app.vercel.app/docs/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://paulracisz.com/#lucerna">View Demo</a>
