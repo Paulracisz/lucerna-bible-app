@@ -116,7 +116,7 @@ export default function Docs() {
         )}
       </View>
 
-      {/* ----------------------- API OVERVIEW (collapsible) ----------------------- */}
+      {/* ----------------------- API OVERVIEW (collapsible) ----------------------*/}
       <View onLayout={onSectionLayout("api")} style={styles.section}>
         <TouchableOpacity
           onPress={() => toggle("api")}
