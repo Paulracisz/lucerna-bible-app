@@ -60,7 +60,7 @@
     <a href="https://lucernabible.com/docs/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Paulracisz/lucerna-bible-app">View Demo</a>
+    <a href="https://paulracisz.com/#lucerna">View Demo</a>
     &middot;
     <a href="https://github.com/Paulracisz/lucerna-bible-app/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
