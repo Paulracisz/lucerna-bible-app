@@ -136,17 +136,8 @@ export default function Index() {
             if (item?.type === "heading") {
               chapterTextArray.push({
                 number: "",
-                heading: "\n" + item.content[0],
+                heading: item.content[0],
                 parts: [],
-              });
-            }
-
-            // handle line_break array elements
-            if (item?.type === "line_break") {
-              chapterTextArray.push({
-                number: "",
-                heading: "",
-                parts: [{ text: "\n" }],
               });
             }
 
@@ -502,10 +493,10 @@ export default function Index() {
                   <Text>
                     {" "}
                     {verse.heading ? (
-                      <Text style={{ fontWeight: "bold", fontSize: 26 }}>
-                        {verse.heading + "\n"}
+                      <Text style={{ fontWeight: "bold", display: "flex", fontSize: 26 }}>
+                        {verse.heading}
                       </Text>
-                    ) : null}{" "}
+                    ) : null}
                   </Text>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text
@@ -517,8 +508,9 @@ export default function Index() {
                         setBookmarkModalVisible(true);
                       }}
                     >
-                      {verse.number}{" "}
+                      {verse.number}
                     </Text>
+                    <Text>{" "}</Text>
                     {(() => {
                       const bookmark = bookmarks.find(
                         (b) =>
@@ -532,7 +524,7 @@ export default function Index() {
                             name="bookmark"
                             size={18}
                             color={bookmark.color}
-                            style={{ marginLeft: 5 }}
+                            style={{ marginLeft: 0 }}
                           />
                         );
                       }
@@ -833,6 +825,7 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+
   viewBox: {
     display: "flex",
     paddingLeft: "10%",
