@@ -10,7 +10,7 @@ import { Bookmark } from "./types";
 
 export default function BookMark() {
   const [currentBookmarks, setCurrentBookmarks] = useState<Bookmark[]>([]);
-  const { setSelectedCurrentBook, setSelectedChapterNumber, setSelectedTranslation, setTranslationShortName } = useReader();
+  const { setSelectedCurrentBook, setSelectedChapterNumber, setSelectedTranslation, setTranslationShortName, saveScrollPosition } = useReader();
   const router = useRouter();
 
   /* -------------------------------------------------
@@ -83,6 +83,7 @@ useEffect(() => {
                     setSelectedChapterNumber(bookmark.chapter);
                     setSelectedTranslation(bookmark.translationId);
                     setTranslationShortName(bookmark.translationShortName);
+                    saveScrollPosition(bookmark.scrollY);
                     router.replace("/");
                   }}
                 >

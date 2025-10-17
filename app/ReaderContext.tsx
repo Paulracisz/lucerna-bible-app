@@ -26,6 +26,8 @@ type ReaderContextType = {
 
   translationShortName: string;
   setTranslationShortName: (translationShortName: string) => void;
+
+  saveScrollPosition: (y: number) => void;
 };
 
 const ReaderContext = createContext<ReaderContextType | undefined>(undefined);
@@ -47,6 +49,14 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
     useState<string>("eng_kjv");
   const [translationShortName, setTranslationShortName] =
     useState<string>("KJAV");
+
+  const saveScrollPosition = async (y: number) => {
+    try {
+      await AsyncStorage.setItem("scrollPosition", JSON.stringify({ y }));
+    } catch (e) {
+      console.error("Failed to save scroll position:", e);
+    }
+  };
 
   /* -------------------------------------------------
      OPTIONAL: persist the last‑read location so the
@@ -74,7 +84,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
           JSON.stringify({
             book: selectedCurrentBook,
             chapter: selectedChapterNumber,
-            translation: selectedTranslation
+            translation: selectedTranslation,
           })
         );
       } catch (_) {}
@@ -94,6 +104,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       setSelectedTranslation,
       translationShortName,
       setTranslationShortName,
+      saveScrollPosition,
     }),
     [
       selectedCurrentBook,

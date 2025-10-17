@@ -52,6 +52,7 @@ export type Bookmark = {
   name: string;
   translationId: string;
   translationShortName: string;
+  scrollY: number;
   chapter: string;
   verse: string;
   color: string;

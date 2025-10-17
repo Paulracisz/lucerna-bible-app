@@ -44,6 +44,7 @@ export default function Index() {
     setSelectedTranslation,
     translationShortName,
     setTranslationShortName,
+    saveScrollPosition,
   } = useReader();
 
   const pathname = usePathname();
@@ -65,6 +66,7 @@ export default function Index() {
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
+  const latestScrollY = useRef<number>(0)
   const [translationMenuVisible, setTranslationMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
@@ -340,12 +342,14 @@ export default function Index() {
       );
     } else {
       // add new bookmark
+
       const newBookmark: Bookmark = {
         id: verseKey,
         name: currentBookTitle!,
         book: selectedCurrentBook!,
-        translationId: selectedTranslation,
-        translationShortName: translationShortName,
+        translationId: selectedTranslation!,
+        translationShortName: translationShortName!,
+        scrollY:  latestScrollY.current,
         chapter: selectedChapterNumber!,
         verse: verse.number,
         color: color,
@@ -453,14 +457,6 @@ export default function Index() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
 
-  const saveScrollPosition = async (y: number) => {
-    try {
-      await AsyncStorage.setItem("scrollPosition", JSON.stringify({ y }));
-    } catch (e) {
-      console.error("Failed to save scroll position:", e);
-    }
-  };
-
   return (
     <>
       <TopBar
@@ -474,6 +470,7 @@ export default function Index() {
         style={styles.viewBox}
         onScroll={({ nativeEvent }) => {
           saveScrollPosition(nativeEvent.contentOffset.y);
+          latestScrollY.current = nativeEvent.contentOffset.y
         }}
         scrollEventThrottle={100}
       >
