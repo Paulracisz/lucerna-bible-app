@@ -270,7 +270,7 @@ export default function Index() {
         const itemHeight = 60; // the height of the book item
         bookScrollRef.current.scrollTo({
           y: itemHeight * bookIndex,
-          animated: true,
+          animated: false,
         });
       }
     }, 200); // delay so that the modal is visible before the scroll happens
