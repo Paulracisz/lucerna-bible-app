@@ -20,6 +20,12 @@ type ReaderContextType = {
   /** Visibility of the *book‑menu* modal that lives in Index */
   bookMenuVisible: boolean;
   setBookMenuVisible: (visible: boolean) => void;
+
+  selectedTranslation: string;
+  setSelectedTranslation: (translation: string) => void;
+
+  translationShortName: string;
+  setTranslationShortName: (translationShortName: string) => void;
 };
 
 const ReaderContext = createContext<ReaderContextType | undefined>(undefined);
@@ -32,14 +38,15 @@ export const useReader = (): ReaderContextType => {
   return ctx;
 };
 
-export const ReaderProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const ReaderProvider = ({ children }: { children: ReactNode }) => {
   const [selectedCurrentBook, setSelectedCurrentBook] = useState<string>("GEN");
-  const [selectedChapterNumber, setSelectedChapterNumber] = useState<string>("1");
+  const [selectedChapterNumber, setSelectedChapterNumber] =
+    useState<string>("1");
   const [bookMenuVisible, setBookMenuVisible] = useState<boolean>(false);
+  const [selectedTranslation, setSelectedTranslation] =
+    useState<string>("eng_kjv");
+  const [translationShortName, setTranslationShortName] =
+    useState<string>("KJAV");
 
   /* -------------------------------------------------
      OPTIONAL: persist the last‑read location so the
@@ -67,24 +74,38 @@ export const ReaderProvider = ({
           JSON.stringify({
             book: selectedCurrentBook,
             chapter: selectedChapterNumber,
+            translation: selectedTranslation
           })
         );
       } catch (_) {}
     };
     save();
-  }, [selectedCurrentBook, selectedChapterNumber]);
+  }, [selectedCurrentBook, selectedChapterNumber, selectedTranslation]);
+
+  const contextValue = React.useMemo(
+    () => ({
+      selectedCurrentBook,
+      setSelectedCurrentBook,
+      selectedChapterNumber,
+      setSelectedChapterNumber,
+      bookMenuVisible,
+      setBookMenuVisible,
+      selectedTranslation,
+      setSelectedTranslation,
+      translationShortName,
+      setTranslationShortName,
+    }),
+    [
+      selectedCurrentBook,
+      selectedChapterNumber,
+      bookMenuVisible,
+      selectedTranslation,
+      translationShortName,
+    ]
+  );
 
   return (
-    <ReaderContext.Provider
-      value={{
-        selectedCurrentBook,
-        setSelectedCurrentBook,
-        selectedChapterNumber,
-        setSelectedChapterNumber,
-        bookMenuVisible,
-        setBookMenuVisible,
-      }}
-    >
+    <ReaderContext.Provider value={contextValue}>
       {children}
     </ReaderContext.Provider>
   );

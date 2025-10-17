@@ -50,6 +50,8 @@ export type Bookmark = {
   id: string;
   book: string;
   name: string;
+  translationId: string;
+  translationShortName: string;
   chapter: string;
   verse: string;
   color: string;

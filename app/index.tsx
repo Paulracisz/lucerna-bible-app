@@ -40,6 +40,10 @@ export default function Index() {
     setSelectedChapterNumber,
     bookMenuVisible,
     setBookMenuVisible,
+    selectedTranslation,
+    setSelectedTranslation,
+    translationShortName,
+    setTranslationShortName,
   } = useReader();
 
   const pathname = usePathname();
@@ -79,10 +83,6 @@ export default function Index() {
   const scrollToTop = () => {
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
-
-  // selected by user and used for API call
-  const [selectedTranslation, setSelectedTranslation] = useState("eng_kjv");
-  const [translationShortName, setTranslationShortName] = useState("KJAV");
 
   const currentBookIndex = bookList.findIndex(
     (book) => book.abbreviation === selectedCurrentBook
@@ -344,6 +344,8 @@ export default function Index() {
         id: verseKey,
         name: currentBookTitle!,
         book: selectedCurrentBook!,
+        translationId: selectedTranslation,
+        translationShortName: translationShortName,
         chapter: selectedChapterNumber!,
         verse: verse.number,
         color: color,
@@ -450,24 +452,6 @@ export default function Index() {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
-
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        await AsyncStorage.setItem(
-          "lastReadLocation",
-          JSON.stringify({
-            book: selectedCurrentBook,
-            chapter: selectedChapterNumber,
-            translation: selectedTranslation,
-          })
-        );
-      } catch (e) {
-        console.error("Failed to fetch save data:", e);
-      }
-    };
-    saveData();
-  }, [selectedCurrentBook, selectedChapterNumber, selectedTranslation]);
 
   const saveScrollPosition = async (y: number) => {
     try {

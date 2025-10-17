@@ -10,26 +10,32 @@ import { Bookmark } from "./types";
 
 export default function BookMark() {
   const [currentBookmarks, setCurrentBookmarks] = useState<Bookmark[]>([]);
-  const { setSelectedCurrentBook, setSelectedChapterNumber } = useReader();
+  const { setSelectedCurrentBook, setSelectedChapterNumber, setSelectedTranslation, setTranslationShortName } = useReader();
   const router = useRouter();
 
   /* -------------------------------------------------
      Load bookmarks once when the screen mounts
    ------------------------------------------------- */
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const raw = await AsyncStorage.getItem("bookmarks");
-        if (raw) {
-          const parsed: Bookmark[] = JSON.parse(raw);
-          setCurrentBookmarks(parsed);
-        }
-      } catch (e) {
-        console.error("Failed to load bookmarks", e);
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const raw = await AsyncStorage.getItem("bookmarks");
+      if (raw) {
+        const parsed = JSON.parse(raw).map((b: any) => ({
+          ...b,
+          translationId: b.translationId ?? "eng_kjv",
+          translationShortName: b.translationShortName ?? "KJAV",
+        }));
+        setCurrentBookmarks(parsed);
       }
-    };
-    loadData();
-  }, []);
+    } catch (e) {
+      console.error("Failed to load bookmarks", e);
+    }
+  };
+  loadData();
+}, []);
+
+  
 
   /* -------------------------------------------------
      Delete a bookmark – updates AsyncStorage **and** UI
@@ -75,6 +81,8 @@ export default function BookMark() {
                   onPress={() => {
                     setSelectedCurrentBook(bookmark.book);
                     setSelectedChapterNumber(bookmark.chapter);
+                    setSelectedTranslation(bookmark.translationId);
+                    setTranslationShortName(bookmark.translationShortName);
                     router.replace("/");
                   }}
                 >
@@ -85,7 +93,7 @@ export default function BookMark() {
                     style={{ marginLeft: 5 }}
                   />
                   <Text style={styles.bookmarkVerse}>
-                    {bookmark.name} {bookmark.chapter}:{bookmark.verse}
+                    {bookmark.name} {bookmark.chapter}:{bookmark.verse} {bookmark.translationShortName}
                   </Text>
                 </Pressable>
 
