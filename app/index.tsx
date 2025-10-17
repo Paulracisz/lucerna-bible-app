@@ -1,4 +1,5 @@
 // Components
+
 import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
@@ -9,6 +10,7 @@ import {
   View,
 } from "react-native";
 import NavigationBar from "./NavigationBar";
+import { useReader } from './ReaderContext';
 import TopBar from "./TopBar";
 
 // Misc
@@ -31,6 +33,15 @@ import {
 // add modal for changing translations
 
 export default function Index() {
+    const {
+    selectedCurrentBook,
+    setSelectedCurrentBook,
+    selectedChapterNumber,
+    setSelectedChapterNumber,
+    bookMenuVisible,
+    setBookMenuVisible,
+  } = useReader();
+
   const pathname = usePathname();
 
   let currentPage: "home" | "book" | "search" | "bookmark" | "settings" =
@@ -50,7 +61,6 @@ export default function Index() {
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
-  const [bookMenuVisible, setBookMenuVisible] = useState(false);
   const [translationMenuVisible, setTranslationMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
@@ -73,8 +83,6 @@ export default function Index() {
   // selected by user and used for API call
   const [selectedTranslation, setSelectedTranslation] = useState("eng_kjv");
   const [translationShortName, setTranslationShortName] = useState("KJAV");
-  const [selectedCurrentBook, setSelectedCurrentBook] = useState("GEN");
-  const [selectedChapterNumber, setSelectedChapterNumber] = useState("1");
 
   const currentBookIndex = bookList.findIndex(
     (book) => book.abbreviation === selectedCurrentBook
@@ -334,6 +342,7 @@ export default function Index() {
       // add new bookmark
       const newBookmark: Bookmark = {
         id: verseKey,
+        name: currentBookTitle!,
         book: selectedCurrentBook!,
         chapter: selectedChapterNumber!,
         verse: verse.number,
@@ -493,7 +502,13 @@ export default function Index() {
                   <Text>
                     {" "}
                     {verse.heading ? (
-                      <Text style={{ fontWeight: "bold", display: "flex", fontSize: 26 }}>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          display: "flex",
+                          fontSize: 26,
+                        }}
+                      >
                         {verse.heading}
                       </Text>
                     ) : null}
@@ -510,7 +525,7 @@ export default function Index() {
                     >
                       {verse.number}
                     </Text>
-                    <Text>{" "}</Text>
+                    <Text> </Text>
                     {(() => {
                       const bookmark = bookmarks.find(
                         (b) =>
@@ -825,7 +840,6 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-
   viewBox: {
     display: "flex",
     paddingLeft: "10%",

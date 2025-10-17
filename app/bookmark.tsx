@@ -1,39 +1,57 @@
 // app/book.tsx
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useReader } from "./ReaderContext";
 import TopBar from "./TopBar";
 import { Bookmark } from "./types";
 
-type TopBarProps = {
-  currentTranslation?: string;
-  currentPage: "home" | "book" | "search" | "bookmark" | "settings";
-  openTranslationMenu?: () => void;
-};
+export default function BookMark() {
+  const [currentBookmarks, setCurrentBookmarks] = useState<Bookmark[]>([]);
+  const { setSelectedCurrentBook, setSelectedChapterNumber } = useReader();
+  const router = useRouter();
 
-export default function BookScreen({
-  currentTranslation,
-  currentPage,
-  openTranslationMenu,
-}: TopBarProps) {
-  const [currentBookmarks, setCurrentBookmarks] = useState([]);
-
+  /* -------------------------------------------------
+     Load bookmarks once when the screen mounts
+   ------------------------------------------------- */
   useEffect(() => {
     const loadData = async () => {
       try {
-        const bookmarks = await AsyncStorage.getItem("bookmarks");
-        if (bookmarks) {
-          const parsedBookmarks = JSON.parse(bookmarks);
-          setCurrentBookmarks(parsedBookmarks);
+        const raw = await AsyncStorage.getItem("bookmarks");
+        if (raw) {
+          const parsed: Bookmark[] = JSON.parse(raw);
+          setCurrentBookmarks(parsed);
         }
       } catch (e) {
         console.error("Failed to load bookmarks", e);
       }
     };
-
     loadData();
   }, []);
+
+  /* -------------------------------------------------
+     Delete a bookmark – updates AsyncStorage **and** UI
+   ------------------------------------------------- */
+  const deleteBookMark = async (id: string) => {
+    try {
+      // 1️⃣  Get the current list from storage (guard against stale UI)
+      const raw = await AsyncStorage.getItem("bookmarks");
+      const stored: Bookmark[] = raw ? JSON.parse(raw) : [];
+
+      // 2️⃣  Filter out the one we want to delete
+      const updated = stored.filter((bm) => bm.id !== id);
+
+      // 3️⃣  Write the new list back to AsyncStorage
+      await AsyncStorage.setItem("bookmarks", JSON.stringify(updated));
+
+      // 4️⃣  Immediately reflect the change in the component state
+      setCurrentBookmarks(updated);
+    } catch (e) {
+      console.error("Failed to delete bookmark", e);
+    }
+  };
 
   return (
     <>
@@ -49,17 +67,39 @@ export default function BookScreen({
           {currentBookmarks.length === 0 ? (
             <Text style={styles.verseRef}>No bookmarks yet.</Text>
           ) : (
-            currentBookmarks.map((bookmark: Bookmark, index) => (
-              <View key={bookmark.id} style={[styles.bookmarkItem]}>
-                <Ionicons
-                  name="bookmark"
-                  size={18}
-                  color={bookmark.color}
-                  style={{ marginLeft: 5 }}
-                />
-                <Text style={styles.bookmarkVerse}>
-                  {bookmark.book} {bookmark.chapter}:{bookmark.verse}
-                </Text>
+            currentBookmarks.map((bookmark) => (
+              <View key={bookmark.id} style={styles.rowContainer}>
+                {/* ----------  Jump to the verse  ---------- */}
+                <Pressable
+                  style={styles.bookmarkItem}
+                  onPress={() => {
+                    setSelectedCurrentBook(bookmark.book);
+                    setSelectedChapterNumber(bookmark.chapter);
+                    router.replace("/");
+                  }}
+                >
+                  <Ionicons
+                    name="bookmark"
+                    size={18}
+                    color={bookmark.color}
+                    style={{ marginLeft: 5 }}
+                  />
+                  <Text style={styles.bookmarkVerse}>
+                    {bookmark.name} {bookmark.chapter}:{bookmark.verse}
+                  </Text>
+                </Pressable>
+
+                {/* ----------  Delete the bookmark  ---------- */}
+                <Pressable
+                  style={styles.trashButton}
+                  onPress={() => deleteBookMark(bookmark.id)}
+                >
+                  <Ionicons
+                    name="trash"
+                    size={18}
+                    color="#b00"
+                  />
+                </Pressable>
               </View>
             ))
           )}
@@ -69,6 +109,9 @@ export default function BookScreen({
   );
 }
 
+/* -------------------------------------------------
+   Styles – only minor tweaks to line‑up the trash icon
+   ------------------------------------------------- */
 const styles = StyleSheet.create({
   verseBox: {
     padding: 20,
@@ -95,10 +138,19 @@ const styles = StyleSheet.create({
     color: "grey",
   },
 
-  bookmarkItem: {
-    padding: 12,
-    display: "flex",
+  /* Row that holds the bookmark + trash icon */
+  rowContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", // pushes trash to the far right
+    marginBottom: 8,
+  },
+
+  bookmarkItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1, // take remaining horizontal space
+    padding: 12,
     borderRadius: 8,
   },
 
@@ -107,5 +159,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginLeft: 5,
     color: "#000",
+  },
+
+  trashButton: {
+    padding: 12,
   },
 });

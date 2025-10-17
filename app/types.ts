@@ -49,6 +49,7 @@ export type VerseContentPart = {
 export type Bookmark = {
   id: string;
   book: string;
+  name: string;
   chapter: string;
   verse: string;
   color: string;

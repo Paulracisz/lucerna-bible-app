@@ -1,11 +1,14 @@
+// app/_layout.tsx
 import { Stack } from "expo-router";
+import React from "react";
+import { ReaderProvider } from "./ReaderContext";
 
-export default function RootLayout() {
+export default function Layout() {
   return (
-    <Stack
+    <ReaderProvider>
+      <Stack     
       screenOptions={{
-        headerShown: false,
-      }}
-    />
+      headerShown: false,}} />
+    </ReaderProvider>
   );
 }
