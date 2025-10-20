@@ -219,13 +219,13 @@ export default function Index() {
       if (devMode) console.log("dev mode active:", chapterObj);
 
       // --------------------------------------------------------------
-      // 5️⃣ Update UI state (unchanged from your original code)
+      // 5️⃣ Update UI state
       // --------------------------------------------------------------
       setCurrentChapterObj(chapterObj);
       getCurrentBookList();
 
       // --------------------------------------------------------------
-      // 6️⃣ Parse the chapter content into the format your UI expects
+      // 6️⃣ Parse the chapter content into the format the UI expects
       // --------------------------------------------------------------
       if (chapterObj?.chapter?.content) {
         const chapterContent = chapterObj.chapter.content;
