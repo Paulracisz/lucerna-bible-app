@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import NavigationBar from "./NavigationBar";
-import { useReader } from './ReaderContext';
+import { useReader } from "./ReaderContext";
 import TopBar from "./TopBar";
 
 // Misc
@@ -33,7 +33,7 @@ import {
 // add modal for changing translations
 
 export default function Index() {
-    const {
+  const {
     selectedCurrentBook,
     setSelectedCurrentBook,
     selectedChapterNumber,
@@ -66,7 +66,7 @@ export default function Index() {
   const [currentBookTitle, setCurrentBookTitle] = useState("");
   const [currentChapterNumber, setCurrentChapterNumber] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
-  const latestScrollY = useRef<number>(0)
+  const latestScrollY = useRef<number>(0);
   const [translationMenuVisible, setTranslationMenuVisible] = useState(false);
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
@@ -102,6 +102,10 @@ export default function Index() {
   } | null>(null);
   const [isAlreadyBookmarked, setIsAlreadyBookmarked] = useState(false);
 
+  const [downloadedTranslations, setDownloadedTranslations] = useState<
+    string[]
+  >(["BSB"]);
+
   const isAtEnd =
     currentBookIndex === lastBookIndex &&
     selectedChapterNumber === lastChapterOfCurrentBook;
@@ -115,91 +119,177 @@ export default function Index() {
    * @param {string} chapter current selected chapter of the book (ex: 1 for chapter 1)
    * @returns {console.error} will return a console error if parameters are not passed in correctly
    */
+  /**
+   * Loads a chapter either from the locally‑cached JSON files
+   * (when the translation is in `downloadedTranslations`) or
+   * from the remote HelloAO API.
+   */
   const fetchChapterData = async (
     translation: string,
     book: string,
     chapter: string
   ) => {
-    if (!(translation && book && chapter))
-      return console.error("Invalid params for API call.");
+    // --------------------------------------------------------------
+    // 1️⃣ Guard clause – make sure we have *all* required arguments
+    // --------------------------------------------------------------
+    if (!(translation && book && chapter)) {
+      console.error("Invalid params for API call.");
+      return;
+    }
 
-    fetch(
-      `https://bible.helloao.org/api/${translation}/${book}/${chapter}.json`
-    )
-      .then((request) => request.json())
-      .then((chapterObj) => {
-        if (devMode) console.log("dev mode active:", chapterObj);
+    // --------------------------------------------------------------
+    // 2️⃣ Helper to fetch and parse a local JSON file
+    // --------------------------------------------------------------
+    const loadLocalJson = async (path: string) => {
+      const response = await fetch(path);
+      if (!response.ok) {
+        throw new Error(`Failed to load ${path}: ${response.statusText}`);
+      }
+      return response.json();
+    };
 
-        setCurrentChapterObj(chapterObj);
-        getCurrentBookList();
+    // --------------------------------------------------------------
+    // 3️⃣ Decide whether we should read from the local database
+    // --------------------------------------------------------------
+    const useLocal = downloadedTranslations.includes(translation);
 
-        // if api returns chapter content, lets serialize the data
-        if (chapterObj?.chapter?.content) {
-          const chapterContent = chapterObj.chapter.content;
+    try {
+      let chapterObj: any; // will end up shaped like the remote API response
 
-          let chapterTextArray = []; // fill the array with each verse of text
+      // ==============================================================
+      // LOCAL DATA PATH
+      // ==============================================================
 
-          for (let i = 0; i < chapterContent.length; i++) {
-            const item = chapterContent[i];
+      if (useLocal) {
+        // ---- Load book metadata -------------------------------------------------
+        const booksPath = `./databases/${translation}/${translation}books.json`;
+        const booksData = await loadLocalJson(booksPath);
 
-            // handle headings
-            if (item?.type === "heading") {
-              chapterTextArray.push({
-                number: "",
-                heading: item.content[0],
-                parts: [],
-              });
-            }
+        // Find the entry that matches the requested book (e.g. "GEN")
+        const bookInfo = booksData.find((b: any) => b.id === book);
+        if (!bookInfo) {
+          throw new Error(`Book "${book}" not found in ${booksPath}`);
+        }
 
-            // handle verses where paragraph symbols are used as line breaks
-            if (item.type !== "verse" || !item.content || !item.number)
-              continue;
-            const verseParts = item.content;
-            if (item.type === "verse") {
-              const parts = verseParts.map((part: any) => {
-                if (typeof part === "string") {
-                  return {
-                    text: part.replace(/¶/g, "\n\t"),
-                    isJesusWord: false,
-                  };
-                } else if (typeof part === "object" && part?.text) {
-                  return {
-                    text: part.text.replace(/¶/g, "\n\t"),
-                    isJesusWord: part.wordsOfJesus === true,
-                  };
-                } else {
-                  return { text: "", isJesusWord: false };
-                }
-              });
+        // ---- Load all verses for the translation -------------------------------
+        const versesPath = `./databases/${translation}/bsbverses.json`;
+        const versesData = await loadLocalJson(versesPath);
 
-              chapterTextArray.push({
-                number: item.number,
-                heading: "",
-                parts,
-              });
-            }
+        // Keep only the verses that belong to the requested chapter
+        const chapterVerses = versesData.filter(
+          (v: any) =>
+            v.bookId === bookInfo.id &&
+            Number(v.chapterNumber) === Number(chapter)
+        );
+
+        // Build an object that mimics the shape returned by the remote API
+        chapterObj = {
+          book: {
+            name: bookInfo.name,
+            numberOfChapters: bookInfo.numberOfChapters,
+          },
+          chapter: {
+            number: Number(chapter),
+            content: chapterVerses.map((v: any) => ({
+              type: "verse",
+              number: v.verseNumber ?? v.number,
+              content: JSON.parse(v.contentJson),
+            })),
+          },
+        };
+      }
+
+      // ==============================================================
+      // REMOTE API PATH (fallback when translation isn’t cached)
+      // ==============================================================
+      else {
+        const apiUrl = `https://bible.helloao.org/api/${translation}/${book}/${chapter}.json`;
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(
+            `API request failed (${response.status}): ${response.statusText}`
+          );
+        }
+        chapterObj = await response.json();
+      }
+
+      // --------------------------------------------------------------
+      // 4️⃣ Debug output (only when devMode is true)
+      // --------------------------------------------------------------
+      if (devMode) console.log("dev mode active:", chapterObj);
+
+      // --------------------------------------------------------------
+      // 5️⃣ Update UI state (unchanged from your original code)
+      // --------------------------------------------------------------
+      setCurrentChapterObj(chapterObj);
+      getCurrentBookList();
+
+      // --------------------------------------------------------------
+      // 6️⃣ Parse the chapter content into the format your UI expects
+      // --------------------------------------------------------------
+      if (chapterObj?.chapter?.content) {
+        const chapterContent = chapterObj.chapter.content;
+        const chapterTextArray: any[] = [];
+
+        for (const item of chapterContent) {
+          // ---- Headings -------------------------------------------------
+          if (item?.type === "heading") {
+            chapterTextArray.push({
+              number: "",
+              heading: item.content?.[0] ?? "",
+              parts: [],
+            });
+            continue;
           }
 
-          if (chapterTextArray) setCurrentChapterTextArray(chapterTextArray);
+          // ---- Skip anything that isn’t a verse ------------------------
+          if (item.type !== "verse" || !item.content || !item.number) continue;
 
-          if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
-          else if (!chapterObj?.book?.name)
-            console.error("Book name does not exist.");
+          // ---- Verse processing ----------------------------------------
+          const parts = (item.content as any[]).map((part) => {
+            if (typeof part === "string") {
+              return {
+                text: part.replace(/¶/g, "\n\t"),
+                isJesusWord: false,
+              };
+            } else if (typeof part === "object" && part?.text) {
+              return {
+                text: part.text.replace(/¶/g, "\n\t"),
+                isJesusWord: part.wordsOfJesus === true,
+              };
+            }
+            return { text: "", isJesusWord: false };
+          });
 
-          if (chapterObj?.chapter?.number)
-            setCurrentChapterNumber(chapterObj.chapter.number);
-          else if (!chapterObj?.chapter?.number)
-            console.error("Chapter number does not exist.");
+          chapterTextArray.push({
+            number: item.number,
+            heading: "",
+            parts,
+          });
         }
-      })
-      .catch((error) => {
-        if (!devMode)
-          window.alert(
-            "Something seems to have gone wrong when loading the Bible. Please file an error report in the settings:\n" +
-              error
-          );
-        return console.error("Error fetching chapter text:", error);
-      });
+
+        // ---- Push the processed data into React state -----------------
+        if (chapterTextArray.length)
+          setCurrentChapterTextArray(chapterTextArray);
+        if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
+        else console.error("Book name does not exist.");
+
+        if (chapterObj?.chapter?.number)
+          setCurrentChapterNumber(chapterObj.chapter.number);
+        else console.error("Chapter number does not exist.");
+      }
+    } catch (error: any) {
+      // --------------------------------------------------------------
+      // 7️⃣ Unified error handling
+      // --------------------------------------------------------------
+      if (!devMode) {
+        window.alert(
+          "Something seems to have gone wrong when loading the Bible. Please file an error report in the settings:\n" +
+            error.message
+        );
+      }
+      console.error("Error fetching chapter text:", error);
+    }
   };
 
   const handleChapterChange = (direction: "previous" | "next") => {
@@ -349,7 +439,7 @@ export default function Index() {
         book: selectedCurrentBook!,
         translationId: selectedTranslation!,
         translationShortName: translationShortName!,
-        scrollY:  latestScrollY.current,
+        scrollY: latestScrollY.current,
         chapter: selectedChapterNumber!,
         verse: verse.number,
         color: color,
@@ -462,7 +552,7 @@ export default function Index() {
         style={styles.viewBox}
         onScroll={({ nativeEvent }) => {
           saveScrollPosition(nativeEvent.contentOffset.y);
-          latestScrollY.current = nativeEvent.contentOffset.y
+          latestScrollY.current = nativeEvent.contentOffset.y;
         }}
         scrollEventThrottle={100}
       >
