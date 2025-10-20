@@ -2,6 +2,7 @@ export type Verse = {
   number: string;
   heading: string;
   parts: VerseContentPart[];
+  footnote?: { label: string; text: string };
 };
 
 export type ChapterObject = {

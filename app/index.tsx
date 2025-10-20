@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View,
+  TouchableOpacity,
+  View
 } from "react-native";
 import NavigationBar from "./NavigationBar";
 import { useReader } from "./ReaderContext";
@@ -102,6 +103,9 @@ export default function Index() {
   } | null>(null);
   const [isAlreadyBookmarked, setIsAlreadyBookmarked] = useState(false);
 
+  const [footnoteModalVisible, setFootnoteModalVisible] = useState(false);
+  const [footnoteText, setFootnoteText] = useState("");
+
   const [downloadedTranslations, setDownloadedTranslations] = useState<
     string[]
   >(["BSB", "KJAV"]);
@@ -172,6 +176,20 @@ export default function Index() {
           throw new Error(`Book "${book}" not found in ${booksPath}`);
         }
 
+        const footnotesPath = `/databases/${translationShortName}/footnotes/${book}.json`;
+        const footnotesRaw = await loadLocalJson(footnotesPath);
+
+        const chapterFootnotes = footnotesRaw.filter(
+          (fn: any) => Number(fn.chapterNumber) === Number(chapter)
+        );
+        // turn the raw array into a map for 0(1) lookup:
+        // key = `${chapterNumber}:${verseNumber}`
+        const footnoteMap = new Map<string, any>();
+        chapterFootnotes.forEach((fn: any) => {
+          const key = `${fn.chapterNumber}:${fn.verseNumber}`;
+          footnoteMap.set(key, fn);
+        });
+
         // ---- Load all verses for the translation -------------------------------
         const versesPath = `/databases/${translationShortName}/books/${book}.json`;
         const versesData = await loadLocalJson(versesPath);
@@ -181,6 +199,48 @@ export default function Index() {
           (v: any) => Number(v.chapterNumber) === Number(chapter)
         );
 
+        // helper function that converts 0 -> a, 1 -> b, etc.
+        const indexToLabel = (i: number): string => {
+          const alphabet = "abcdefghijklmnopqrstuvwxyz";
+          let label = "";
+          let n = i;
+          do {
+            label = alphabet[n % 26] + label;
+            n = Math.floor(n / 26) - 1;
+          } while (n >= 0);
+          return label;
+        };
+
+        let footnoteCounter = 0; // reset for each chapter
+
+        const enrichedVerses = chapterVerses.map((v: any) => {
+          const verseContent =
+            typeof v.contentJson === "string"
+              ? JSON.parse(v.contentJson)
+              : v.content;
+
+          const verseKey = `${v.chapterNumber}:${v.verseNumber ?? v.number}`;
+          const fn = footnoteMap.get(verseKey);
+
+          // build the normal verse object first
+          const verseObj = {
+            type: "verse",
+            number: v.verseNumber ?? v.number,
+            content: verseContent,
+            footnote: {},
+          };
+
+          // if a footnote exists, attach a label and the note text
+          if (fn) {
+            const label = indexToLabel(footnoteCounter);
+            footnoteCounter += 1;
+            // store the label inside the verse's content so it appears as a superscript later
+            verseObj.footnote = { label, text: fn.text };
+          }
+
+          return verseObj;
+        });
+
         // Build an object that mimics the shape returned by the remote API
         chapterObj = {
           book: {
@@ -189,14 +249,7 @@ export default function Index() {
           },
           chapter: {
             number: Number(chapter),
-            content: chapterVerses.map((v: any) => ({
-              type: "verse",
-              number: v.verseNumber ?? v.number,
-              content:
-                typeof v.contentJson === "string"
-                  ? JSON.parse(v.contentJson)
-                  : v.content,
-            })),
+            content: enrichedVerses,
           },
         };
       }
@@ -268,12 +321,14 @@ export default function Index() {
             number: item.number,
             heading: "",
             parts,
+            footnote: (item as any).footnote,
           });
         }
 
         // ---- Push the processed data into React state -----------------
         if (chapterTextArray.length)
           setCurrentChapterTextArray(chapterTextArray);
+        console.log(currentChapterTextArray);
         if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
         else console.error("Book name does not exist.");
 
@@ -566,7 +621,6 @@ export default function Index() {
             ? currentChapterTextArray.map((verse, index) => (
                 <Text key={index}>
                   <Text>
-                    {" "}
                     {verse.heading ? (
                       <Text
                         style={{
@@ -612,6 +666,7 @@ export default function Index() {
                       return null;
                     })()}
                   </View>
+                  
                   {verse.parts.map((part, idx) => (
                     <Text
                       key={idx}
@@ -623,6 +678,27 @@ export default function Index() {
                       {part.text + " "}
                     </Text>
                   ))}
+                  {verse.footnote && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          setFootnoteText(verse.footnote!.text);
+                          setFootnoteModalVisible(true);
+                        }}
+                        style={{ marginRight: 4 }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            lineHeight: 12,
+                            color: "grey",
+                            transform: [{ translateY: -4 }],
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {verse.footnote?.label}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                 </Text>
               ))
             : "loading..."}
@@ -756,6 +832,51 @@ export default function Index() {
                 );
               })}
           </ScrollView>
+        </View>
+      </Modal>
+      {/* ---------- FOOTNOTE MODAL ---------- */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={footnoteModalVisible}
+        onRequestClose={() => setFootnoteModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              maxWidth: "85%",
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 12, fontWeight: "600" }}>
+              Footnote
+            </Text>
+
+            <ScrollView style={{ maxHeight: 250 }}>
+              <Text style={{ fontSize: 16 }}>{footnoteText}</Text>
+            </ScrollView>
+
+            <Text
+              style={{
+                marginTop: 15,
+                textAlign: "center",
+                color: "#007aff",
+                fontSize: 16,
+              }}
+              onPress={() => setFootnoteModalVisible(false)}
+            >
+              Close
+            </Text>
+          </View>
         </View>
       </Modal>
       <Modal
