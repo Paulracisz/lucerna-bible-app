@@ -104,7 +104,10 @@ export default function Index() {
 
   const [downloadedTranslations, setDownloadedTranslations] = useState<
     string[]
-  >(["BSB"]);
+  >([
+    "BSB",
+    "KJAV"
+  ]);
 
   const isAtEnd =
     currentBookIndex === lastBookIndex &&
@@ -151,7 +154,7 @@ export default function Index() {
     // --------------------------------------------------------------
     // 3️⃣ Decide whether we should read from the local database
     // --------------------------------------------------------------
-    const useLocal = downloadedTranslations.includes(translation);
+    const useLocal = downloadedTranslations.includes(translationShortName);
 
     try {
       let chapterObj: any; // will end up shaped like the remote API response
@@ -161,8 +164,10 @@ export default function Index() {
       // ==============================================================
 
       if (useLocal) {
+
+        if (devMode) console.log("using local");
         // ---- Load book metadata -------------------------------------------------
-        const booksPath = `/databases/${translation}/${translation}books.json`;
+        const booksPath = `/databases/${translationShortName}/${translationShortName}books.json`;
         const booksData = await loadLocalJson(booksPath);
 
         // Find the entry that matches the requested book (e.g. "GEN")
@@ -172,7 +177,7 @@ export default function Index() {
         }
 
         // ---- Load all verses for the translation -------------------------------
-        const versesPath = `/databases/${translation}/${translation}verses.json`;
+        const versesPath = `/databases/${translationShortName}/${translationShortName}verses.json`;
         const versesData = await loadLocalJson(versesPath);
 
         // Keep only the verses that belong to the requested chapter
@@ -203,6 +208,9 @@ export default function Index() {
       // REMOTE API PATH (fallback when translation isn’t cached)
       // ==============================================================
       else {
+
+
+        if (devMode) console.log("using api");
         const apiUrl = `https://bible.helloao.org/api/${translation}/${book}/${chapter}.json`;
         const response = await fetch(apiUrl);
         if (!response.ok) {
