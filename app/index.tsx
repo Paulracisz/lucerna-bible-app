@@ -162,7 +162,7 @@ export default function Index() {
 
       if (useLocal) {
         // ---- Load book metadata -------------------------------------------------
-        const booksPath = `./databases/${translation}/${translation}books.json`;
+        const booksPath = `/databases/${translation}/${translation}books.json`;
         const booksData = await loadLocalJson(booksPath);
 
         // Find the entry that matches the requested book (e.g. "GEN")
@@ -172,7 +172,7 @@ export default function Index() {
         }
 
         // ---- Load all verses for the translation -------------------------------
-        const versesPath = `./databases/${translation}/bsbverses.json`;
+        const versesPath = `/databases/${translation}/bsbverses.json`;
         const versesData = await loadLocalJson(versesPath);
 
         // Keep only the verses that belong to the requested chapter
