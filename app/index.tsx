@@ -177,6 +177,8 @@ export default function Index() {
         }
 
         const footnotesPath = `/databases/${translationShortName}/footnotes/${book}.json`;
+        let footnoteMap = new Map<string, any>();
+        try {
         const footnotesRaw = await loadLocalJson(footnotesPath);
 
         const chapterFootnotes = footnotesRaw.filter(
@@ -184,11 +186,13 @@ export default function Index() {
         );
         // turn the raw array into a map for 0(1) lookup:
         // key = `${chapterNumber}:${verseNumber}`
-        const footnoteMap = new Map<string, any>();
         chapterFootnotes.forEach((fn: any) => {
           const key = `${fn.chapterNumber}:${fn.verseNumber}`;
           footnoteMap.set(key, fn);
         });
+      } catch (e) {
+        if (devMode) console.warn(`No foot-notes for ${book}: ${e}`);
+      }
 
         // ---- Load all verses for the translation -------------------------------
         const versesPath = `/databases/${translationShortName}/books/${book}.json`;
@@ -221,6 +225,7 @@ export default function Index() {
 
           const verseKey = `${v.chapterNumber}:${v.verseNumber ?? v.number}`;
           const fn = footnoteMap.get(verseKey);
+    
 
           // build the normal verse object first
           const verseObj = {
