@@ -1,11 +1,11 @@
 // src/context/ReaderContext.tsx
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useState,
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 
 type ReaderContextType = {
@@ -59,7 +59,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
   };
 
   /* -------------------------------------------------
-     OPTIONAL: persist the last‑read location so the
+     persist the last‑read location so the
      app remembers where the user left off.
    ------------------------------------------------- */
   useEffect(() => {
@@ -67,11 +67,14 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       try {
         const saved = await AsyncStorage.getItem("lastReadLocation");
         if (saved) {
-          const { book, chapter } = JSON.parse(saved);
+          const { book, chapter, translation } = JSON.parse(saved);
           if (book) setSelectedCurrentBook(book);
           if (chapter) setSelectedChapterNumber(chapter);
+          if (translation) setSelectedTranslation(translation || "eng_kjv");
         }
-      } catch (_) {}
+      } catch (e) {
+        console.error("Failed to load data:", e);
+      }
     };
     load();
   }, []);

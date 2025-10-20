@@ -388,15 +388,7 @@ export default function Index() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const savedData = await AsyncStorage.getItem("lastReadLocation");
         const scrollData = await AsyncStorage.getItem("scrollPosition");
-
-        if (savedData) {
-          const { book, chapter, translation } = JSON.parse(savedData);
-          setSelectedCurrentBook(book || "GEN");
-          setSelectedChapterNumber(chapter || "1");
-          setSelectedTranslation(translation || "eng_kjv");
-        }
 
         if (scrollData) {
           const { y } = JSON.parse(scrollData);
