@@ -104,10 +104,7 @@ export default function Index() {
 
   const [downloadedTranslations, setDownloadedTranslations] = useState<
     string[]
-  >([
-    "BSB",
-    "KJAV"
-  ]);
+  >(["BSB", "KJAV"]);
 
   const isAtEnd =
     currentBookIndex === lastBookIndex &&
@@ -164,7 +161,6 @@ export default function Index() {
       // ==============================================================
 
       if (useLocal) {
-
         if (devMode) console.log("using local");
         // ---- Load book metadata -------------------------------------------------
         const booksPath = `/databases/${translationShortName}/${translationShortName}books.json`;
@@ -196,7 +192,10 @@ export default function Index() {
             content: chapterVerses.map((v: any) => ({
               type: "verse",
               number: v.verseNumber ?? v.number,
-              content: typeof v.contentJson === "string" ? JSON.parse(v.contentJson) : v.content,
+              content:
+                typeof v.contentJson === "string"
+                  ? JSON.parse(v.contentJson)
+                  : v.content,
             })),
           },
         };
@@ -206,8 +205,6 @@ export default function Index() {
       // REMOTE API PATH (fallback when translation isn’t cached)
       // ==============================================================
       else {
-
-
         if (devMode) console.log("using api");
         const apiUrl = `https://bible.helloao.org/api/${translation}/${book}/${chapter}.json`;
         const response = await fetch(apiUrl);
