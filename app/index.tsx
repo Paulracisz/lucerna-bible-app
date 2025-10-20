@@ -457,7 +457,7 @@ export default function Index() {
    * Calls the API to get the current list of Bible books for displaying in the book selection menu.
    *
    * @param {none} none has no parameter
-   * @returns {} returns an array to be mapped over containing the list of books.
+   * @returns {} returns an array to be mapped over containing the list of books
    */
   const getCurrentBookList = () => {
     fetch(`https://bible.helloao.org/api/${selectedTranslation}/books.json`)
