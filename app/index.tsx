@@ -177,14 +177,12 @@ export default function Index() {
         }
 
         // ---- Load all verses for the translation -------------------------------
-        const versesPath = `/databases/${translationShortName}/${translationShortName}verses.json`;
+        const versesPath = `/databases/${translationShortName}/books/${book}.json`;
         const versesData = await loadLocalJson(versesPath);
 
         // Keep only the verses that belong to the requested chapter
         const chapterVerses = versesData.filter(
-          (v: any) =>
-            v.bookId === bookInfo.id &&
-            Number(v.chapterNumber) === Number(chapter)
+          (v: any) => Number(v.chapterNumber) === Number(chapter)
         );
 
         // Build an object that mimics the shape returned by the remote API
@@ -198,7 +196,7 @@ export default function Index() {
             content: chapterVerses.map((v: any) => ({
               type: "verse",
               number: v.verseNumber ?? v.number,
-              content: JSON.parse(v.contentJson),
+              content: typeof v.contentJson === "string" ? JSON.parse(v.contentJson) : v.content,
             })),
           },
         };
