@@ -614,7 +614,7 @@ export default function Index() {
       selectedChapterNumber
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
+  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber, footnotesMap]);
 
   return (
     <>
