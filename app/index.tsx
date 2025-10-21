@@ -189,12 +189,10 @@ export default function Index() {
         );
         // turn the raw array into a map for 0(1) lookup:
         // key = `${chapterNumber}:${verseNumber}`
-        console.log(chapterFootnotes, "chappy boy")
         chapterFootnotes.forEach((fn: any) => {
           const key = `${fn.chapterNumber}:${fn.verseNumber}`;
           footnoteMap.set(key, fn);
         });
-        console.log(footnoteMap, "mapppy")
       } catch (e) {
         if (devMode) console.warn(`No foot-notes for ${book}: ${e}`);
       }
@@ -254,11 +252,7 @@ export default function Index() {
           return verseObj;
         });
 
-        console.log("parsed data getting put into react state", chapterFootnoteMap)
-
         setFootnotesMap(chapterFootnoteMap);
-
-        console.log("react state for footnotes", footnotesMap)
 
         // Build an object that mimics the shape returned by the remote API
         chapterObj = {

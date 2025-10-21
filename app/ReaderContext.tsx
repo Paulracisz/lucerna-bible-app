@@ -87,9 +87,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
           if (chapter) setSelectedChapterNumber(chapter);
           if (translation) setSelectedTranslation(translation || "eng_kjv");
           if (footnotes) setFootnotesMap(footnotes as FootnotesMap);
-          console.log(footnotes, "footnotes");
         }
-        console.log("loaded", footnotesMap);
       } catch (e) {
         console.error("Failed to load data:", e);
       } finally {
@@ -113,10 +111,6 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
             translation: selectedTranslation,
             footnotes: footnotesMap,
           })
-        );
-        console.log(
-          "we saving dat footNotesMap to local storage",
-          footnotesMap
         );
       } catch (e) {
         console.error("Failed to save data:", e);
