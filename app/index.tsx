@@ -26,7 +26,7 @@ import {
   Bookmark,
   ChapterObject,
   Translations,
-  Verse,
+  Verse
 } from "./types";
 
 // TODO
@@ -46,6 +46,9 @@ export default function Index() {
     translationShortName,
     setTranslationShortName,
     saveScrollPosition,
+    setFootnotesMap,
+    footnotesMap,
+    readerReady,
   } = useReader();
 
   const pathname = usePathname();
@@ -186,10 +189,12 @@ export default function Index() {
         );
         // turn the raw array into a map for 0(1) lookup:
         // key = `${chapterNumber}:${verseNumber}`
+        console.log(chapterFootnotes, "chappy boy")
         chapterFootnotes.forEach((fn: any) => {
           const key = `${fn.chapterNumber}:${fn.verseNumber}`;
           footnoteMap.set(key, fn);
         });
+        console.log(footnoteMap, "mapppy")
       } catch (e) {
         if (devMode) console.warn(`No foot-notes for ${book}: ${e}`);
       }
@@ -215,6 +220,8 @@ export default function Index() {
           return label;
         };
 
+        let chapterFootnoteMap: Record<string, {label: string; text:string}> = {};
+
         let footnoteCounter = 0; // reset for each chapter
 
         const enrichedVerses = chapterVerses.map((v: any) => {
@@ -232,7 +239,7 @@ export default function Index() {
             type: "verse",
             number: v.verseNumber ?? v.number,
             content: verseContent,
-            footnote: {},
+            footnote: {}
           };
 
           // if a footnote exists, attach a label and the note text
@@ -241,10 +248,17 @@ export default function Index() {
             footnoteCounter += 1;
             // store the label inside the verse's content so it appears as a superscript later
             verseObj.footnote = { label, text: fn.text };
+            chapterFootnoteMap[verseKey] = { label, text: fn.text };
           }
 
           return verseObj;
         });
+
+        console.log("parsed data getting put into react state", chapterFootnoteMap)
+
+        setFootnotesMap(chapterFootnoteMap);
+
+        console.log("react state for footnotes", footnotesMap)
 
         // Build an object that mimics the shape returned by the remote API
         chapterObj = {
@@ -333,7 +347,6 @@ export default function Index() {
         // ---- Push the processed data into React state -----------------
         if (chapterTextArray.length)
           setCurrentChapterTextArray(chapterTextArray);
-        console.log(currentChapterTextArray);
         if (chapterObj?.book?.name) setCurrentBookTitle(chapterObj.book.name);
         else console.error("Book name does not exist.");
 
@@ -594,6 +607,7 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    if (!readerReady) return;
     fetchChapterData(
       selectedTranslation,
       selectedCurrentBook,
@@ -669,7 +683,7 @@ export default function Index() {
                         );
                       }
                       return null;
-                    })()}
+                  })()}
                   </View>
                   
                   {verse.parts.map((part, idx) => (
@@ -683,10 +697,11 @@ export default function Index() {
                       {part.text + " "}
                     </Text>
                   ))}
-                  {verse.footnote && (
+                  {footnotesMap[`${selectedChapterNumber}:${verse.number}`] && (
                       <TouchableOpacity
                         onPress={() => {
-                          setFootnoteText(verse.footnote!.text);
+                          const fn = footnotesMap[`${selectedChapterNumber}:${verse.number}`];
+                          setFootnoteText(fn.text);
                           setFootnoteModalVisible(true);
                         }}
                         style={{ marginRight: 4 }}
@@ -700,7 +715,7 @@ export default function Index() {
                             fontStyle: "italic",
                           }}
                         >
-                          {verse.footnote?.label}
+                          {footnotesMap[`${selectedChapterNumber}:${verse.number}`].label}
                         </Text>
                       </TouchableOpacity>
                     )}

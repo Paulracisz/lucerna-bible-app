@@ -2,11 +2,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {
   createContext,
+  Dispatch,
   ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
+
+import { FootnotesMap } from "./types";
 
 type ReaderContextType = {
   /** Selected book abbreviation, e.g. "GEN" */
@@ -28,6 +33,12 @@ type ReaderContextType = {
   setTranslationShortName: (translationShortName: string) => void;
 
   saveScrollPosition: (y: number) => void;
+
+  setFootnotesMap: Dispatch<SetStateAction<FootnotesMap>>;
+
+  footnotesMap: FootnotesMap;
+
+  readerReady: boolean;
 };
 
 const ReaderContext = createContext<ReaderContextType | undefined>(undefined);
@@ -49,6 +60,10 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
     useState<string>("eng_kjv");
   const [translationShortName, setTranslationShortName] =
     useState<string>("KJAV");
+  const [footnotesMap, setFootnotesMap] = useState<FootnotesMap>({});
+
+  const isInitializing = useRef(true);
+  const [readerReady, setReaderReady] = useState(false);
 
   const saveScrollPosition = async (y: number) => {
     try {
@@ -67,19 +82,27 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       try {
         const saved = await AsyncStorage.getItem("lastReadLocation");
         if (saved) {
-          const { book, chapter, translation } = JSON.parse(saved);
+          const { book, chapter, translation, footnotes } = JSON.parse(saved);
           if (book) setSelectedCurrentBook(book);
           if (chapter) setSelectedChapterNumber(chapter);
           if (translation) setSelectedTranslation(translation || "eng_kjv");
+          if (footnotes) setFootnotesMap(footnotes as FootnotesMap);
+          console.log(footnotes, "footnotes");
         }
+        console.log("loaded", footnotesMap);
       } catch (e) {
         console.error("Failed to load data:", e);
+      } finally {
+        isInitializing.current = false;
+        setReaderReady(true);
       }
     };
     load();
   }, []);
 
   useEffect(() => {
+    if (isInitializing.current) return;
+
     const save = async () => {
       try {
         await AsyncStorage.setItem(
@@ -88,12 +111,24 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
             book: selectedCurrentBook,
             chapter: selectedChapterNumber,
             translation: selectedTranslation,
+            footnotes: footnotesMap,
           })
         );
-      } catch (_) {}
+        console.log(
+          "we saving dat footNotesMap to local storage",
+          footnotesMap
+        );
+      } catch (e) {
+        console.error("Failed to save data:", e);
+      }
     };
     save();
-  }, [selectedCurrentBook, selectedChapterNumber, selectedTranslation]);
+  }, [
+    selectedCurrentBook,
+    selectedChapterNumber,
+    selectedTranslation,
+    footnotesMap,
+  ]);
 
   const contextValue = React.useMemo(
     () => ({
@@ -108,6 +143,9 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       translationShortName,
       setTranslationShortName,
       saveScrollPosition,
+      setFootnotesMap,
+      footnotesMap,
+      readerReady,
     }),
     [
       selectedCurrentBook,
@@ -115,6 +153,8 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       bookMenuVisible,
       selectedTranslation,
       translationShortName,
+      footnotesMap,
+      readerReady,
     ]
   );
 

@@ -58,3 +58,10 @@ export type Bookmark = {
   verse: string;
   color: string;
 }
+
+export type FootnoteEntry = {
+  label: string;
+  text: string;
+}
+
+export type FootnotesMap = Record<string, FootnoteEntry>;
