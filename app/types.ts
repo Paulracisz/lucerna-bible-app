@@ -59,6 +59,18 @@ export type Bookmark = {
   color: string;
 }
 
+export type Highlight = {
+  id: string;
+  book: string;
+  name: string;
+  translationId: string;
+  translationShortName: string;
+  scrollY: number;
+  chapter: string;
+  verse: string;
+  color: string;
+}
+
 export type FootnoteEntry = {
   label: string;
   text: string;

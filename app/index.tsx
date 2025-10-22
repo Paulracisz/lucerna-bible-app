@@ -8,7 +8,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import NavigationBar from "./NavigationBar";
 import { useReader } from "./ReaderContext";
@@ -25,8 +25,9 @@ import {
   BookListItem,
   Bookmark,
   ChapterObject,
+  Highlight,
   Translations,
-  Verse
+  Verse,
 } from "./types";
 
 // TODO
@@ -102,10 +103,18 @@ export default function Index() {
 
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [bookmarkModalVisible, setBookmarkModalVisible] = useState(false);
+  const [isAlreadyBookmarked, setIsAlreadyBookmarked] = useState(false);
   const [selectedVerseToBookmark, setSelectedVerseToBookmark] = useState<{
     verseNumber: string;
   } | null>(null);
-  const [isAlreadyBookmarked, setIsAlreadyBookmarked] = useState(false);
+
+  const [highlightedVerses, setHighlightedVerses] = useState<Highlight[]>([]);
+  const [highlightVerseModalVisible, setHighlightVerseModalVisible] =
+    useState(false);
+  const [isAlreadyHighlighted, setIsAlreadyHighlighted] = useState(false);
+  const [selectedVerseToHighlight, setSelectedVerseToHighlight] = useState<{
+    verseNumber: string;
+  } | null>(null);
 
   const [footnoteModalVisible, setFootnoteModalVisible] = useState(false);
   const [footnoteText, setFootnoteText] = useState("");
@@ -183,22 +192,22 @@ export default function Index() {
         const footnotesPath = `/databases/${translationShortName}/footnotes/${book}.json`;
         let footnoteMap = new Map<string, any>();
         try {
-        const footnotesRaw = await loadLocalJson(footnotesPath);
+          const footnotesRaw = await loadLocalJson(footnotesPath);
 
-        console.log(footnotesRaw, "footnotesRaw")
+          console.log(footnotesRaw, "footnotesRaw");
 
-        const chapterFootnotes = footnotesRaw.filter(
-          (fn: any) => Number(fn.chapterNumber) === Number(chapter)
-        );
-        // turn the raw array into a map for 0(1) lookup:
-        // key = `${chapterNumber}:${verseNumber}`
-        chapterFootnotes.forEach((fn: any) => {
-          const key = `${fn.chapterNumber}:${fn.verseNumber}`;
-          footnoteMap.set(key, fn);
-        });
-      } catch (e) {
-        if (devMode) console.warn(`No foot-notes for ${book}: ${e}`);
-      }
+          const chapterFootnotes = footnotesRaw.filter(
+            (fn: any) => Number(fn.chapterNumber) === Number(chapter)
+          );
+          // turn the raw array into a map for 0(1) lookup:
+          // key = `${chapterNumber}:${verseNumber}`
+          chapterFootnotes.forEach((fn: any) => {
+            const key = `${fn.chapterNumber}:${fn.verseNumber}`;
+            footnoteMap.set(key, fn);
+          });
+        } catch (e) {
+          if (devMode) console.warn(`No foot-notes for ${book}: ${e}`);
+        }
 
         // ---- Load all verses for the translation -------------------------------
         const versesPath = `/databases/${translationShortName}/books/${book}.json`;
@@ -221,7 +230,10 @@ export default function Index() {
           return label;
         };
 
-        let chapterFootnoteMap: Record<string, {label: string; text:string}> = {};
+        let chapterFootnoteMap: Record<
+          string,
+          { label: string; text: string }
+        > = {};
 
         let footnoteCounter = 0; // reset for each chapter
 
@@ -233,14 +245,13 @@ export default function Index() {
 
           const verseKey = `${v.chapterNumber}:${v.verseNumber ?? v.number}`;
           const fn = footnoteMap.get(verseKey);
-    
 
           // build the normal verse object first
           const verseObj = {
             type: "verse",
             number: v.verseNumber ?? v.number,
             content: verseContent,
-            footnote: {} as { label: string; text: string } | {}
+            footnote: {} as { label: string; text: string } | {},
           };
 
           // if a footnote exists, attach a label and the note text
@@ -479,6 +490,61 @@ export default function Index() {
     }
   };
 
+  const saveHighlights = async (updated: Highlight[]) => {
+    try {
+      await AsyncStorage.setItem("highlightedVerses", JSON.stringify(updated));
+      setHighlightedVerses(updated);
+    } catch (err) {
+      console.error("Failed to save bookmarks:", err);
+    }
+  };
+  const handleAddHighlight = async (color: string, verse: Verse) => {
+    const key = "highlighted";
+    const verseKey = `${selectedCurrentBook}-${selectedChapterNumber}-${verse.number}`;
+
+    const existing = highlightedVerses.find(
+      (h) =>
+        h.book === selectedCurrentBook &&
+        h.chapter === selectedChapterNumber &&
+        h.verse === verse?.number
+    );
+    setIsAlreadyHighlighted(!!existing);
+
+    let updatedHighlights;
+
+    if (existing) {
+      // removed bookmark if it already exists
+      updatedHighlights = highlightedVerses.filter(
+        (h) =>
+          !(
+            h.book === selectedCurrentBook &&
+            h.chapter === selectedChapterNumber &&
+            h.verse === verse.number
+          )
+      );
+    } else {
+      // add new bookmark
+
+      const newHighlight: Highlight = {
+        id: verseKey,
+        name: currentBookTitle!,
+        book: selectedCurrentBook!,
+        translationId: selectedTranslation!,
+        translationShortName: translationShortName!,
+        scrollY: latestScrollY.current,
+        chapter: selectedChapterNumber!,
+        verse: verse.number,
+        color: color,
+      };
+      updatedHighlights = [...highlightedVerses, newHighlight];
+    }
+
+    // save bookmark and update state
+    await AsyncStorage.setItem(key, JSON.stringify(updatedHighlights));
+    saveHighlights(updatedHighlights);
+    setHighlightVerseModalVisible(false);
+  };
+
   const handleAddBookmark = async (color: string, verse: Verse) => {
     const key = "bookmarks";
     const verseKey = `${selectedCurrentBook}-${selectedChapterNumber}-${verse.number}`;
@@ -603,6 +669,29 @@ export default function Index() {
     loadBookmarks();
   }, []);
 
+    useEffect(() => {
+    const loadHighlights = async () => {
+      try {
+        const data = await AsyncStorage.getItem("highlightedVerses");
+        if (data) {
+          const parsed = JSON.parse(data);
+          if (Array.isArray(parsed)) {
+            setHighlightedVerses(parsed);
+          } else {
+            setHighlightedVerses([]);
+          }
+        } else {
+          setHighlightedVerses([]); // explicitly set empty if nothing stored
+        }
+      } catch (err) {
+        console.error("Error loading bookmarks:", err);
+        setHighlightedVerses([]);
+      }
+    };
+
+    loadHighlights();
+  }, []);
+
   useEffect(() => {
     if (!readerReady || !footnotesReady) return;
     fetchChapterData(
@@ -680,42 +769,82 @@ export default function Index() {
                         );
                       }
                       return null;
-                  })()}
+                    })()}
                   </View>
-                  
-                  {verse.parts.map((part, idx) => (
-                    <Text
-                      key={idx}
-                      style={[
-                        styles.verseText,
-                        part.isJesusWord && { color: "#d9320e" },
-                      ]}
-                    >
-                      {part.text + " "}
-                    </Text>
-                  ))}
-                  {footnotesMap[`${selectedChapterNumber}:${verse.number}`] && (
-                      <TouchableOpacity
+
+                  {/* -------------------------------------------------------------
+   Inside the map that renders each verse (still inside the
+   `currentChapterTextArray.map` callback)
+   ------------------------------------------------------------- */}
+                  {verse.parts.map((part, idx) => {
+                    // ---------------------------------------------------------
+                    // 1️⃣ Look up any highlight that belongs to this verse.
+                    // ---------------------------------------------------------
+                    const highlightForVerse = highlightedVerses.find(
+                      (h) =>
+                        h.book === selectedCurrentBook &&
+                        h.chapter === selectedChapterNumber &&
+                        h.verse === verse.number
+                    );
+
+                    // ---------------------------------------------------------
+                    // 2️⃣ Render the word / phrase, applying the highlight colour
+                    //    (if a highlight was found).
+                    // ---------------------------------------------------------
+                    return (
+                      <Text
+                        key={idx}
                         onPress={() => {
-                          const fn = footnotesMap[`${selectedChapterNumber}:${verse.number}`];
-                          setFootnoteText(fn.text);
-                          setFootnoteModalVisible(true);
+                          setSelectedVerseToHighlight({
+                            verseNumber: verse.number,
+                          });
+                          setHighlightVerseModalVisible(true);
                         }}
-                        style={{ marginRight: 4 }}
+                        style={[
+                          styles.verseText,
+                          part.isJesusWord && { color: "#d9320e" },
+                          // Apply the background colour only when a highlight exists
+                          highlightForVerse && {
+                            backgroundColor: `${highlightForVerse.color}80`,
+                            // A little padding makes the colour easier to see
+                            paddingHorizontal: 2,
+                            borderRadius: 2,
+                          },
+                        ]}
                       >
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            lineHeight: 12,
-                            color: "grey",
-                            transform: [{ translateY: -4 }],
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {footnotesMap[`${selectedChapterNumber}:${verse.number}`].label}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                        {part.text + " "}
+                      </Text>
+                    );
+                  })}
+                  {footnotesMap[`${selectedChapterNumber}:${verse.number}`] && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        const fn =
+                          footnotesMap[
+                            `${selectedChapterNumber}:${verse.number}`
+                          ];
+                        setFootnoteText(fn.text);
+                        setFootnoteModalVisible(true);
+                      }}
+                      style={{ marginRight: 4 }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 12,
+                          color: "grey",
+                          transform: [{ translateY: -4 }],
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {
+                          footnotesMap[
+                            `${selectedChapterNumber}:${verse.number}`
+                          ].label
+                        }
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </Text>
               ))
             : "loading..."}
@@ -892,6 +1021,69 @@ export default function Index() {
               onPress={() => setFootnoteModalVisible(false)}
             >
               Close
+            </Text>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={highlightVerseModalVisible}
+        onRequestClose={() => setHighlightVerseModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              width: "80%",
+            }}
+          >
+            <Text style={{ fontSize: 18, marginBottom: 10 }}>
+              Choose highlight color
+            </Text>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              {["#ff0000", "#ffa500", "#008000", "#0000ff", "#800080"].map(
+                (color) => (
+                  <Ionicons
+                    key={color}
+                    name="brush"
+                    size={32}
+                    color={color}
+                    onPress={() => {
+                      if (selectedVerseToHighlight) {
+                        const verse = currentChapterTextArray.find(
+                          (v) =>
+                            v.number === selectedVerseToHighlight.verseNumber
+                        );
+                        if (verse) {
+                          handleAddHighlight(color, verse);
+                        }
+                      }
+                    }}
+                  />
+                )
+              )}
+            </View>
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: 15,
+                color: "grey",
+              }}
+              onPress={() => setHighlightVerseModalVisible(false)}
+            >
+              Cancel
             </Text>
           </View>
         </View>
