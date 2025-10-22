@@ -8,10 +8,11 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 
 import { FootnotesMap } from "./types";
+
 
 type ReaderContextType = {
   /** Selected book abbreviation, e.g. "GEN" */
@@ -34,9 +35,10 @@ type ReaderContextType = {
 
   saveScrollPosition: (y: number) => void;
 
+  footnotesMap: FootnotesMap;
   setFootnotesMap: Dispatch<SetStateAction<FootnotesMap>>;
 
-  footnotesMap: FootnotesMap;
+  footnotesReady: boolean;
 
   readerReady: boolean;
 };
@@ -57,13 +59,15 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
     useState<string>("1");
   const [bookMenuVisible, setBookMenuVisible] = useState<boolean>(false);
   const [selectedTranslation, setSelectedTranslation] =
-    useState<string>("eng_kjv");
+    useState<string>("bsb");
   const [translationShortName, setTranslationShortName] =
-    useState<string>("KJAV");
-  const [footnotesMap, setFootnotesMap] = useState<FootnotesMap>({});
+    useState<string>("BSB");
 
   const isInitializing = useRef(true);
   const [readerReady, setReaderReady] = useState(false);
+
+  const [footnotesMap, setFootnotesMap] = useState<FootnotesMap>({});
+  const [footnotesReady, setFootnotesReady] = useState(false);
 
   const saveScrollPosition = async (y: number) => {
     try {
@@ -85,7 +89,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
           const { book, chapter, translation, footnotes } = JSON.parse(saved);
           if (book) setSelectedCurrentBook(book);
           if (chapter) setSelectedChapterNumber(chapter);
-          if (translation) setSelectedTranslation(translation || "eng_kjv");
+          if (translation) setSelectedTranslation(translation);
           if (footnotes) setFootnotesMap(footnotes as FootnotesMap);
         }
       } catch (e) {
@@ -93,6 +97,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       } finally {
         isInitializing.current = false;
         setReaderReady(true);
+        setFootnotesReady(true);
       }
     };
     load();
@@ -100,7 +105,6 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isInitializing.current) return;
-
     const save = async () => {
       try {
         await AsyncStorage.setItem(
@@ -121,7 +125,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
     selectedCurrentBook,
     selectedChapterNumber,
     selectedTranslation,
-    footnotesMap,
+    footnotesMap
   ]);
 
   const contextValue = React.useMemo(
@@ -137,9 +141,11 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       translationShortName,
       setTranslationShortName,
       saveScrollPosition,
-      setFootnotesMap,
-      footnotesMap,
       readerReady,
+      footnotesMap,
+      setFootnotesMap,
+      footnotesReady,
+      setFootnotesReady
     }),
     [
       selectedCurrentBook,
@@ -147,8 +153,9 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       bookMenuVisible,
       selectedTranslation,
       translationShortName,
-      footnotesMap,
       readerReady,
+      footnotesMap,
+      footnotesReady
     ]
   );
 

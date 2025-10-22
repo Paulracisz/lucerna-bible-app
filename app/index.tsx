@@ -46,9 +46,10 @@ export default function Index() {
     translationShortName,
     setTranslationShortName,
     saveScrollPosition,
-    setFootnotesMap,
-    footnotesMap,
     readerReady,
+    footnotesMap,
+    footnotesReady,
+    setFootnotesMap,
   } = useReader();
 
   const pathname = usePathname();
@@ -184,6 +185,8 @@ export default function Index() {
         try {
         const footnotesRaw = await loadLocalJson(footnotesPath);
 
+        console.log(footnotesRaw, "footnotesRaw")
+
         const chapterFootnotes = footnotesRaw.filter(
           (fn: any) => Number(fn.chapterNumber) === Number(chapter)
         );
@@ -237,7 +240,7 @@ export default function Index() {
             type: "verse",
             number: v.verseNumber ?? v.number,
             content: verseContent,
-            footnote: {}
+            footnote: {} as { label: string; text: string } | {}
           };
 
           // if a footnote exists, attach a label and the note text
@@ -334,7 +337,7 @@ export default function Index() {
             number: item.number,
             heading: "",
             parts,
-            footnote: (item as any).footnote,
+            footnote: item.footnote,
           });
         }
 
@@ -601,14 +604,14 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (!readerReady) return;
+    if (!readerReady || !footnotesReady) return;
     fetchChapterData(
       selectedTranslation,
       selectedCurrentBook,
       selectedChapterNumber
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber, footnotesMap]);
+  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
 
   return (
     <>
