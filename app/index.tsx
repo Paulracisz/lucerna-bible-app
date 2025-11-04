@@ -78,8 +78,9 @@ export default function Index() {
   const [bookList, setBookList] = useState<BookListItem[]>([]);
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [booksSearchQuery, setBookSearchQuery] = useState("");
 
-  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const normalizedQuery = booksSearchQuery.trim().toLowerCase();
 
   // translations
   const [allTranslations, setAllTranslations] = useState<Translations[]>([]);
@@ -1218,8 +1219,8 @@ export default function Index() {
           </View>
           <TextInput
             placeholder="Search books..."
-            value={searchQuery}
-            onChangeText={setSearchQuery}
+            value={booksSearchQuery}
+            onChangeText={setBookSearchQuery}
             style={{
               padding: 10,
               fontSize: 16,
