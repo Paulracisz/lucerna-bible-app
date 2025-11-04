@@ -79,6 +79,8 @@ export default function Index() {
   const [expandedBook, setExpandedBook] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
   // translations
   const [allTranslations, setAllTranslations] = useState<Translations[]>([]);
   const [groupedTranslations, setGroupedTranslations] = useState<
@@ -124,6 +126,14 @@ export default function Index() {
     string[]
   >(["BSB", "KJAV"]);
 
+    const loadLocalJson = async (path: string) => {
+      const response = await fetch(path);
+      if (!response.ok) {
+        throw new Error(`Failed to load ${path}: ${response.statusText}`);
+      }
+      return response.json();
+    };
+
   const isAtEnd =
     currentBookIndex === lastBookIndex &&
     selectedChapterNumber === lastChapterOfCurrentBook;
@@ -154,17 +164,6 @@ export default function Index() {
       console.error("Invalid params for API call.");
       return;
     }
-
-    // --------------------------------------------------------------
-    // 2️⃣ Helper to fetch and parse a local JSON file
-    // --------------------------------------------------------------
-    const loadLocalJson = async (path: string) => {
-      const response = await fetch(path);
-      if (!response.ok) {
-        throw new Error(`Failed to load ${path}: ${response.statusText}`);
-      }
-      return response.json();
-    };
 
     // --------------------------------------------------------------
     // 3️⃣ Decide whether we should read from the local database
@@ -458,6 +457,32 @@ export default function Index() {
     getCurrentTranslationList();
   };
 
+  const processTranslations = (raw: any) => {
+    const all: Translations[] = raw.translations; // api resp.
+
+    const grouped: Record<string, Translations[]> = {};
+    all.forEach((t) => {
+      const lang = t.languageName || "Other";
+      if (!grouped[lang]) grouped[lang] = [];
+      grouped[lang].push(t);
+    });
+
+
+    const downloadedSet = new Set(downloadedTranslations);
+    const downloaded: Translations[] = [];
+    const remote: Translations[] = [];
+
+    all.forEach((t) => {
+      if (downloadedSet.has(t.shortName) || downloadedSet.has(t.id)) {
+        downloaded.push(t);
+      } else {
+        remote.push(t);
+      }
+    });
+
+    return { all, grouped, downloaded, remote };
+  }
+
   const getCurrentTranslationList = () => {
     fetch(`https://bible.helloao.org/api/available_translations.json`)
       .then((response) => response.json())
@@ -599,7 +624,22 @@ export default function Index() {
    * @param {none} none has no parameter
    * @returns {} returns an array to be mapped over containing the list of books
    */
-  const getCurrentBookList = () => {
+  const getCurrentBookList = async () => {
+    const useLocal = downloadedTranslations.includes(translationShortName);
+    if (useLocal) {
+      const booksPath = `/databases/${translationShortName}/${translationShortName}books.json`;
+      const booksData = await loadLocalJson(booksPath);
+      if (booksData) {
+      const booksArray: BookListItem[] = Object.values(booksData).map(
+          (book: any) => ({
+            name: book.commonName,
+            abbreviation: book.id,
+            numberOfChapters: book.numberOfChapters,
+            order: book.order,
+          })).sort((a, b) => a.order - b.order);
+      setBookList(booksArray);
+    }
+    } else {
     fetch(`https://bible.helloao.org/api/${selectedTranslation}/books.json`)
       .then((response) => response.json())
       .then((booksObj) => {
@@ -613,7 +653,8 @@ export default function Index() {
         setBookList(booksArray);
       })
       .catch((error) => console.error("Failed to fetch book list:", error));
-  };
+  }
+};
 
   useEffect(() => {
     const loadData = async () => {
@@ -1175,9 +1216,23 @@ export default function Index() {
               color="black"
             />
           </View>
+          <TextInput
+            placeholder="Search books..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={{
+              padding: 10,
+              fontSize: 16,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              borderRadius: 6,
+              marginBottom: 15,
+            }}
+          />
           <ScrollView ref={bookScrollRef}>
-            {bookList.map((book, index) => (
-              <View key={index} style={{ marginBottom: 20 }}>
+            {bookList.filter((book) => book.name.toLowerCase().includes(normalizedQuery)
+            ).map((book) => (
+              <View key={book.abbreviation} style={{ marginBottom: 20 }}>
                 <Text
                   onPress={() => {
                     setExpandedBook((prev) =>
