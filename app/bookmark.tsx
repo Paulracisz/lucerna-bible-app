@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   verseRef: {
     fontSize: 16,
     fontWeight: "600",
-    textAlign: "right",
+    textAlign: "left",
     color: "grey",
   },
 

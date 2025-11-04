@@ -128,8 +128,9 @@ export default function Index() {
   const [footnoteModalVisible, setFootnoteModalVisible] = useState(false);
   const [footnoteText, setFootnoteText] = useState("");
 
-  const useLocal = downloadedTranslations.find((t) => t.shortName === translationShortName || t.id === translationShortName
-);
+  const useLocal = downloadedTranslations.find(
+    (t) => t.shortName === translationShortName || t.id === translationShortName
+  );
 
   const loadLocalJson = async (path: string) => {
     const response = await fetch(path);
