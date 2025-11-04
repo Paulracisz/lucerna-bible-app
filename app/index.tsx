@@ -25,6 +25,7 @@ import {
   BookListItem,
   Bookmark,
   ChapterObject,
+  DOWNLOADED_TRANSLATIONS,
   Highlight,
   Translations,
   Verse,
@@ -120,20 +121,23 @@ export default function Index() {
     verseNumber: string;
   } | null>(null);
 
+  const [downloadedTranslations, setDownloadedTranslations] = useState<
+    Translations[]
+  >(DOWNLOADED_TRANSLATIONS);
+
   const [footnoteModalVisible, setFootnoteModalVisible] = useState(false);
   const [footnoteText, setFootnoteText] = useState("");
 
-  const [downloadedTranslations, setDownloadedTranslations] = useState<
-    string[]
-  >(["BSB", "KJAV"]);
+  const useLocal = downloadedTranslations.find((t) => t.shortName === translationShortName || t.id === translationShortName
+);
 
-    const loadLocalJson = async (path: string) => {
-      const response = await fetch(path);
-      if (!response.ok) {
-        throw new Error(`Failed to load ${path}: ${response.statusText}`);
-      }
-      return response.json();
-    };
+  const loadLocalJson = async (path: string) => {
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${path}: ${response.statusText}`);
+    }
+    return response.json();
+  };
 
   const isAtEnd =
     currentBookIndex === lastBookIndex &&
@@ -165,11 +169,6 @@ export default function Index() {
       console.error("Invalid params for API call.");
       return;
     }
-
-    // --------------------------------------------------------------
-    // 3️⃣ Decide whether we should read from the local database
-    // --------------------------------------------------------------
-    const useLocal = downloadedTranslations.includes(translationShortName);
 
     try {
       let chapterObj: any; // will end up shaped like the remote API response
@@ -458,32 +457,6 @@ export default function Index() {
     getCurrentTranslationList();
   };
 
-  const processTranslations = (raw: any) => {
-    const all: Translations[] = raw.translations; // api resp.
-
-    const grouped: Record<string, Translations[]> = {};
-    all.forEach((t) => {
-      const lang = t.languageName || "Other";
-      if (!grouped[lang]) grouped[lang] = [];
-      grouped[lang].push(t);
-    });
-
-
-    const downloadedSet = new Set(downloadedTranslations);
-    const downloaded: Translations[] = [];
-    const remote: Translations[] = [];
-
-    all.forEach((t) => {
-      if (downloadedSet.has(t.shortName) || downloadedSet.has(t.id)) {
-        downloaded.push(t);
-      } else {
-        remote.push(t);
-      }
-    });
-
-    return { all, grouped, downloaded, remote };
-  }
-
   const getCurrentTranslationList = () => {
     fetch(`https://bible.helloao.org/api/available_translations.json`)
       .then((response) => response.json())
@@ -626,36 +599,36 @@ export default function Index() {
    * @returns {} returns an array to be mapped over containing the list of books
    */
   const getCurrentBookList = async () => {
-    const useLocal = downloadedTranslations.includes(translationShortName);
     if (useLocal) {
       const booksPath = `/databases/${translationShortName}/${translationShortName}books.json`;
       const booksData = await loadLocalJson(booksPath);
       if (booksData) {
-      const booksArray: BookListItem[] = Object.values(booksData).map(
-          (book: any) => ({
+        const booksArray: BookListItem[] = Object.values(booksData)
+          .map((book: any) => ({
             name: book.commonName,
             abbreviation: book.id,
             numberOfChapters: book.numberOfChapters,
             order: book.order,
-          })).sort((a, b) => a.order - b.order);
-      setBookList(booksArray);
-    }
-    } else {
-    fetch(`https://bible.helloao.org/api/${selectedTranslation}/books.json`)
-      .then((response) => response.json())
-      .then((booksObj) => {
-        const booksArray: BookListItem[] = Object.values(booksObj.books).map(
-          (book: any) => ({
-            name: book.commonName,
-            abbreviation: book.id,
-            numberOfChapters: book.numberOfChapters,
-          })
-        );
+          }))
+          .sort((a, b) => a.order - b.order);
         setBookList(booksArray);
-      })
-      .catch((error) => console.error("Failed to fetch book list:", error));
-  }
-};
+      }
+    } else {
+      fetch(`https://bible.helloao.org/api/${selectedTranslation}/books.json`)
+        .then((response) => response.json())
+        .then((booksObj) => {
+          const booksArray: BookListItem[] = Object.values(booksObj.books).map(
+            (book: any) => ({
+              name: book.commonName,
+              abbreviation: book.id,
+              numberOfChapters: book.numberOfChapters,
+            })
+          );
+          setBookList(booksArray);
+        })
+        .catch((error) => console.error("Failed to fetch book list:", error));
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -712,7 +685,7 @@ export default function Index() {
     loadBookmarks();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     const loadHighlights = async () => {
       try {
         const data = await AsyncStorage.getItem("highlightedVerses");
@@ -743,7 +716,12 @@ export default function Index() {
       selectedChapterNumber
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber, firstTime]);
+  }, [
+    selectedTranslation,
+    selectedCurrentBook,
+    selectedChapterNumber,
+    firstTime,
+  ]);
 
   return (
     <>
@@ -960,6 +938,39 @@ export default function Index() {
             }}
             scrollEventThrottle={16}
           >
+            <View style={{ marginBottom: 20 }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginBottom: 5,
+                }}
+              >
+                Downloaded
+              </Text>
+
+              {downloadedTranslations.map((tr) => (
+                <Text
+                  key={tr.id}
+                  onPress={() => {
+                    setSelectedTranslation(tr.id);
+                    setTranslationShortName(tr.shortName || tr.name);
+                    setTranslationMenuVisible(false);
+                    scrollToTop();
+                  }}
+                  style={styles.translationItem}
+                >
+                  {tr.name} ({tr.shortName})
+                </Text>
+              ))}
+
+              {downloadedTranslations.length === 0 && (
+                <Text style={{ fontStyle: "italic", color: "#666" }}>
+                  No offline translations packaged.
+                </Text>
+              )}
+            </View>
+
             {visibleLanguages
               .filter(
                 (langName) =>
@@ -999,6 +1010,7 @@ export default function Index() {
                       <Text
                         key={index}
                         onPress={() => {
+                          window.alert(`${translation.id},${translation.shortName},${translation.language},${translation.languageEnglishName},${translation.englishName},${translation.name},${translation.key}`)
                           setSelectedTranslation(translation.id);
                           setTranslationShortName(
                             translation.shortName || translation.name
@@ -1231,60 +1243,63 @@ export default function Index() {
             }}
           />
           <ScrollView ref={bookScrollRef}>
-            {bookList.filter((book) => book.name.toLowerCase().includes(normalizedQuery)
-            ).map((book) => (
-              <View key={book.abbreviation} style={{ marginBottom: 20 }}>
-                <Text
-                  onPress={() => {
-                    setExpandedBook((prev) =>
-                      prev === book.abbreviation ? null : book.abbreviation
-                    );
-                  }}
-                  style={{
-                    padding: 10,
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    backgroundColor: "#eee",
-                  }}
-                >
-                  {book.name}
-                </Text>
-                {expandedBook === book.abbreviation && (
-                  <View
+            {bookList
+              .filter((book) =>
+                book.name.toLowerCase().includes(normalizedQuery)
+              )
+              .map((book) => (
+                <View key={book.abbreviation} style={{ marginBottom: 20 }}>
+                  <Text
+                    onPress={() => {
+                      setExpandedBook((prev) =>
+                        prev === book.abbreviation ? null : book.abbreviation
+                      );
+                    }}
                     style={{
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                      paddingHorizontal: 10,
-                      marginTop: 5,
+                      padding: 10,
+                      fontSize: 20,
+                      fontWeight: "bold",
+                      backgroundColor: "#eee",
                     }}
                   >
-                    {Array.from({ length: book.numberOfChapters }, (_, i) => (
-                      <Text
-                        key={i}
-                        onPress={() => {
-                          setSelectedCurrentBook(book.abbreviation);
-                          setSelectedChapterNumber((i + 1).toString());
-                          setBookMenuVisible(false);
-                          scrollToTop();
-                        }}
-                        style={{
-                          width: 40,
-                          height: 40,
-                          textAlign: "center",
-                          textAlignVertical: "center",
-                          margin: 4,
-                          backgroundColor: "#ddd",
-                          borderRadius: 6,
-                          fontSize: 16,
-                        }}
-                      >
-                        {i + 1}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-              </View>
-            ))}
+                    {book.name}
+                  </Text>
+                  {expandedBook === book.abbreviation && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        paddingHorizontal: 10,
+                        marginTop: 5,
+                      }}
+                    >
+                      {Array.from({ length: book.numberOfChapters }, (_, i) => (
+                        <Text
+                          key={i}
+                          onPress={() => {
+                            setSelectedCurrentBook(book.abbreviation);
+                            setSelectedChapterNumber((i + 1).toString());
+                            setBookMenuVisible(false);
+                            scrollToTop();
+                          }}
+                          style={{
+                            width: 40,
+                            height: 40,
+                            textAlign: "center",
+                            textAlignVertical: "center",
+                            margin: 4,
+                            backgroundColor: "#ddd",
+                            borderRadius: 6,
+                            fontSize: 16,
+                          }}
+                        >
+                          {i + 1}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              ))}
           </ScrollView>
         </View>
       </Modal>
@@ -1328,6 +1343,19 @@ const styles = StyleSheet.create({
     color: "grey",
     marginTop: 30,
     fontSize: 24,
+  },
+
+  translationItem: {
+    padding: 10,
+    fontSize: 16,
+    backgroundColor: "#eee",
+    marginBottom: 5,
+    borderRadius: 6,
+  },
+  languageHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
 
   chapterNumber: {

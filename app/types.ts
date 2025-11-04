@@ -77,3 +77,25 @@ export type FootnoteEntry = {
 }
 
 export type FootnotesMap = Record<string, FootnoteEntry>;
+
+export const DOWNLOADED_TRANSLATIONS: Translations[] = [
+  {
+    name: "Berean Standard Bible",
+    id: "BSB",
+    shortName: "BSB",
+    language: "eng",
+    languageEnglishName: "English",
+    englishName: "Berean Standard Bible",
+    key: ""
+  },
+  {
+    name: "King James Authorized Version",
+    id: "eng_kjv",
+    shortName: "KJAV",
+    language: "English",
+    languageEnglishName: "King James Version",
+    englishName: "King James (Authorized) Version",
+    key: ""
+  },
+  // 👉 Add more entries here if you ship additional offline packs
+];
