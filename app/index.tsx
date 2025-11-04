@@ -51,6 +51,7 @@ export default function Index() {
     footnotesMap,
     footnotesReady,
     setFootnotesMap,
+    firstTime,
   } = useReader();
 
   const pathname = usePathname();
@@ -693,14 +694,14 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (!readerReady || !footnotesReady) return;
+    if (firstTime === false && (!readerReady || !footnotesReady)) return;
     fetchChapterData(
       selectedTranslation,
       selectedCurrentBook,
       selectedChapterNumber
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber]);
+  }, [selectedTranslation, selectedCurrentBook, selectedChapterNumber, firstTime]);
 
   return (
     <>

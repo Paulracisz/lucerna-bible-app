@@ -41,6 +41,8 @@ type ReaderContextType = {
   footnotesReady: boolean;
 
   readerReady: boolean;
+
+  firstTime: boolean;
 };
 
 const ReaderContext = createContext<ReaderContextType | undefined>(undefined);
@@ -69,6 +71,8 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
   const [footnotesMap, setFootnotesMap] = useState<FootnotesMap>({});
   const [footnotesReady, setFootnotesReady] = useState(false);
 
+  const [firstTime, setFirstTime] = useState(Boolean);
+
   const saveScrollPosition = async (y: number) => {
     try {
       await AsyncStorage.setItem("scrollPosition", JSON.stringify({ y }));
@@ -86,11 +90,14 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       try {
         const saved = await AsyncStorage.getItem("lastReadLocation");
         if (saved) {
+          setFirstTime(false);
           const { book, chapter, translation, footnotes } = JSON.parse(saved);
           if (book) setSelectedCurrentBook(book);
           if (chapter) setSelectedChapterNumber(chapter);
           if (translation) setSelectedTranslation(translation);
           if (footnotes) setFootnotesMap(footnotes as FootnotesMap);
+        } else {
+          setFirstTime(true);
         }
       } catch (e) {
         console.error("Failed to load data:", e);
@@ -145,7 +152,8 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       footnotesMap,
       setFootnotesMap,
       footnotesReady,
-      setFootnotesReady
+      setFootnotesReady,
+      firstTime
     }),
     [
       selectedCurrentBook,
@@ -155,7 +163,8 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       translationShortName,
       readerReady,
       footnotesMap,
-      footnotesReady
+      footnotesReady,
+      firstTime
     ]
   );
 
