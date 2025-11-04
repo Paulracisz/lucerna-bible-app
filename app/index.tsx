@@ -1010,7 +1010,6 @@ export default function Index() {
                       <Text
                         key={index}
                         onPress={() => {
-                          window.alert(`${translation.id},${translation.shortName},${translation.language},${translation.languageEnglishName},${translation.englishName},${translation.name},${translation.key}`)
                           setSelectedTranslation(translation.id);
                           setTranslationShortName(
                             translation.shortName || translation.name
