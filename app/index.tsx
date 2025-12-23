@@ -516,18 +516,28 @@ export default function Index() {
     let updatedHighlights;
 
     if (existing) {
-      // removed bookmark if it already exists
-      updatedHighlights = highlightedVerses.filter(
-        (h) =>
-          !(
-            h.book === selectedCurrentBook &&
-            h.chapter === selectedChapterNumber &&
-            h.verse === verse.number
-          )
-      );
+      // If the color tapped is the same as the existing one, remove the highlight
+      if (existing.color === color) {
+        updatedHighlights = highlightedVerses.filter(
+          (h) =>
+            !(
+              h.book === selectedCurrentBook &&
+              h.chapter === selectedChapterNumber &&
+              h.verse === verse.number
+            )
+        );
+      } else {
+        // otherwise update the existing highlight's color
+        updatedHighlights = highlightedVerses.map((h) =>
+          h.book === selectedCurrentBook &&
+          h.chapter === selectedChapterNumber &&
+          h.verse === verse.number
+            ? { ...h, color }
+            : h
+        );
+      }
     } else {
-      // add new bookmark
-
+      // add new highlight
       const newHighlight: Highlight = {
         id: verseKey,
         name: currentBookTitle!,
@@ -563,18 +573,28 @@ export default function Index() {
     let updatedBookmarks;
 
     if (existing) {
-      // removed bookmark if it already exists
-      updatedBookmarks = bookmarks.filter(
-        (b) =>
-          !(
-            b.book === selectedCurrentBook &&
-            b.chapter === selectedChapterNumber &&
-            b.verse === verse.number
-          )
-      );
+      // If the color tapped is the same as the existing one, remove the bookmark
+      if (existing.color === color) {
+        updatedBookmarks = bookmarks.filter(
+          (b) =>
+            !(
+              b.book === selectedCurrentBook &&
+              b.chapter === selectedChapterNumber &&
+              b.verse === verse.number
+            )
+        );
+      } else {
+        // otherwise update the existing bookmark's color
+        updatedBookmarks = bookmarks.map((b) =>
+          b.book === selectedCurrentBook &&
+          b.chapter === selectedChapterNumber &&
+          b.verse === verse.number
+            ? { ...b, color }
+            : b
+        );
+      }
     } else {
       // add new bookmark
-
       const newBookmark: Bookmark = {
         id: verseKey,
         name: currentBookTitle!,
@@ -755,10 +775,16 @@ export default function Index() {
                   onLayout={(e) => {
                     // record verse Y position relative to the ScrollView content
                     try {
-                          const y = e.nativeEvent.layout.y;
-                          versePositions.current[String(verse.number)] = y;
-                          // TEMP LOG: record verse layout positions for debugging
-                          console.log("[DEBUG] verse onLayout", selectedCurrentBook, selectedChapterNumber, verse.number, y);
+                      const y = e.nativeEvent.layout.y;
+                      versePositions.current[String(verse.number)] = y;
+                      // TEMP LOG: record verse layout positions for debugging
+                      console.log(
+                        "[DEBUG] verse onLayout",
+                        selectedCurrentBook,
+                        selectedChapterNumber,
+                        verse.number,
+                        y
+                      );
                     } catch (e) {
                       /* ignore */
                     }
@@ -889,8 +915,6 @@ export default function Index() {
             : "loading..."}
         </Text>
       </ScrollView>
-
-      
 
       <NavigationBar
         currentBookName={currentBookTitle}
@@ -1128,25 +1152,40 @@ export default function Index() {
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               {["#ff0000", "#ffa500", "#008000", "#0000ff", "#800080"].map(
-                (color) => (
-                  <Ionicons
-                    key={color}
-                    name="brush"
-                    size={32}
-                    color={color}
-                    onPress={() => {
-                      if (selectedVerseToHighlight) {
-                        const verse = currentChapterTextArray.find(
-                          (v) =>
-                            v.number === selectedVerseToHighlight.verseNumber
-                        );
-                        if (verse) {
-                          handleAddHighlight(color, verse);
+                (color) => {
+                  const currentHighlight = selectedVerseToHighlight
+                    ? highlightedVerses.find(
+                        (h) =>
+                          h.book === selectedCurrentBook &&
+                          h.chapter === selectedChapterNumber &&
+                          h.verse === selectedVerseToHighlight.verseNumber
+                      )
+                    : null;
+                  const isSelected = currentHighlight?.color === color;
+                  return (
+                    <TouchableOpacity
+                      key={color}
+                      onPress={() => {
+                        if (selectedVerseToHighlight) {
+                          const verse = currentChapterTextArray.find(
+                            (v) =>
+                              v.number === selectedVerseToHighlight.verseNumber
+                          );
+                          if (verse) {
+                            handleAddHighlight(color, verse);
+                          }
                         }
-                      }
-                    }}
-                  />
-                )
+                      }}
+                      style={{
+                        backgroundColor: isSelected ? "#D9D9D9" : "transparent",
+                        borderRadius: 10,
+                        padding: 5,
+                      }}
+                    >
+                      <Ionicons name="brush" size={32} color={color} />
+                    </TouchableOpacity>
+                  );
+                }
               )}
             </View>
             <Text
@@ -1191,25 +1230,40 @@ export default function Index() {
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
               {["#ff0000", "#ffa500", "#008000", "#0000ff", "#800080"].map(
-                (color) => (
-                  <Ionicons
-                    key={color}
-                    name="bookmark"
-                    size={32}
-                    color={color}
-                    onPress={() => {
-                      if (selectedVerseToBookmark) {
-                        const verse = currentChapterTextArray.find(
-                          (v) =>
-                            v.number === selectedVerseToBookmark.verseNumber
-                        );
-                        if (verse) {
-                          handleAddBookmark(color, verse);
+                (color) => {
+                  const currentBookmark = selectedVerseToBookmark
+                    ? bookmarks.find(
+                        (b) =>
+                          b.book === selectedCurrentBook &&
+                          b.chapter === selectedChapterNumber &&
+                          b.verse === selectedVerseToBookmark.verseNumber
+                      )
+                    : null;
+                  const isSelected = currentBookmark?.color === color;
+                  return (
+                    <TouchableOpacity
+                      key={color}
+                      onPress={() => {
+                        if (selectedVerseToBookmark) {
+                          const verse = currentChapterTextArray.find(
+                            (v) =>
+                              v.number === selectedVerseToBookmark.verseNumber
+                          );
+                          if (verse) {
+                            handleAddBookmark(color, verse);
+                          }
                         }
-                      }
-                    }}
-                  />
-                )
+                      }}
+                      style={{
+                        backgroundColor: isSelected ? "#D9D9D9" : "transparent",
+                        borderRadius: 10,
+                        padding: 5,
+                      }}
+                    >
+                      <Ionicons name="bookmark" size={32} color={color} />
+                    </TouchableOpacity>
+                  );
+                }
               )}
             </View>
             <Text
