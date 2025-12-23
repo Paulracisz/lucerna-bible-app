@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     fontSize: 18,
-    fontWeight: "600",
     marginBottom: 12,
   },
   row: {

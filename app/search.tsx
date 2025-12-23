@@ -61,6 +61,8 @@ export default function Search({
           openTranslationMenu={() => {}}
         />
         <View style={styles.verseBox}>
+
+            <Text style={styles.sectionHeader}>Search</Text>
           <TextInput
             placeholder="Search the Bible..."
             value={bibleSearchQuery}
@@ -304,6 +306,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    marginBottom: 12,
   },
   verseText: {
     fontSize: 18,
