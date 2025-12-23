@@ -43,6 +43,15 @@ type ReaderContextType = {
   readerReady: boolean;
 
   firstTime: boolean;
+  /** UI settings persisted for the reader */
+  fontSize: number;
+  setFontSize: (n: number) => void;
+  showWordsOfChrist: boolean;
+  setShowWordsOfChrist: (v: boolean) => void;
+  showFootnotes: boolean;
+  setShowFootnotes: (v: boolean) => void;
+  darkMode: boolean;
+  setDarkMode: (v: boolean) => void;
 };
 
 const ReaderContext = createContext<ReaderContextType | undefined>(undefined);
@@ -70,7 +79,11 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
 
   const [footnotesMap, setFootnotesMap] = useState<FootnotesMap>({});
   const [footnotesReady, setFootnotesReady] = useState(false);
-  
+  // UI settings with sensible defaults
+  const [fontSize, setFontSize] = useState<number>(24);
+  const [showWordsOfChrist, setShowWordsOfChrist] = useState<boolean>(true);
+  const [showFootnotes, setShowFootnotes] = useState<boolean>(true);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const [firstTime, setFirstTime] = useState(Boolean);
 
@@ -100,6 +113,19 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setFirstTime(true);
         }
+        // load persisted user settings if present
+        try {
+          const s = await AsyncStorage.getItem("userSettings");
+          if (s) {
+            const parsed = JSON.parse(s);
+            if (typeof parsed.fontSize === "number") setFontSize(parsed.fontSize);
+            if (typeof parsed.showWordsOfChrist === "boolean") setShowWordsOfChrist(parsed.showWordsOfChrist);
+            if (typeof parsed.showFootnotes === "boolean") setShowFootnotes(parsed.showFootnotes);
+            if (typeof parsed.darkMode === "boolean") setDarkMode(parsed.darkMode);
+          }
+        } catch (e) {
+          /* ignore */
+        }
       } catch (e) {
         console.error("Failed to load data:", e);
       } finally {
@@ -110,6 +136,22 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
     };
     load();
   }, []);
+
+  // persist user settings when they change
+  useEffect(() => {
+    if (isInitializing.current) return;
+    const save = async () => {
+      try {
+        await AsyncStorage.setItem(
+          "userSettings",
+          JSON.stringify({ fontSize, showWordsOfChrist, showFootnotes, darkMode })
+        );
+      } catch (e) {
+        console.error("Failed to save user settings:", e);
+      }
+    };
+    save();
+  }, [fontSize, showWordsOfChrist, showFootnotes, darkMode]);
 
   useEffect(() => {
     if (isInitializing.current) return;
@@ -154,7 +196,16 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       setFootnotesMap,
       footnotesReady,
       setFootnotesReady,
-      firstTime
+      firstTime,
+      // settings
+      fontSize,
+      setFontSize,
+      showWordsOfChrist,
+      setShowWordsOfChrist,
+      showFootnotes,
+      setShowFootnotes,
+      darkMode,
+      setDarkMode,
     }),
     [
       selectedCurrentBook,
@@ -165,7 +216,11 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
       readerReady,
       footnotesMap,
       footnotesReady,
-      firstTime
+      firstTime,
+      fontSize,
+      showWordsOfChrist,
+      showFootnotes,
+      darkMode
     ]
   );
 

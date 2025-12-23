@@ -53,6 +53,10 @@ export default function Index() {
     footnotesReady,
     setFootnotesMap,
     firstTime,
+    fontSize,
+    showWordsOfChrist,
+    showFootnotes,
+    darkMode,
   } = useReader();
 
   const pathname = usePathname();
@@ -758,16 +762,19 @@ export default function Index() {
 
       <ScrollView
         ref={scrollViewRef}
-        style={styles.viewBox}
+        style={[
+          styles.viewBox,
+          { backgroundColor: darkMode ? "#0b0b0b" : "transparent" },
+        ]}
         onScroll={({ nativeEvent }) => {
           saveScrollPosition(nativeEvent.contentOffset.y);
           latestScrollY.current = nativeEvent.contentOffset.y;
         }}
         scrollEventThrottle={100}
       >
-        <Text style={styles.bookTitle}>{currentBookTitle}</Text>
-        <Text style={styles.chapterNumber}>{currentChapterNumber}</Text>
-        <Text style={styles.chapterText}>
+        <Text style={[styles.bookTitle, { color: darkMode ? "#bbb" : "grey" }]}>{currentBookTitle}</Text>
+        <Text style={[styles.chapterNumber, { color: darkMode ? "#ddd" : "#000" }]}>{currentChapterNumber}</Text>
+        <Text style={[styles.chapterText, { fontSize: fontSize, lineHeight: Math.round(fontSize * 1.8), color: darkMode ? "#eee" : "#000" }]}>
           {currentChapterTextArray.length > 0
             ? currentChapterTextArray.map((verse, index) => (
                 <Text
@@ -805,7 +812,7 @@ export default function Index() {
                   </Text>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text
-                      style={styles.verseNumber}
+                      style={[styles.verseNumber, { color: darkMode ? "#aaa" : "grey" }]}
                       onPress={() => {
                         setSelectedVerseToBookmark({
                           verseNumber: verse.number,
@@ -867,7 +874,8 @@ export default function Index() {
                         }}
                         style={[
                           styles.verseText,
-                          part.isJesusWord && { color: "#d9320e" },
+                          { fontSize: fontSize },
+                          part.isJesusWord && showWordsOfChrist ? { color: "#d9320e" } : {},
                           // Apply the background colour only when a highlight exists
                           highlightForVerse && {
                             backgroundColor: `${highlightForVerse.color}80`,
@@ -875,13 +883,18 @@ export default function Index() {
                             paddingHorizontal: 2,
                             borderRadius: 2,
                           },
+                          // In dark mode, default text should be light — but don't
+                          // override the red 'words of Christ' if that option is enabled.
+                          darkMode && !(part.isJesusWord && showWordsOfChrist)
+                            ? { color: "#eee" }
+                            : {},
                         ]}
                       >
                         {part.text + " "}
                       </Text>
                     );
                   })}
-                  {footnotesMap[`${selectedChapterNumber}:${verse.number}`] && (
+                  {showFootnotes && footnotesMap[`${selectedChapterNumber}:${verse.number}`] && (
                     <TouchableOpacity
                       onPress={() => {
                         const fn =

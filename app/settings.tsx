@@ -1,6 +1,7 @@
 // app/settings.tsx
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
+import { useReader } from "./ReaderContext";
 import TopBar from "./TopBar";
 
 type TopBarProps = {
@@ -14,6 +15,8 @@ export default function Settings({
   currentPage,
   openTranslationMenu,
 }: TopBarProps) {
+  const { fontSize, setFontSize, showWordsOfChrist, setShowWordsOfChrist, showFootnotes, setShowFootnotes, darkMode, setDarkMode } = useReader();
+
   return (
     <>
       <View style={{ flex: 1 }}>
@@ -22,7 +25,43 @@ export default function Settings({
           currentPage="settings"
           openTranslationMenu={() => {}}
         />
-        <View style={styles.verseBox}></View>
+        <View style={styles.verseBox}>
+          <Text style={styles.sectionHeader}>Reader Settings</Text>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Font size</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableOpacity
+                onPress={() => setFontSize(Math.max(14, fontSize - 2))}
+                style={styles.button}
+              >
+                <Text>-</Text>
+              </TouchableOpacity>
+              <Text style={{ marginHorizontal: 12 }}>{fontSize}</Text>
+              <TouchableOpacity
+                onPress={() => setFontSize(Math.min(40, fontSize + 2))}
+                style={styles.button}
+              >
+                <Text>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Words of Christ in red</Text>
+            <Switch value={showWordsOfChrist} onValueChange={setShowWordsOfChrist} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Show footnotes</Text>
+            <Switch value={showFootnotes} onValueChange={setShowFootnotes} />
+          </View>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Dark mode</Text>
+            <Switch value={darkMode} onValueChange={setDarkMode} />
+          </View>
+        </View>
       </View>
     </>
   );
@@ -39,6 +78,25 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  label: {
+    fontSize: 16,
+  },
+  button: {
+    padding: 8,
+    backgroundColor: "#eee",
+    borderRadius: 6,
   },
   verseText: {
     fontSize: 18,
