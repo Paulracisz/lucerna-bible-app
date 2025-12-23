@@ -1,6 +1,6 @@
 // app/book.tsx
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TopBar from "./TopBar";
 import { dailyVerses } from "./dailyVerses";
 
@@ -42,7 +42,22 @@ export default function BookScreen({
         />
         <View style={styles.verseBox}>
           <Text style={styles.verseText}>&quot;{verse.text}&quot;</Text>
-          <Text style={styles.verseRef}>— {verse.reference}</Text>
+          <View style={styles.row}>
+            <Text style={styles.verseRef}>— {verse.reference}</Text>
+            <TouchableOpacity
+              onPress={async () => {
+                const message = `${verse.text}\n— ${verse.reference}`;
+                try {
+                  await Share.share({ message });
+                } catch (e) {
+                  console.error("Share failed:", e);
+                }
+              }}
+              style={styles.shareButton}
+            >
+              <Text style={{ color: "#007aff", fontWeight: "600" }}>Share</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </>
@@ -72,5 +87,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "left",
     color: "grey",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  shareButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
 });
