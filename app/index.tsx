@@ -97,6 +97,10 @@ export default function Index() {
     scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   };
 
+  const versePositions = React.useRef<Record<string, number>>({});
+
+  // Scroll-to-verse feature removed: navigation will open the chapter only.
+
   const currentBookIndex = bookList.findIndex(
     (book) => book.abbreviation === selectedCurrentBook
   );
@@ -194,8 +198,6 @@ export default function Index() {
         let footnoteMap = new Map<string, any>();
         try {
           const footnotesRaw = await loadLocalJson(footnotesPath);
-
-          console.log(footnotesRaw, "footnotesRaw");
 
           const chapterFootnotes = footnotesRaw.filter(
             (fn: any) => Number(fn.chapterNumber) === Number(chapter)
@@ -636,6 +638,8 @@ export default function Index() {
       try {
         const scrollData = await AsyncStorage.getItem("scrollPosition");
 
+        // Restoring the last saved scroll position (no scroll-to-verse feature).
+
         if (scrollData) {
           const { y } = JSON.parse(scrollData);
           setTimeout(() => {
@@ -746,7 +750,20 @@ export default function Index() {
         <Text style={styles.chapterText}>
           {currentChapterTextArray.length > 0
             ? currentChapterTextArray.map((verse, index) => (
-                <Text key={index}>
+                <Text
+                  key={index}
+                  onLayout={(e) => {
+                    // record verse Y position relative to the ScrollView content
+                    try {
+                          const y = e.nativeEvent.layout.y;
+                          versePositions.current[String(verse.number)] = y;
+                          // TEMP LOG: record verse layout positions for debugging
+                          console.log("[DEBUG] verse onLayout", selectedCurrentBook, selectedChapterNumber, verse.number, y);
+                    } catch (e) {
+                      /* ignore */
+                    }
+                  }}
+                >
                   <Text>
                     {verse.heading ? (
                       <Text
@@ -872,6 +889,8 @@ export default function Index() {
             : "loading..."}
         </Text>
       </ScrollView>
+
+      
 
       <NavigationBar
         currentBookName={currentBookTitle}

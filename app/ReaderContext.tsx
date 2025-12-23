@@ -70,6 +70,7 @@ export const ReaderProvider = ({ children }: { children: ReactNode }) => {
 
   const [footnotesMap, setFootnotesMap] = useState<FootnotesMap>({});
   const [footnotesReady, setFootnotesReady] = useState(false);
+  
 
   const [firstTime, setFirstTime] = useState(Boolean);
 

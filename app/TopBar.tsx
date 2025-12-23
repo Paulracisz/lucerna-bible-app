@@ -35,6 +35,7 @@ export default function TopBar({
             styles.homeIcon,
             currentPage === "search" && styles.activeIcon,
           ]}
+          onPress={() => router.push("/search")}
           name="search"
         ></Ionicons>
         <Ionicons
@@ -50,6 +51,7 @@ export default function TopBar({
             styles.homeIcon,
             currentPage === "settings" && styles.activeIcon,
           ]}
+          onPress={() => router.push("/settings")}
           name="settings"
         ></Ionicons>
         {currentPage === "book" && (
