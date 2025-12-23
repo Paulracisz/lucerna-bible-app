@@ -1146,7 +1146,7 @@ export default function Index() {
             }}
           >
             <Text style={{ fontSize: 18, marginBottom: 10 }}>
-              Choose highlight color
+              Choose Highlight Color
             </Text>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -1224,7 +1224,7 @@ export default function Index() {
             }}
           >
             <Text style={{ fontSize: 18, marginBottom: 10 }}>
-              Choose bookmark color
+              Choose Bookmark Color
             </Text>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
