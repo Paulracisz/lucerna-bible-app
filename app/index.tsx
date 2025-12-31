@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -1201,16 +1202,38 @@ export default function Index() {
                 }
               )}
             </View>
-            <Text
-              style={{
-                textAlign: "center",
-                marginTop: 15,
-                color: "grey",
-              }}
-              onPress={() => setHighlightVerseModalVisible(false)}
-            >
-              Cancel
-            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+              <TouchableOpacity
+                onPress={() => setHighlightVerseModalVisible(false)}
+                style={{ paddingHorizontal: 8, paddingVertical: 6 }}
+              >
+                <Text style={{ color: "grey", fontSize: 16 }}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={async () => {
+                  if (!selectedVerseToHighlight) return;
+                  const verse = currentChapterTextArray.find(
+                    (v) => v.number === selectedVerseToHighlight.verseNumber
+                  );
+                  if (!verse) return;
+                  const verseText = verse.parts
+                    .map((p: any) => p.text)
+                    .join(" ")
+                    .trim();
+                  const reference = `${currentBookTitle} ${currentChapterNumber}:${verse.number}`;
+                  const message = `${verseText} - ${reference}`;
+                  try {
+                    await Share.share({ message });
+                  } catch (e) {
+                    console.error("Share failed:", e);
+                  }
+                }}
+                style={{ paddingHorizontal: 8, paddingVertical: 6 }}
+              >
+                <Text style={{ color: "#007aff", fontWeight: "600", fontSize: 16 }}>Share</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
