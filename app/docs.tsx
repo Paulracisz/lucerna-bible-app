@@ -1,15 +1,16 @@
-// src/app/Book.tsx
+// src/app/Docs.tsx
 import React, { useRef, useState } from "react";
 import {
-    Image,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Logo from "../assets/images/logo.png";
+import { useReader } from "./ReaderContext";
 
 /**
  * Helper to store the Y offset of each section so the TOC can scroll to it.
@@ -19,6 +20,7 @@ type SectionPositions = Record<string, number>;
 export default function Docs() {
   const scrollRef = useRef<ScrollView>(null);
   const positions = useRef<SectionPositions>({});
+  const { darkMode } = useReader();
 
   /** Scroll to a named section */
   const scrollTo = (key: string) => {
@@ -37,7 +39,7 @@ export default function Docs() {
   /** Which collapsible section is currently open (null = none) */
   const [openSection, setOpenSection] = useState<string | null>(null);
   const toggle = (key: string) =>
-    setOpenSection(prev => (prev === key ? null : key));
+    setOpenSection((prev) => (prev === key ? null : key));
 
   /* --------------------------------------------------------------- */
   /* Table‑of‑contents – quick navigation links                      */
@@ -52,32 +54,28 @@ export default function Docs() {
   return (
     <ScrollView
       ref={scrollRef}
-      style={styles.root}
+      style={[styles.root, { backgroundColor: darkMode ? "#0b0b0b" : "#fff" }]}
       contentContainerStyle={styles.content}
     >
+      <Text style={[styles.header, styles.centerText, { color: darkMode ? "#fff" : undefined }]}>Lucerna Bible Documentation</Text>
 
-        <Text style={[styles.header, styles.centerText]}>Lucerna Bible Documentation</Text>
       {/* ----------------------- LOGO ----------------------- */}
-      <Image source={ Logo } style={styles.logo} />
+      <Image source={Logo} style={styles.logo} />
 
       {/* ----------------------- TOC ------------------------ */}
       <View style={styles.tocContainer}>
-        <Text style={styles.tocHeader}>Contents</Text>
-        {tocItems.map(item => (
-          <TouchableOpacity
-            key={item.key}
-            onPress={() => scrollTo(item.key)}
-            style={styles.tocItem}
-          >
-            <Text style={styles.tocText}>• {item.label}</Text>
+        <Text style={[styles.tocHeader, { color: darkMode ? "#fff" : undefined }]}>Contents</Text>
+        {tocItems.map((item) => (
+          <TouchableOpacity key={item.key} onPress={() => scrollTo(item.key)} style={styles.tocItem}>
+            <Text style={[styles.tocText, { color: darkMode ? "#66aaff" : "#0066cc" }]}>• {item.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
       {/* ----------------------- INTRODUCTION ----------------------- */}
       <View onLayout={onSectionLayout("intro")} style={styles.section}>
-        <Text style={styles.header}>Introduction</Text>
-        <Text style={styles.paragraph}>
+        <Text style={[styles.header, { color: darkMode ? "#fff" : undefined }]}>Introduction</Text>
+        <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
           Lucerna Bible is a modern, privacy‑first reading platform that lets
           you explore biblical texts offline, annotate verses, and sync securely
           across devices. This guide walks you through the core concepts and
@@ -87,30 +85,20 @@ export default function Docs() {
 
       {/* ----------------------- HOW TO USE (collapsible) ----------------------- */}
       <View onLayout={onSectionLayout("usage")} style={styles.section}>
-        <TouchableOpacity
-          onPress={() => toggle("usage")}
-          activeOpacity={0.7}
-          style={styles.collapseHeader}
-        >
-          <Text style={styles.header}>How To Use</Text>
+        <TouchableOpacity onPress={() => toggle("usage")} activeOpacity={0.7} style={styles.collapseHeader}>
+          <Text style={[styles.header, { color: darkMode ? "#fff" : undefined }]}>How To Use</Text>
         </TouchableOpacity>
 
         {openSection === "usage" && (
           <View style={styles.subContent}>
-            <Text style={styles.paragraph}>
-              1️⃣ <Text style={styles.bold}>Open the app</Text> – After
-              installing, launch Lucerna Bible and sign in with your Proton
-              account.
+            <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
+              1️⃣ <Text style={styles.bold}>Open the app</Text> – After installing, launch Lucerna Bible and sign in with your account.
             </Text>
-            <Text style={styles.paragraph}>
-              2️⃣ <Text style={styles.bold}>Select a version</Text> – Tap the
-              “Versions” tab, browse the catalogue, and download the translation
-              you prefer.
+            <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
+              2️⃣ <Text style={styles.bold}>Select a version</Text> – Tap the “Versions” tab, browse the catalogue, and download the translation you prefer.
             </Text>
-            <Text style={styles.paragraph}>
-              3️⃣ <Text style={styles.bold}>Read & annotate</Text> – Swipe to
-              turn pages, tap a verse to highlight, and add personal notes. All
-              data stays on your device.
+            <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
+              3️⃣ <Text style={styles.bold}>Read & annotate</Text> – Swipe to turn pages, tap a verse to highlight, and add personal notes. All data stays on your device.
             </Text>
           </View>
         )}
@@ -118,23 +106,19 @@ export default function Docs() {
 
       {/* ----------------------- API OVERVIEW (collapsible) ----------------------*/}
       <View onLayout={onSectionLayout("api")} style={styles.section}>
-        <TouchableOpacity
-          onPress={() => toggle("api")}
-          activeOpacity={0.7}
-          style={styles.collapseHeader}
-        >
-          <Text style={styles.header}>API Overview</Text>
+        <TouchableOpacity onPress={() => toggle("api")} activeOpacity={0.7} style={styles.collapseHeader}>
+          <Text style={[styles.header, { color: darkMode ? "#fff" : undefined }]}>API Overview</Text>
         </TouchableOpacity>
 
         {openSection === "api" && (
           <View style={styles.subContent}>
-            <Text style={styles.paragraph}>
-              Lucerna use the Free Use Bible API from https://bible.helloao.org/docs/ and downloads their offline-ready SQL databases for offline translation use:
+            <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
+              Lucerna uses the Free Use Bible API (https://bible.helloao.org/docs/) and provides offline-ready JSON databases for bundled translations.
             </Text>
-            <Text style={styles.codeBlock}>
+            <Text style={[styles.codeBlock, { backgroundColor: darkMode ? "#222" : "#f5f5f5", color: darkMode ? "#ddd" : undefined }]}>
 {`fetch(https://bible.helloao.org/api/{selectedTranslation}/books.json)
-      .then((response) => response.json())
-      .then((booksObj) => `}
+  .then((response) => response.json())
+  .then((booksObj) => { /* ... */ })`}
             </Text>
           </View>
         )}
@@ -142,22 +126,18 @@ export default function Docs() {
 
       {/* ----------------------- FAQ (simple, non‑collapsible) ----------------------- */}
       <View onLayout={onSectionLayout("faq")} style={styles.section}>
-        <Text style={styles.header}>FAQ</Text>
+        <Text style={[styles.header, { color: darkMode ? "#fff" : undefined }]}>FAQ</Text>
 
-        <Text style={styles.paragraph}>
+        <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
           <Text style={styles.bold}>Q:</Text> Can I use Lucerna offline?
           {'\n'}
-          <Text style={styles.bold}>A:</Text> Yes – once a version is
-          downloaded, all reading and annotation features work without an
-          internet connection.
+          <Text style={styles.bold}>A:</Text> Yes – once a version is downloaded, all reading and annotation features work without an internet connection.
         </Text>
 
-        <Text style={styles.paragraph}>
+        <Text style={[styles.paragraph, { color: darkMode ? "#ddd" : undefined }]}>
           <Text style={styles.bold}>Q:</Text> Is my data really private?
           {'\n'}
-          <Text style={styles.bold}>A:</Text> All notes, highlights, and bookmarks
-          are stored locally only on your
-          devices. We do not store or share that information with anyone.
+          <Text style={styles.bold}>A:</Text> All notes, highlights, and bookmarks are stored locally only on your devices.
         </Text>
       </View>
 
@@ -183,7 +163,7 @@ const styles = StyleSheet.create({
 
   section: { marginBottom: 30 },
 
-  header: { fontSize: 28, fontWeight: "600", marginBottom: 10, },
+  header: { fontSize: 28, fontWeight: "600", marginBottom: 10 },
 
   centerText: { textAlign: "center" },
 

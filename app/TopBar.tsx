@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useReader } from "./ReaderContext";
 
 // Misc
 
@@ -16,50 +17,50 @@ export default function TopBar({
   openTranslationMenu,
 }: TopBarProps) {
   const router = useRouter();
+  const { darkMode } = useReader();
 
   return (
     <>
-      <View style={styles.topBarBox}>
+      <View style={[
+        styles.topBarBox,
+        { backgroundColor: darkMode ? "#1a1a1a" : "white", borderBottomColor: darkMode ? "#2b2b2b" : "#D9D9D9" }
+      ]}>
         <Ionicons
           name="home"
           onPress={() => router.push("/home")}
-          style={[styles.homeIcon, currentPage === "home" && styles.activeIcon]}
-        ></Ionicons>
+          style={[styles.homeIcon, currentPage === "home" && styles.activeIcon, { backgroundColor: currentPage === "home" ? (darkMode ? "#333" : "#D9D9D9") : "transparent" }]}
+          color={darkMode ? "#eee" : undefined}
+        />
         <Ionicons
-          style={[styles.homeIcon, currentPage === "book" && styles.activeIcon]}
+          style={[styles.homeIcon, currentPage === "book" && styles.activeIcon, { backgroundColor: currentPage === "book" ? (darkMode ? "#333" : "#D9D9D9") : "transparent" }]}
           onPress={() => router.push("/")}
           name="book"
-        ></Ionicons>
+          color={darkMode ? "#eee" : undefined}
+        />
         <Ionicons
-          style={[
-            styles.homeIcon,
-            currentPage === "search" && styles.activeIcon,
-          ]}
+          style={[styles.homeIcon, currentPage === "search" && styles.activeIcon, { backgroundColor: currentPage === "search" ? (darkMode ? "#333" : "#D9D9D9") : "transparent" }]}
           onPress={() => router.push("/search")}
           name="search"
-        ></Ionicons>
+          color={darkMode ? "#eee" : undefined}
+        />
         <Ionicons
-          style={[
-            styles.homeIcon,
-            currentPage === "bookmark" && styles.activeIcon,
-          ]}
+          style={[styles.homeIcon, currentPage === "bookmark" && styles.activeIcon, { backgroundColor: currentPage === "bookmark" ? (darkMode ? "#333" : "#D9D9D9") : "transparent" }]}
           onPress={() => router.push("/bookmark")}
           name="bookmark"
-        ></Ionicons>
+          color={darkMode ? "#eee" : undefined}
+        />
         <Ionicons
-          style={[
-            styles.homeIcon,
-            currentPage === "settings" && styles.activeIcon,
-          ]}
+          style={[styles.homeIcon, currentPage === "settings" && styles.activeIcon, { backgroundColor: currentPage === "settings" ? (darkMode ? "#333" : "#D9D9D9") : "transparent" }]}
           onPress={() => router.push("/settings")}
           name="settings"
-        ></Ionicons>
+          color={darkMode ? "#eee" : undefined}
+        />
         {currentPage === "book" && (
           <TouchableOpacity
-            style={styles.translationBox}
+            style={[styles.translationBox, { backgroundColor: darkMode ? "#2b2b2b" : "#F2F2F2" }]}
             onPress={() => openTranslationMenu()}
           >
-            <Text>{currentTranslation}</Text>
+            <Text style={{ color: darkMode ? "#fff" : undefined }}>{currentTranslation}</Text>
           </TouchableOpacity>
         )}
       </View>

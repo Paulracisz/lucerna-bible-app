@@ -16,7 +16,7 @@ export default function Search({
   openTranslationMenu,
 }: TopBarProps) {
   const router = useRouter();
-  const { setSelectedCurrentBook, setSelectedChapterNumber, setSelectedTranslation, setTranslationShortName, saveScrollPosition } = useReader();
+  const { setSelectedCurrentBook, setSelectedChapterNumber, setSelectedTranslation, setTranslationShortName, saveScrollPosition, darkMode } = useReader();
   const [bibleSearchQuery, setBibleSearchQuery] = useState("");
   const [results, setResults] = useState<VerseMatch[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,32 +54,35 @@ export default function Search({
 
   return (
     <>
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: darkMode ? "#0b0b0b" : "#fff" }}>
         <TopBar
           currentTranslation="KJAV"
           currentPage="search"
           openTranslationMenu={() => {}}
         />
-        <View style={styles.verseBox}>
+        <View style={[styles.verseBox, { backgroundColor: darkMode ? "#141414" : "white" }]}>
 
-            <Text style={styles.sectionHeader}>Search</Text>
+            <Text style={[styles.sectionHeader, { color: darkMode ? "#fff" : undefined }]}>Search</Text>
           <TextInput
             placeholder="Search the Bible..."
+            placeholderTextColor={darkMode ? "#888" : "#999"}
             value={bibleSearchQuery}
             onChangeText={setBibleSearchQuery}
             style={{
               padding: 10,
               fontSize: 16,
               borderWidth: 1,
-              borderColor: "#ccc",
+              borderColor: darkMode ? "#333" : "#ccc",
               borderRadius: 6,
               marginBottom: 15,
+              backgroundColor: darkMode ? "#1a1a1a" : "#fff",
+              color: darkMode ? "#fff" : "#000",
             }}
           />
 
           {/* ---------- Results rendering ---------- */}
           {isLoading ? (
-            <Text>Searching…</Text>
+            <Text style={{ color: darkMode ? "#fff" : undefined }}>Searching…</Text>
           ) : (
               results.map((m, idx) => (
                 <Pressable
@@ -98,10 +101,10 @@ export default function Search({
                   }}
                   style={{ marginBottom: 12 }}
                 >
-                  <Text style={{ fontWeight: "bold" }}>
+                  <Text style={{ fontWeight: "bold", color: darkMode ? "#fff" : undefined }}>
                     {m.book} {m.chapter}:{m.verse}
                   </Text>
-                  <Text>{m.text}</Text>
+                  <Text style={{ color: darkMode ? "#ddd" : undefined }}>{m.text}</Text>
                 </Pressable>
               ))
           )}

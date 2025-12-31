@@ -19,17 +19,17 @@ export default function Settings({
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: darkMode ? "#0b0b0b" : "#fff" }}>
         <TopBar
           currentTranslation="KJAV"
           currentPage="settings"
           openTranslationMenu={() => {}}
         />
-        <View style={styles.verseBox}>
-          <Text style={styles.sectionHeader}>Reader Settings</Text>
+        <View style={[styles.verseBox, { backgroundColor: darkMode ? "#141414" : "white" }]}>
+          <Text style={[styles.sectionHeader, { color: darkMode ? "#fff" : undefined }]}>Reader Settings</Text>
 
           <View style={styles.row}>
-            <Text style={styles.label}>Font size</Text>
+            <Text style={[styles.label, { color: darkMode ? "#fff" : undefined }]}>Font size</Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableOpacity
                 onPress={() => setFontSize(Math.max(14, fontSize - 2))}
@@ -37,7 +37,7 @@ export default function Settings({
               >
                 <Text>-</Text>
               </TouchableOpacity>
-              <Text style={{ marginHorizontal: 12 }}>{fontSize}</Text>
+              <Text style={{ marginHorizontal: 12, color: darkMode ? "#fff" : undefined }}>{fontSize}</Text>
               <TouchableOpacity
                 onPress={() => setFontSize(Math.min(40, fontSize + 2))}
                 style={styles.button}
@@ -48,17 +48,17 @@ export default function Settings({
           </View>
 
           <View style={styles.row}>
-            <Text style={styles.label}>Words of Christ in red</Text>
+            <Text style={[styles.label, { color: darkMode ? "#fff" : undefined }]}>Words of Christ in red</Text>
             <Switch value={showWordsOfChrist} onValueChange={setShowWordsOfChrist} />
           </View>
 
           <View style={styles.row}>
-            <Text style={styles.label}>Show footnotes</Text>
+            <Text style={[styles.label, { color: darkMode ? "#fff" : undefined }]}>Show footnotes</Text>
             <Switch value={showFootnotes} onValueChange={setShowFootnotes} />
           </View>
 
           <View style={styles.row}>
-            <Text style={styles.label}>Dark mode</Text>
+            <Text style={[styles.label, { color: darkMode ? "#fff" : undefined }]}>Dark mode</Text>
             <Switch value={darkMode} onValueChange={setDarkMode} />
           </View>
         </View>

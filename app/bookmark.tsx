@@ -12,6 +12,7 @@ export default function BookMark() {
   const [currentBookmarks, setCurrentBookmarks] = useState<Bookmark[]>([]);
   const { setSelectedCurrentBook, setSelectedChapterNumber, setSelectedTranslation, setTranslationShortName, saveScrollPosition } = useReader();
   const router = useRouter();
+  const { darkMode } = useReader();
 
   /* -------------------------------------------------
      Load bookmarks once when the screen mounts
@@ -61,17 +62,17 @@ useEffect(() => {
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: darkMode ? "#0b0b0b" : "#fff" }}>
         <TopBar
           currentTranslation="KJAV"
           currentPage="bookmark"
           openTranslationMenu={() => {}}
         />
-        <View style={styles.verseBox}>
-          <Text style={styles.verseText}>Bookmarks</Text>
+        <View style={[styles.verseBox, { backgroundColor: darkMode ? "#141414" : "white" }]}>
+          <Text style={[styles.verseText, { color: darkMode ? "#fff" : "black" }]}>Bookmarks</Text>
 
           {currentBookmarks.length === 0 ? (
-            <Text style={styles.verseRef}>No bookmarks yet.</Text>
+            <Text style={[styles.verseRef, { color: darkMode ? "#ccc" : "grey" }]}>No bookmarks yet.</Text>
           ) : (
             currentBookmarks.map((bookmark) => (
               <View key={bookmark.id} style={styles.rowContainer}>
@@ -93,7 +94,7 @@ useEffect(() => {
                     color={bookmark.color}
                     style={{ marginLeft: 5 }}
                   />
-                  <Text style={styles.bookmarkVerse}>
+                  <Text style={[styles.bookmarkVerse, { color: darkMode ? "#fff" : "#000" }]}> 
                     {bookmark.name} {bookmark.chapter}:{bookmark.verse} {bookmark.translationShortName}
                   </Text>
                 </Pressable>

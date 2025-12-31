@@ -773,9 +773,24 @@ export default function Index() {
         }}
         scrollEventThrottle={100}
       >
-        <Text style={[styles.bookTitle, { color: darkMode ? "#bbb" : "grey" }]}>{currentBookTitle}</Text>
-        <Text style={[styles.chapterNumber, { color: darkMode ? "#ddd" : "#000" }]}>{currentChapterNumber}</Text>
-        <Text style={[styles.chapterText, { fontSize: fontSize, lineHeight: Math.round(fontSize * 1.8), color: darkMode ? "#eee" : "#000" }]}>
+        <Text style={[styles.bookTitle, { color: darkMode ? "#bbb" : "grey" }]}>
+          {currentBookTitle}
+        </Text>
+        <Text
+          style={[styles.chapterNumber, { color: darkMode ? "#ddd" : "#000" }]}
+        >
+          {currentChapterNumber}
+        </Text>
+        <Text
+          style={[
+            styles.chapterText,
+            {
+              fontSize: fontSize,
+              lineHeight: Math.round(fontSize * 1.8),
+              color: darkMode ? "#eee" : "#000",
+            },
+          ]}
+        >
           {currentChapterTextArray.length > 0
             ? currentChapterTextArray.map((verse, index) => (
                 <Text
@@ -813,7 +828,10 @@ export default function Index() {
                   </Text>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text
-                      style={[styles.verseNumber, { color: darkMode ? "#aaa" : "grey" }]}
+                      style={[
+                        styles.verseNumber,
+                        { color: darkMode ? "#aaa" : "grey" },
+                      ]}
                       onPress={() => {
                         setSelectedVerseToBookmark({
                           verseNumber: verse.number,
@@ -876,7 +894,9 @@ export default function Index() {
                         style={[
                           styles.verseText,
                           { fontSize: fontSize },
-                          part.isJesusWord && showWordsOfChrist ? { color: "#d9320e" } : {},
+                          part.isJesusWord && showWordsOfChrist
+                            ? { color: "#d9320e" }
+                            : {},
                           // Apply the background colour only when a highlight exists
                           highlightForVerse && {
                             backgroundColor: `${highlightForVerse.color}80`,
@@ -895,35 +915,38 @@ export default function Index() {
                       </Text>
                     );
                   })}
-                  {showFootnotes && footnotesMap[`${selectedChapterNumber}:${verse.number}`] && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        const fn =
-                          footnotesMap[
-                            `${selectedChapterNumber}:${verse.number}`
-                          ];
-                        setFootnoteText(fn.text);
-                        setFootnoteModalVisible(true);
-                      }}
-                      style={{ marginRight: 4 }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          lineHeight: 12,
-                          color: "grey",
-                          transform: [{ translateY: -4 }],
-                          fontStyle: "italic",
+                  {showFootnotes &&
+                    footnotesMap[
+                      `${selectedChapterNumber}:${verse.number}`
+                    ] && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          const fn =
+                            footnotesMap[
+                              `${selectedChapterNumber}:${verse.number}`
+                            ];
+                          setFootnoteText(fn.text);
+                          setFootnoteModalVisible(true);
                         }}
+                        style={{ marginRight: 4 }}
                       >
-                        {
-                          footnotesMap[
-                            `${selectedChapterNumber}:${verse.number}`
-                          ].label
-                        }
-                      </Text>
-                    </TouchableOpacity>
-                  )}
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            lineHeight: 12,
+                            color: "grey",
+                            transform: [{ translateY: -4 }],
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {
+                            footnotesMap[
+                              `${selectedChapterNumber}:${verse.number}`
+                            ].label
+                          }
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                 </Text>
               ))
             : "loading..."}
@@ -944,7 +967,13 @@ export default function Index() {
         visible={translationMenuVisible}
         onRequestClose={() => setTranslationMenuVisible(false)}
       >
-        <View style={{ flex: 1, padding: 20 }}>
+        <View
+          style={{
+            flex: 1,
+            padding: 20,
+            backgroundColor: darkMode ? "#0b0b0b" : "white",
+          }}
+        >
           <View
             style={{
               display: "flex",
@@ -953,14 +982,20 @@ export default function Index() {
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontSize: 20, marginBottom: 10 }}>
+            <Text
+              style={{
+                fontSize: 20,
+                marginBottom: 10,
+                color: darkMode ? "#fff" : "#000",
+              }}
+            >
               Select Translation
             </Text>
             <Ionicons
               name="close-outline"
               onPress={() => setTranslationMenuVisible(false)}
               size={32}
-              color="black"
+              color={darkMode ? "#eee" : "black"}
             />
           </View>
 
@@ -968,11 +1003,14 @@ export default function Index() {
             placeholder="Search translations..."
             value={searchQuery}
             onChangeText={setSearchQuery}
+            
+            placeholderTextColor={darkMode ? "#888" : "#999"}
             style={{
               padding: 10,
               fontSize: 16,
+              color: darkMode ? "#fff" : "#000",
               borderWidth: 1,
-              borderColor: "#ccc",
+              borderColor: darkMode ? "#333" : "#ccc",
               borderRadius: 6,
               marginBottom: 15,
             }}
@@ -1016,7 +1054,14 @@ export default function Index() {
                     setTranslationMenuVisible(false);
                     scrollToTop();
                   }}
-                  style={styles.translationItem}
+                  style={{
+                    padding: 10,
+                    fontSize: 16,
+                    marginBottom: 5,
+                    borderRadius: 6,
+                    backgroundColor: darkMode ? "#1a1a1a" : "#eee",
+                    color: darkMode ? "#fff" : "#000",
+                  }}
                 >
                   {tr.name} ({tr.shortName})
                 </Text>
@@ -1078,9 +1123,10 @@ export default function Index() {
                         style={{
                           padding: 10,
                           fontSize: 16,
-                          backgroundColor: "#eee",
                           marginBottom: 5,
                           borderRadius: 6,
+                          backgroundColor: darkMode ? "#1a1a1a" : "#eee",
+                          color: darkMode ? "#fff" : "#000",
                         }}
                       >
                         {translation.name} ({translation.shortName})
@@ -1153,13 +1199,13 @@ export default function Index() {
         >
           <View
             style={{
-              backgroundColor: "white",
+              backgroundColor: darkMode ? "#0b0b0b" : "white",
               padding: 20,
               borderRadius: 10,
               width: "80%",
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
+            <Text style={{ fontSize: 18, marginBottom: 10, color: darkMode ? "#fff" : "#000" }}>
               Choose Highlight Color
             </Text>
             <View
@@ -1202,7 +1248,13 @@ export default function Index() {
                 }
               )}
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 15,
+              }}
+            >
               <TouchableOpacity
                 onPress={() => setHighlightVerseModalVisible(false)}
                 style={{ paddingHorizontal: 8, paddingVertical: 6 }}
@@ -1231,7 +1283,11 @@ export default function Index() {
                 }}
                 style={{ paddingHorizontal: 8, paddingVertical: 6 }}
               >
-                <Text style={{ color: "#007aff", fontWeight: "600", fontSize: 16 }}>Share</Text>
+                <Text
+                  style={{ color: "#007aff", fontWeight: "600", fontSize: 16 }}
+                >
+                  Share
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1253,13 +1309,13 @@ export default function Index() {
         >
           <View
             style={{
-              backgroundColor: "white",
+              backgroundColor: darkMode ? "#0b0b0b" : "white",
               padding: 20,
               borderRadius: 10,
               width: "80%",
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
+            <Text style={{ fontSize: 18, marginBottom: 10, color: darkMode ? "#fff" : "#000" }}>
               Choose Bookmark Color
             </Text>
             <View
@@ -1321,7 +1377,13 @@ export default function Index() {
         visible={bookMenuVisible}
         onRequestClose={() => setBookMenuVisible(false)}
       >
-        <View style={{ flex: 1, padding: 20 }}>
+        <View
+          style={{
+            flex: 1,
+            padding: 20,
+            backgroundColor: darkMode ? "#1a1a1a" : "#fff",
+          }}
+        >
           <View
             style={{
               display: "flex",
@@ -1330,25 +1392,36 @@ export default function Index() {
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontSize: 20, marginBottom: 10 }}>Select Book</Text>
+            <Text
+              style={{
+                fontSize: 20,
+                marginBottom: 10,
+                color: darkMode ? "#fff" : "#000",
+              }}
+            >
+              Select Book
+            </Text>
             <Ionicons
               name="close-outline"
               onPress={() => setBookMenuVisible(false)}
               size={32}
-              color="black"
+              color={darkMode ? "#eee" : "black"}
             />
           </View>
           <TextInput
             placeholder="Search books..."
+            placeholderTextColor={darkMode ? "#888" : "#999"}
             value={booksSearchQuery}
             onChangeText={setBookSearchQuery}
             style={{
               padding: 10,
               fontSize: 16,
               borderWidth: 1,
-              borderColor: "#ccc",
+              borderColor: darkMode ? "#333" : "#ccc",
               borderRadius: 6,
               marginBottom: 15,
+              backgroundColor: darkMode ? "#1a1a1a" : "#fff",
+              color: darkMode ? "#fff" : "#000",
             }}
           />
           <ScrollView ref={bookScrollRef}>
@@ -1368,7 +1441,8 @@ export default function Index() {
                       padding: 10,
                       fontSize: 20,
                       fontWeight: "bold",
-                      backgroundColor: "#eee",
+                      backgroundColor: darkMode ? "#2b2b2b" : "#eee",
+                      color: darkMode ? "#fff" : "#000",
                     }}
                   >
                     {book.name}
@@ -1397,7 +1471,8 @@ export default function Index() {
                             textAlign: "center",
                             textAlignVertical: "center",
                             margin: 4,
-                            backgroundColor: "#ddd",
+                            backgroundColor: darkMode ? "#222" : "#ddd",
+                            color: darkMode ? "#fff" : "#000",
                             borderRadius: 6,
                             fontSize: 16,
                           }}
@@ -1457,7 +1532,6 @@ const styles = StyleSheet.create({
   translationItem: {
     padding: 10,
     fontSize: 16,
-    backgroundColor: "#eee",
     marginBottom: 5,
     borderRadius: 6,
   },

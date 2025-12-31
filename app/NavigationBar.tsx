@@ -1,5 +1,6 @@
 // Components
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useReader } from "./ReaderContext";
 
 // Misc
 import { Ionicons } from "@expo/vector-icons";
@@ -31,30 +32,35 @@ export default function NavigationBar({
   };
 
   return (
-    <View style={styles.navigationBox}>
-      <View style={styles.chapterNavigationBox}>
-        <TouchableOpacity
-          onPress={() => !isAtStart && handleChapterArrowPress("previous")}
-          disabled={isAtStart}
-        >
-          <Ionicons name="chevron-back" size={32} color={isAtStart ? "gray" : "black"} />
-        </TouchableOpacity>
+    (() => {
+      const { darkMode } = useReader();
+      return (
+        <View style={[styles.navigationBox, { backgroundColor: darkMode ? "#1a1a1a" : "white", borderTopColor: darkMode ? "#2b2b2b" : "#D9D9D9" }]}>
+          <View style={[styles.chapterNavigationBox, { backgroundColor: darkMode ? "#2b2b2b" : "#F2F2F2" }]}>
+            <TouchableOpacity
+              onPress={() => !isAtStart && handleChapterArrowPress("previous")}
+              disabled={isAtStart}
+            >
+              <Ionicons name="chevron-back" size={32} color={isAtStart ? "gray" : (darkMode ? "#eee" : "black")} />
+            </TouchableOpacity>
 
-        <Text
-          style={styles.currentBookNameStyle}
-          onPress={() => openBookMenu()}
-        >
-          {currentBookName} {currentChapter}
-        </Text>
+            <Text
+              style={[styles.currentBookNameStyle, { color: darkMode ? "#fff" : "black", backgroundColor: darkMode ? "#2b2b2b" : "#F2F2F2" }]}
+              onPress={() => openBookMenu()}
+            >
+              {currentBookName} {currentChapter}
+            </Text>
 
-        <TouchableOpacity
-          onPress={() => !isAtEnd && handleChapterArrowPress("next")}
-          disabled={isAtEnd}
-        >
-          <Ionicons name="chevron-forward" size={32} color={isAtEnd ? "gray" : "black"} />
-        </TouchableOpacity>
-      </View>
-    </View>
+            <TouchableOpacity
+              onPress={() => !isAtEnd && handleChapterArrowPress("next")}
+              disabled={isAtEnd}
+            >
+              <Ionicons name="chevron-forward" size={32} color={isAtEnd ? "gray" : (darkMode ? "#eee" : "black")} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    })()
   );
 }
 

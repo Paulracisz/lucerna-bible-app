@@ -1,8 +1,9 @@
 // app/book.tsx
 import React from "react";
 import { Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import TopBar from "./TopBar";
 import { dailyVerses } from "./dailyVerses";
+import { useReader } from "./ReaderContext";
+import TopBar from "./TopBar";
 
 type TopBarProps = {
   currentTranslation?: string;
@@ -31,19 +32,20 @@ export default function BookScreen({
 
   const seededIndex = Math.abs(hashCode(dateSeed)) % dailyVerses.length;
   const verse = dailyVerses[seededIndex];
+  const { darkMode } = useReader();
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: darkMode ? "#0b0b0b" : "#fff" }}>
         <TopBar
           currentTranslation="KJAV"
           currentPage="home"
           openTranslationMenu={() => {}}
         />
-        <View style={styles.verseBox}>
-          <Text style={styles.verseText}>&quot;{verse.text}&quot;</Text>
+        <View style={[styles.verseBox, { backgroundColor: darkMode ? "#141414" : "white" }] }>
+          <Text style={[styles.verseText, { color: darkMode ? "#fff" : "black" }]}>&quot;{verse.text}&quot;</Text>
           <View style={styles.row}>
-            <Text style={styles.verseRef}>— {verse.reference}</Text>
+            <Text style={[styles.verseRef, { color: darkMode ? "#ccc" : "grey" }]}>— {verse.reference}</Text>
             <TouchableOpacity
               onPress={async () => {
                 const message = `${verse.text}\n— ${verse.reference}`;
